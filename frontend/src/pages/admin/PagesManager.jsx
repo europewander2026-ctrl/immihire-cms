@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 
 const PagesManager = () => {
   const [pages, setPages] = useState([]);
@@ -11,10 +12,10 @@ const PagesManager = () => {
   // Form state
   const [formData, setFormData] = useState({
     title: '',
-    content: '',
+    sections: [],
     seoTitle: '',
     seoDescription: '',
-    focusKeywords: '',
+    seoKeywords: '',
     googleSchema: '{}'
   });
 
@@ -40,12 +41,28 @@ const PagesManager = () => {
     try {
       const res = await api.get(`/api/pages/${pageSummary.slug}`);
       setSelectedPage(res.data);
+      
+      let parsedSections = [];
+      if (res.data.sections && Array.isArray(res.data.sections) && res.data.sections.length > 0) {
+        parsedSections = res.data.sections;
+      } else if (res.data.sections && typeof res.data.sections === 'string' && res.data.sections !== '[]') {
+        try { parsedSections = JSON.parse(res.data.sections); } catch(e){}
+      } else if (res.data.content) {
+        // Legacy content migration
+        parsedSections = [{ 
+          id: Date.now().toString(), 
+          type: 'standard', 
+          heading: 'Legacy Content', 
+          content: res.data.content 
+        }];
+      }
+
       setFormData({
         title: res.data.title || '',
-        content: res.data.content || '',
+        sections: parsedSections,
         seoTitle: res.data.seoTitle || '',
         seoDescription: res.data.seoDescription || '',
-        focusKeywords: res.data.focusKeywords || '',
+        seoKeywords: res.data.seoKeywords || res.data.focusKeywords || '',
         googleSchema: typeof res.data.googleSchema === 'string' ? res.data.googleSchema : JSON.stringify(res.data.googleSchema || {}, null, 2)
       });
       setMessage('');
@@ -66,7 +83,7 @@ const PagesManager = () => {
       setPages(prev => [newPage, ...prev]);
       setSelectedPage(newPage);
       setFormData({
-        title: '', content: '', seoTitle: '', seoDescription: '', focusKeywords: '', googleSchema: '{}'
+        title: '', sections: [], seoTitle: '', seoDescription: '', seoKeywords: '', googleSchema: '{}'
       });
       setMessage('');
     }
@@ -98,6 +115,42 @@ const PagesManager = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const addSection = (type) => {
+    const newSection = {
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
+      type,
+      heading: '',
+      subheading: '',
+      content: '',
+      image: ''
+    };
+    setFormData(prev => ({
+      ...prev,
+      sections: [...prev.sections, newSection]
+    }));
+  };
+
+  const updateSection = (index, field, value) => {
+    const newSections = [...formData.sections];
+    newSections[index][field] = value;
+    setFormData({ ...formData, sections: newSections });
+  };
+
+  const removeSection = (index) => {
+    const newSections = [...formData.sections];
+    newSections.splice(index, 1);
+    setFormData({ ...formData, sections: newSections });
+  };
+
+  const moveSection = (index, direction) => {
+    if ((direction === -1 && index === 0) || (direction === 1 && index === formData.sections.length - 1)) return;
+    const newSections = [...formData.sections];
+    const temp = newSections[index];
+    newSections[index] = newSections[index + direction];
+    newSections[index + direction] = temp;
+    setFormData({ ...formData, sections: newSections });
   };
 
   if (loading) return <div className="p-10">Loading CMS...</div>;
@@ -147,21 +200,68 @@ const PagesManager = () => {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
               
-              {/* Content Editor */}
+              {/* Page Title */}
+              <section>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
+                <input type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              </section>
+
+              {/* Section Builder */}
               <section className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Content Editor</h3>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
-                  <input type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                <div className="flex items-center justify-between border-b pb-2">
+                  <h3 className="text-lg font-semibold text-gray-800">Section Builder</h3>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => addSection('hero')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-image mr-1"></i> Add Hero</button>
+                    <button type="button" onClick={() => addSection('featureList')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-list mr-1"></i> Add Features</button>
+                    <button type="button" onClick={() => addSection('standard')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-align-left mr-1"></i> Add Content</button>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Main Content (HTML/Text)</label>
-                  <textarea name="content" value={formData.content} onChange={handleChange} rows="10" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono"></textarea>
+
+                <div className="space-y-6">
+                  {formData.sections.length === 0 && (
+                    <div className="text-center p-8 border-2 border-dashed border-gray-200 rounded-lg text-gray-400">
+                      No sections added yet. Click a button above to start building.
+                    </div>
+                  )}
+                  {formData.sections.map((section, index) => (
+                    <div key={section.id} className="border border-gray-200 rounded-xl bg-gray-50/30 shadow-sm overflow-hidden">
+                      <div className="bg-gray-100/80 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+                        <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{section.type} Section</span>
+                        <div className="flex gap-1">
+                          <button type="button" onClick={() => moveSection(index, -1)} disabled={index === 0} className="p-1.5 text-gray-400 hover:text-gray-700 disabled:opacity-30"><i className="fa-solid fa-arrow-up"></i></button>
+                          <button type="button" onClick={() => moveSection(index, 1)} disabled={index === formData.sections.length - 1} className="p-1.5 text-gray-400 hover:text-gray-700 disabled:opacity-30"><i className="fa-solid fa-arrow-down"></i></button>
+                          <button type="button" onClick={() => removeSection(index)} className="p-1.5 text-red-400 hover:text-red-600 ml-2"><i className="fa-solid fa-trash"></i></button>
+                        </div>
+                      </div>
+                      <div className="p-4 space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">Heading</label>
+                            <input type="text" value={section.heading || ''} onChange={(e) => updateSection(index, 'heading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Section Heading" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">Subheading</label>
+                            <input type="text" value={section.subheading || ''} onChange={(e) => updateSection(index, 'subheading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Optional subheading" />
+                          </div>
+                        </div>
+                        {['hero', 'featureList'].includes(section.type) && (
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
+                            <input type="text" value={section.image || ''} onChange={(e) => updateSection(index, 'image', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="https://" />
+                          </div>
+                        )}
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Content</label>
+                          <RichTextEditor value={section.content || ''} onChange={(val) => updateSection(index, 'content', val)} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
 
               {/* SEO Metadata */}
-              <section className="space-y-4">
+              <section className="space-y-4 pt-4">
                 <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">SEO Metadata</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -170,7 +270,7 @@ const PagesManager = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Focus Keywords (comma separated)</label>
-                    <input type="text" name="focusKeywords" value={formData.focusKeywords} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                    <input type="text" name="seoKeywords" value={formData.seoKeywords} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                   </div>
                 </div>
                 <div>
