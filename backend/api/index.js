@@ -202,5 +202,39 @@ app.post('/api/upload', requireAuth, async (req, res) => {
   }
 });
 
+// 6. GET /api/settings
+app.get('/api/settings', async (req, res) => {
+  try {
+    const settings = await prisma.siteSettings.findUnique({
+      where: { id: 1 }
+    });
+    res.json(settings || { id: 1, logoUrl: null, faviconUrl: null });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// 7. POST /api/settings (Protected Route)
+app.post('/api/settings', requireAuth, async (req, res) => {
+  try {
+    const { logoUrl, faviconUrl } = req.body;
+    
+    const settings = await prisma.siteSettings.upsert({
+      where: { id: 1 },
+      update: { logoUrl, faviconUrl },
+      create: { id: 1, logoUrl, faviconUrl }
+    });
+
+    res.json(settings);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Export the app for Vercel
 module.exports = app;
+
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => console.log(`Server running locally on port ${PORT}`));
+}

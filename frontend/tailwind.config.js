@@ -1,9 +1,54 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        mono: ['"Space Mono"', 'monospace'],
+        serif: ['"Merriweather"', 'serif'],
+      },
+      colors: {
+        primary: '#0d5fb7',
+        darkBlue: '#002366',
+        accent: '#090927',
+        lightGray: '#f0f0f0',
+      },
+      boxShadow: {
+        'glow': '0 0 20px rgba(13, 95, 183, 0.3)',
+        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'stamp': 'stamp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'spin-slow': 'spin 12s linear infinite',
+        'flyAway': 'flyAway 1.5s ease-in-out forwards',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        stamp: {
+          '0%': { opacity: 0, transform: 'scale(3) rotate(-15deg)' },
+          '100%': { opacity: 1, transform: 'scale(1) rotate(-15deg)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { opacity: 1, boxShadow: '0 0 10px rgba(13, 95, 183, 0.5)' },
+          '50%': { opacity: 0.5, boxShadow: '0 0 25px rgba(13, 95, 183, 0.9)' },
+        },
+        flyAway: {
+          '0%': { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+          '20%': { transform: 'translate(-10px, 10px) scale(0.9)', opacity: 1 },
+          '100%': { transform: 'translate(300px, -300px) scale(0.5)', opacity: 0 },
+        }
+      }
+    },
   },
   plugins: [],
 }
-

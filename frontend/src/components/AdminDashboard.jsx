@@ -16,6 +16,14 @@ const AdminDashboard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
 
+  // Branding states
+  const [settings, setSettings] = useState({ logoUrl: null, faviconUrl: null });
+  const [logoFile, setLogoFile] = useState(null);
+  const [faviconFile, setFaviconFile] = useState(null);
+  const [isBrandingSubmitting, setIsBrandingSubmitting] = useState(false);
+  const logoInputRef = useRef(null);
+  const faviconInputRef = useRef(null);
+
   useEffect(() => {
     // Check auth by attempting to fetch secure data (e.g., consultations)
     // In a real app, you might have a dedicated /api/auth/me route
@@ -35,6 +43,9 @@ const AdminDashboard = () => {
           { id: '1', name: 'John Doe', email: 'john@example.com', status: 'PENDING', createdAt: new Date().toISOString() },
           { id: '2', name: 'Jane Smith', email: 'jane@example.com', status: 'REVIEWED', createdAt: new Date().toISOString() }
         ]);
+
+        const settingsRes = await api.get('/api/settings');
+        setSettings(settingsRes.data);
 
         setIsAuthenticated(true);
       } catch (error) {
@@ -99,6 +110,51 @@ const AdminDashboard = () => {
       alert('Error creating blog. Check console.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleBrandingSubmit = async (e) => {
+    e.preventDefault();
+    setIsBrandingSubmitting(true);
+    
+    try {
+      let logoUrl = settings.logoUrl;
+      let faviconUrl = settings.faviconUrl;
+
+      if (logoFile) {
+        const uploadRes = await api.post('/api/upload', logoFile, {
+          headers: {
+            'x-vercel-filename': logoFile.name,
+            'Content-Type': logoFile.type
+          }
+        });
+        logoUrl = uploadRes.data.url;
+      }
+
+      if (faviconFile) {
+        const uploadRes = await api.post('/api/upload', faviconFile, {
+          headers: {
+            'x-vercel-filename': faviconFile.name,
+            'Content-Type': faviconFile.type
+          }
+        });
+        faviconUrl = uploadRes.data.url;
+      }
+
+      const updatedSettings = await api.post('/api/settings', { logoUrl, faviconUrl });
+      setSettings(updatedSettings.data);
+      alert('Site branding updated successfully! Please refresh to see changes globally.');
+      
+      setLogoFile(null);
+      setFaviconFile(null);
+      if(logoInputRef.current) logoInputRef.current.value = '';
+      if(faviconInputRef.current) faviconInputRef.current.value = '';
+      
+    } catch (error) {
+      console.error('Failed to update branding:', error);
+      alert('Error updating branding. Check console.');
+    } finally {
+      setIsBrandingSubmitting(false);
     }
   };
 
@@ -221,6 +277,56 @@ const AdminDashboard = () => {
                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition disabled:opacity-50"
               >
                 {isSubmitting ? 'Uploading & Creating...' : 'Publish Blog Post'}
+              </button>
+            </form>
+          </div>
+
+          {/* Secure Form: Site Branding */}
+          <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 lg:col-span-3">
+            <h2 className="text-xl font-bold text-gray-800 mb-6">Site Branding Settings</h2>
+            <form onSubmit={handleBrandingSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Site Logo</label>
+                  {settings.logoUrl && (
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-500 mb-1">Current Logo:</p>
+                      <img src={settings.logoUrl} alt="Current Logo" className="h-12 w-auto object-contain border p-1 rounded" />
+                    </div>
+                  )}
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    ref={logoInputRef}
+                    onChange={e => setLogoFile(e.target.files[0])}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Site Favicon</label>
+                  {settings.faviconUrl && (
+                    <div className="mb-3">
+                      <p className="text-xs text-gray-500 mb-1">Current Favicon:</p>
+                      <img src={settings.faviconUrl} alt="Current Favicon" className="h-8 w-8 object-contain border p-1 rounded" />
+                    </div>
+                  )}
+                  <input 
+                    type="file" 
+                    accept="image/x-icon,image/png,image/svg+xml"
+                    ref={faviconInputRef}
+                    onChange={e => setFaviconFile(e.target.files[0])}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition"
+                  />
+                </div>
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={isBrandingSubmitting}
+                className="w-full md:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition disabled:opacity-50"
+              >
+                {isBrandingSubmitting ? 'Uploading & Saving...' : 'Save Branding'}
               </button>
             </form>
           </div>
