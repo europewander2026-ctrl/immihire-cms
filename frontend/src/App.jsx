@@ -7,43 +7,11 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import BlogList from './pages/BlogList';
 
-import Login from './pages/Login';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
 import BlogDetail from './components/BlogDetail';
-import AdminDashboard from './components/AdminDashboard';
 import PillHeader from './components/PillHeader';
 import Footer from './components/Footer';
 
-// --- Protected Route Wrapper ---
-const ProtectedRoute = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const location = useLocation();
 
-  useEffect(() => {
-    const verifySession = async () => {
-      try {
-        // FIX #2: Must ping a protected route to verify the JWT cookie!
-        await api.get('/api/me');
-        setIsAuthenticated(true);
-      } catch (error) {
-        // If it fails for ANY reason (no cookie, expired token, network error), lock them out.
-        setIsAuthenticated(false);
-      }
-    };
-    verifySession();
-  }, []);
-
-  if (isAuthenticated === null) {
-    return <div className="min-h-screen flex items-center justify-center text-xl">Verifying secure session...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
-};
 
 // --- Public Layout Wrapper ---
 const PublicLayout = ({ logoUrl }) => {
@@ -58,14 +26,7 @@ const PublicLayout = ({ logoUrl }) => {
   );
 };
 
-// --- Minimal Auth Layout Wrapper ---
-const MinimalAuthLayout = () => {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <Outlet />
-    </div>
-  );
-};
+
 
 // --- App Component ---
 function App() {
@@ -106,23 +67,6 @@ function App() {
           <Route path="/insights" element={<BlogList />} />
           <Route path="/insights/:slug" element={<BlogDetailWrapper />} />
         </Route>
-
-        {/* Minimal Auth Routes (No header/footer, centered card layout) */}
-        <Route element={<MinimalAuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-        </Route>
-
-        {/* Protected Admin Routes (No public header/footer) */}
-        <Route
-          path="/immi-admin/*"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
 
         {/* Fallback 404 */}
         <Route path="*" element={<div className="p-10 text-center text-xl">404 - Page Not Found</div>} />
