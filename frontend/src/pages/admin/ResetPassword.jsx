@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import api from '../utils/api';
-import defaultLogo from '../assets/images/immihire-logo.webp';
+import api from '../../utils/api';
+import defaultLogo from '../../assets/images/immihire-logo.webp';
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();

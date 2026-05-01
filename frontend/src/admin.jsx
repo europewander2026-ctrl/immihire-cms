@@ -6,9 +6,9 @@ import Consultations from './pages/admin/Consultations';
 import SiteSettings from './pages/admin/SiteSettings';
 import UserManagement from './pages/admin/UserManagement';
 import PagesManager from './pages/admin/PagesManager';
-import Login from './pages/Login';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
+import Login from './pages/admin/Login';
+import ForgotPassword from './pages/admin/ForgotPassword';
+import ResetPassword from './pages/admin/ResetPassword';
 import api from './utils/api';
 import './index.css';
 
