@@ -9,8 +9,6 @@ import PagesManager from './pages/admin/PagesManager';
 import ServicesManager from './pages/admin/ServicesManager';
 import InsightsManager from './pages/admin/InsightsManager';
 import Login from './pages/admin/Login';
-import ForgotPassword from './pages/admin/ForgotPassword';
-import ResetPassword from './pages/admin/ResetPassword';
 import api from './utils/api';
 import './index.css';
 
@@ -56,8 +54,6 @@ const AdminApp = () => {
     <BrowserRouter basename="/immihire-cms/immi-admin">
       <Routes>
         <Route path="/login" element={<MinimalAuthLayout><Login /></MinimalAuthLayout>} />
-        <Route path="/forgot-password" element={<MinimalAuthLayout><ForgotPassword /></MinimalAuthLayout>} />
-        <Route path="/reset-password" element={<MinimalAuthLayout><ResetPassword /></MinimalAuthLayout>} />
         
         <Route
           path="/"

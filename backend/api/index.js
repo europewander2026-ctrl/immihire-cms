@@ -11,6 +11,7 @@ const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
 const { PrismaClient } = require('@prisma/client');
 const axios = require('axios'); // We might need axios for brevo, but we can just use fetch.
+const { sendMail } = require('../utils/mailer');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -47,12 +48,13 @@ const loginSchema = z.object({
   password: z.string().min(6),
 });
 
-const forgotPasswordSchema = z.object({
+const resetRequestSchema = z.object({
   email: z.string().email(),
 });
 
 const resetPasswordSchema = z.object({
-  token: z.string(),
+  email: z.string().email(),
+  code: z.string().length(6),
   newPassword: z.string().min(6),
 });
 
@@ -140,64 +142,63 @@ app.get('/api/me', requireAuth, async (req, res) => {
   }
 });
 
-// 1.2 POST /api/forgot-password
-app.post('/api/forgot-password', async (req, res) => {
+// 1.2 POST /api/auth/reset-request
+app.post('/api/auth/reset-request', async (req, res) => {
   try {
-    const { email } = forgotPasswordSchema.parse(req.body);
+    const { email } = resetRequestSchema.parse(req.body);
     const user = await prisma.adminUser.findUnique({ where: { email } });
     
-    if (user && process.env.BREVO_API_KEY) {
-      const resetToken = require('crypto').randomBytes(32).toString('hex');
-      const expiresAt = new Date(Date.now() + 3600000); // 1 hour
+    if (user && process.env.SMTP_USER) {
+      // Generate 6-digit code
+      const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const resetCodeExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
       
-      await prisma.passwordResetToken.create({
-        data: { token: resetToken, userId: user.id, expiresAt }
+      await prisma.adminUser.update({
+        where: { id: user.id },
+        data: { resetCode, resetCodeExpiry }
       });
 
-      const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5174'}/reset-password?token=${resetToken}`;
-      
-      await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'api-key': process.env.BREVO_API_KEY,
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: { name: "Admin System", email: "no-reply@yourdomain.com" },
-          to: [{ email, name: "Admin" }],
-          subject: "Password Reset Request",
-          htmlContent: `<p>Click here to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`
-        })
+      await sendMail({
+        to: email,
+        subject: "Your Password Reset Code",
+        html: `<p>Your password reset code is: <strong>${resetCode}</strong></p><p>This code will expire in 15 minutes.</p>`
       });
     }
 
-    res.json({ message: 'If that email exists, a reset link has been sent.' });
+    // Always return a success message to prevent email enumeration
+    res.json({ message: 'If that email exists, a reset code has been sent.' });
   } catch (error) {
+    console.error("Reset request error:", error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// 1.3 POST /api/reset-password
-app.post('/api/reset-password', async (req, res) => {
+// 1.3 POST /api/auth/reset-password
+app.post('/api/auth/reset-password', async (req, res) => {
   try {
-    const { token, newPassword } = resetPasswordSchema.parse(req.body);
-    const resetRecord = await prisma.passwordResetToken.findUnique({ where: { token } });
+    const { email, code, newPassword } = resetPasswordSchema.parse(req.body);
+    const user = await prisma.adminUser.findUnique({ where: { email } });
     
-    if (!resetRecord || resetRecord.expiresAt < new Date()) {
-      return res.status(400).json({ error: 'Invalid or expired token' });
+    if (!user || user.resetCode !== code || !user.resetCodeExpiry || user.resetCodeExpiry < new Date()) {
+      return res.status(400).json({ error: 'Invalid or expired reset code' });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.adminUser.update({
-      where: { id: resetRecord.userId },
-      data: { password: hashedPassword }
+      where: { id: user.id },
+      data: { 
+        password: hashedPassword,
+        resetCode: null,
+        resetCodeExpiry: null
+      }
     });
-
-    await prisma.passwordResetToken.delete({ where: { token } });
 
     res.json({ message: 'Password reset successful' });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors });
+    }
+    console.error("Reset password error:", error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
