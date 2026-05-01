@@ -53,8 +53,9 @@ model Consultation {
   name      String
   email     String
   phone     String?
-  message   String
-  status    String   @default("PENDING") // PENDING, REVIEWED, CONTACTED
+  service   String?
+  message   String   @db.Text
+  sourceUrl String?
   createdAt DateTime @default(now())
 }
 

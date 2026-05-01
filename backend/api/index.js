@@ -56,13 +56,6 @@ const resetPasswordSchema = z.object({
   newPassword: z.string().min(6),
 });
 
-const consultationSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  message: z.string().min(10),
-});
-
 const subscribeSchema = z.object({
   email: z.string().email(),
 });
@@ -205,43 +198,6 @@ app.post('/api/reset-password', async (req, res) => {
 
     res.json({ message: 'Password reset successful' });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// 2. POST /api/consultation
-app.post('/api/consultation', async (req, res) => {
-  try {
-    const data = consultationSchema.parse(req.body);
-    
-    // Save to database
-    const consultation = await prisma.consultation.create({
-      data
-    });
-
-    // Trigger Brevo Email
-    if (process.env.BREVO_API_KEY) {
-      await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'api-key': process.env.BREVO_API_KEY,
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: { name: "Website Consultations", email: "no-reply@yourdomain.com" },
-          to: [{ email: process.env.ADMIN_EMAIL || data.email, name: "Admin" }],
-          subject: "New Consultation Request",
-          htmlContent: `<p>New consultation from ${data.name} (${data.email}):</p><p>${data.message}</p>`
-        })
-      });
-    }
-
-    res.status(201).json(consultation);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: error.errors });
-    }
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -488,6 +444,7 @@ app.put('/api/pages/:slug', requireAuth, async (req, res) => {
 require('./services')(app, prisma, requireAuth);
 require('./insights')(app, prisma, requireAuth);
 require('./profile')(app, prisma, requireAuth);
+require('./consultations')(app, prisma, requireAuth);
 
 // Export the app for Vercel
 module.exports = app;
