@@ -14,8 +14,10 @@ enum Role {
 model AdminUser {
   id        String   @id @default(uuid())
   email     String   @unique
-  password  String
-  role      Role     @default(ADMIN)
+  password      String
+  name          String?
+  profileImage  String?
+  role          Role     @default(ADMIN)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -74,20 +76,22 @@ model GlobalSettings {
   contactAddress String   @default("")
   contactEmail   String   @default("")
   contactPhone   String   @default("")
-  copyrightText  String   @default("© 2026 ImmiHire. All rights reserved.")
-  headerNav      Json     @default("[]")
-  footerNav      Json     @default("[]")
-  updatedAt      DateTime @updatedAt
+  copyrightText       String   @default("© 2026 ImmiHire. All rights reserved.")
+  headerNav           Json     @default("[]")
+  footerNav           Json     @default("[]")
+  whatsappNumber      String?
+  floatingSocialIcons Json     @default("[]")
+  updatedAt           DateTime @updatedAt
 }
 
 model Page {
   id             String   @id @default(uuid())
   slug           String   @unique
   title          String
-  content        String   @db.Text
-  seoTitle       String   @default("")
-  seoDescription String   @default("")
-  focusKeywords  String   @default("")
+  sections       Json     @default("[]")
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String?
   googleSchema   Json     @default("{}")
   isPredefined   Boolean  @default(false)
   updatedAt      DateTime @updatedAt
@@ -98,7 +102,11 @@ model Service {
   title           String
   slug            String   @unique
   shortValidation String?
-  content         String   @db.Text
+  sections        Json     @default("[]")
+  customFormConfig Json?
+  seoTitle        String?
+  seoDescription  String?
+  seoKeywords     String?
   icon            String?
   isPublished     Boolean  @default(false)
   createdAt       DateTime @default(now())

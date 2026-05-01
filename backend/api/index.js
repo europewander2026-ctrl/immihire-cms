@@ -425,12 +425,12 @@ app.get('/api/settings/global', async (req, res) => {
 // 9. PUT /api/settings/global (Protected Route)
 app.put('/api/settings/global', requireAuth, async (req, res) => {
   try {
-    const { siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav } = req.body;
+    const { siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav, whatsappNumber, floatingSocialIcons } = req.body;
     
     const settings = await prisma.globalSettings.upsert({
       where: { id: "1" },
-      update: { siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav },
-      create: { id: "1", siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav }
+      update: { siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav, whatsappNumber, floatingSocialIcons },
+      create: { id: "1", siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav, whatsappNumber, floatingSocialIcons }
     });
 
     res.json(settings);
@@ -469,13 +469,13 @@ app.get('/api/pages/:slug', async (req, res) => {
 // 12. PUT /api/pages/:slug (Protected Route)
 app.put('/api/pages/:slug', requireAuth, async (req, res) => {
   try {
-    const { title, content, seoTitle, seoDescription, focusKeywords, googleSchema } = req.body;
+    const { title, sections, seoTitle, seoDescription, seoKeywords, googleSchema } = req.body;
     const slug = req.params.slug;
 
     const page = await prisma.page.upsert({
       where: { slug },
-      update: { title, content, seoTitle, seoDescription, focusKeywords, googleSchema },
-      create: { slug, title, content, seoTitle, seoDescription, focusKeywords, googleSchema }
+      update: { title, sections, seoTitle, seoDescription, seoKeywords, googleSchema },
+      create: { slug, title, sections, seoTitle, seoDescription, seoKeywords, googleSchema }
     });
 
     res.json(page);
@@ -487,6 +487,7 @@ app.put('/api/pages/:slug', requireAuth, async (req, res) => {
 // 13. Mount external route files
 require('./services')(app, prisma, requireAuth);
 require('./insights')(app, prisma, requireAuth);
+require('./profile')(app, prisma, requireAuth);
 
 // Export the app for Vercel
 module.exports = app;
