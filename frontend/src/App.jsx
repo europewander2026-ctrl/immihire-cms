@@ -58,6 +58,15 @@ const PublicLayout = ({ logoUrl }) => {
   );
 };
 
+// --- Minimal Auth Layout Wrapper ---
+const MinimalAuthLayout = () => {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Outlet />
+    </div>
+  );
+};
+
 // --- App Component ---
 function App() {
   const [siteSettings, setSiteSettings] = useState(null);
@@ -96,6 +105,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/insights" element={<BlogList />} />
           <Route path="/insights/:slug" element={<BlogDetailWrapper />} />
+        </Route>
+
+        {/* Minimal Auth Routes (No header/footer, centered card layout) */}
+        <Route element={<MinimalAuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

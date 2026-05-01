@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import api from '../utils/api';
+import defaultLogo from '../assets/images/immihire-logo.webp';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -38,16 +39,16 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Secure Admin Portal
-          </p>
-        </div>
+    <div className="w-full max-w-md space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
+      <div className="flex flex-col items-center justify-center">
+        <img src={defaultLogo} alt="ImmiHire Logo" className="h-12 w-auto object-contain mb-4" />
+        <h2 className="text-center text-3xl font-extrabold text-gray-900">
+          Sign in to your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Secure Admin Portal
+        </p>
+      </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>
@@ -92,8 +93,12 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <div className="text-center mt-4 text-sm">
+          <Link to="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
+            Forgot your password?
+          </Link>
+        </div>
       </div>
-    </div>
   );
 };
 
