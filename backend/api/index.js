@@ -484,6 +484,10 @@ app.put('/api/pages/:slug', requireAuth, async (req, res) => {
   }
 });
 
+// 13. Mount external route files
+require('./services')(app, prisma, requireAuth);
+require('./insights')(app, prisma, requireAuth);
+
 // Export the app for Vercel
 module.exports = app;
 

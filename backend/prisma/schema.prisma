@@ -89,5 +89,31 @@ model Page {
   seoDescription String   @default("")
   focusKeywords  String   @default("")
   googleSchema   Json     @default("{}")
+  isPredefined   Boolean  @default(false)
   updatedAt      DateTime @updatedAt
+}
+
+model Service {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  shortValidation String?
+  content         String   @db.Text
+  icon            String?
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Insight {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?  @db.Text
+  content         String   @db.Text
+  author          String?
+  featuredImage   String?
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
