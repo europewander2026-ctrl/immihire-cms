@@ -17,8 +17,10 @@ const AdminDashboard = () => {
     switch (location.pathname) {
       case '/':
         return 'Consultations';
+      case '/pages':
+        return 'Pages Manager';
       case '/settings':
-        return 'Site Settings';
+        return 'Global Settings';
       case '/users':
         return 'User Management';
       default:
@@ -48,6 +50,18 @@ const AdminDashboard = () => {
           >
             <i className="fa-solid fa-comments w-5 text-center"></i>
             Consultations
+          </NavLink>
+          
+          <NavLink 
+            to="/pages" 
+            className={({ isActive }) => 
+              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`
+            }
+          >
+            <i className="fa-solid fa-file-lines w-5 text-center"></i>
+            Pages
           </NavLink>
           
           <NavLink 

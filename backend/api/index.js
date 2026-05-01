@@ -408,6 +408,80 @@ app.post('/api/settings', requireAuth, async (req, res) => {
   }
 });
 
+// 8. GET /api/settings/global
+app.get('/api/settings/global', async (req, res) => {
+  try {
+    const settings = await prisma.globalSettings.findUnique({
+      where: { id: "1" }
+    });
+    res.json(settings || { id: "1", siteName: "ImmiHire", contactAddress: "", contactEmail: "", contactPhone: "", copyrightText: "", headerNav: [], footerNav: [] });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// 9. PUT /api/settings/global (Protected Route)
+app.put('/api/settings/global', requireAuth, async (req, res) => {
+  try {
+    const { siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav } = req.body;
+    
+    const settings = await prisma.globalSettings.upsert({
+      where: { id: "1" },
+      update: { siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav },
+      create: { id: "1", siteName, contactAddress, contactEmail, contactPhone, copyrightText, headerNav, footerNav }
+    });
+
+    res.json(settings);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// 10. GET /api/pages
+app.get('/api/pages', async (req, res) => {
+  try {
+    const pages = await prisma.page.findMany({
+      orderBy: { updatedAt: 'desc' }
+    });
+    res.json(pages);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// 11. GET /api/pages/:slug
+app.get('/api/pages/:slug', async (req, res) => {
+  try {
+    const page = await prisma.page.findUnique({
+      where: { slug: req.params.slug }
+    });
+    if (!page) {
+      return res.status(404).json({ error: 'Page not found' });
+    }
+    res.json(page);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// 12. PUT /api/pages/:slug (Protected Route)
+app.put('/api/pages/:slug', requireAuth, async (req, res) => {
+  try {
+    const { title, content, seoTitle, seoDescription, focusKeywords, googleSchema } = req.body;
+    const slug = req.params.slug;
+
+    const page = await prisma.page.upsert({
+      where: { slug },
+      update: { title, content, seoTitle, seoDescription, focusKeywords, googleSchema },
+      create: { slug, title, content, seoTitle, seoDescription, focusKeywords, googleSchema }
+    });
+
+    res.json(page);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Export the app for Vercel
 module.exports = app;
 

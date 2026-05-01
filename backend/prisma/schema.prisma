@@ -67,3 +67,27 @@ model SiteSettings {
   logoUrl    String?
   faviconUrl String?
 }
+
+model GlobalSettings {
+  id             String   @id @default("1")
+  siteName       String   @default("ImmiHire")
+  contactAddress String   @default("")
+  contactEmail   String   @default("")
+  contactPhone   String   @default("")
+  copyrightText  String   @default("© 2026 ImmiHire. All rights reserved.")
+  headerNav      Json     @default("[]")
+  footerNav      Json     @default("[]")
+  updatedAt      DateTime @updatedAt
+}
+
+model Page {
+  id             String   @id @default(uuid())
+  slug           String   @unique
+  title          String
+  content        String   @db.Text
+  seoTitle       String   @default("")
+  seoDescription String   @default("")
+  focusKeywords  String   @default("")
+  googleSchema   Json     @default("{}")
+  updatedAt      DateTime @updatedAt
+}
