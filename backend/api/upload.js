@@ -22,8 +22,9 @@ module.exports = function(app, prisma, requireAuth) {
       const filename = `${folder}/${Date.now()}-${req.file.originalname}`;
       
       const blob = await put(filename, req.file.buffer, {
-        access: 'public',
-        token: process.env.BLOB_READ_WRITE_TOKEN
+        access: 'public', // Explicitly request a public URL
+        contentType: req.file.mimetype,
+        addRandomSuffix: true,
       });
 
       res.json({ url: blob.url });
