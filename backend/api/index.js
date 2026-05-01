@@ -23,19 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      process.env.FRONTEND_URL, 
-      'http://localhost:5173', 
-      'http://localhost:5174', 
-      'http://localhost:3000'
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: 'https://demo.hmhlabz.com',
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -107,26 +95,39 @@ const requireSuperadmin = (req, res, next) => {
 app.post('/api/login', async (req, res) => {
   try {
     const data = loginSchema.parse(req.body);
+    console.log("Login attempt for:", data.email);
+    
     const user = await prisma.adminUser.findUnique({ where: { email: data.email } });
     
-    if (!user || !(await bcrypt.compare(data.password, user.password))) {
+    if (!user) {
+      console.log("Login failed: User not found in DB.");
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+    
+    const isMatch = await bcrypt.compare(data.password, user.password);
+    if (!isMatch) {
+      console.log("Login failed: Password hash did not match.");
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
     if (!user.isActive) {
+      console.log("Login failed: Account is disabled.");
       return res.status(403).json({ error: 'Account disabled' });
     }
 
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
     
+    console.log("Login success! Generating cross-domain cookie.");
     res.cookie('jwt', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true, // MUST be true for SameSite=None
+      sameSite: 'none', // Mandatory for cross-domain cookies
       maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
 
     res.json({ message: 'Logged in successfully' });
   } catch (error) {
+    console.error("Login route error:", error);
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: error.errors });
     }

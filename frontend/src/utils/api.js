@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+  baseURL: 'https://immihire-cms.vercel.app', // Strictly point to backend
   withCredentials: true, // Automatically send cookies with every request
   headers: {
     'Content-Type': 'application/json'
