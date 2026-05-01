@@ -11,9 +11,13 @@ const ServicesManager = () => {
     title: '',
     slug: '',
     shortValidation: '',
-    content: '',
+    sections: [],
     icon: '',
-    isPublished: false
+    isPublished: false,
+    customFormConfig: { enabled: false, type: 'basic' },
+    seoTitle: '',
+    seoDescription: '',
+    seoKeywords: ''
   };
   
   const [formData, setFormData] = useState(defaultForm);
@@ -82,10 +86,31 @@ const ServicesManager = () => {
   };
 
   const editService = (service) => {
+    let parsedSections = [];
+    if (service.sections && Array.isArray(service.sections) && service.sections.length > 0) {
+      parsedSections = service.sections;
+    } else if (service.sections && typeof service.sections === 'string' && service.sections !== '[]') {
+      try { parsedSections = JSON.parse(service.sections); } catch(e){}
+    } else if (service.content) {
+      parsedSections = [{ id: Date.now().toString(), type: 'standard', heading: 'Service Details', content: service.content }];
+    }
+
+    let parsedFormConfig = { enabled: false, type: 'basic' };
+    if (service.customFormConfig && typeof service.customFormConfig === 'object') {
+      parsedFormConfig = service.customFormConfig;
+    } else if (typeof service.customFormConfig === 'string' && service.customFormConfig !== 'null') {
+      try { parsedFormConfig = JSON.parse(service.customFormConfig); } catch(e){}
+    }
+
     setFormData({
       ...service,
       shortValidation: service.shortValidation || '',
-      icon: service.icon || ''
+      icon: service.icon || '',
+      sections: parsedSections,
+      customFormConfig: parsedFormConfig,
+      seoTitle: service.seoTitle || '',
+      seoDescription: service.seoDescription || '',
+      seoKeywords: service.seoKeywords || '',
     });
     setIsEditing(true);
     setCurrentView('form');
@@ -95,6 +120,42 @@ const ServicesManager = () => {
     setFormData(defaultForm);
     setIsEditing(false);
     setCurrentView('form');
+  };
+
+  const addSection = (type) => {
+    const newSection = {
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
+      type,
+      heading: '',
+      subheading: '',
+      content: '',
+      image: ''
+    };
+    setFormData(prev => ({
+      ...prev,
+      sections: [...prev.sections, newSection]
+    }));
+  };
+
+  const updateSection = (index, field, value) => {
+    const newSections = [...formData.sections];
+    newSections[index][field] = value;
+    setFormData({ ...formData, sections: newSections });
+  };
+
+  const removeSection = (index) => {
+    const newSections = [...formData.sections];
+    newSections.splice(index, 1);
+    setFormData({ ...formData, sections: newSections });
+  };
+
+  const moveSection = (index, direction) => {
+    if ((direction === -1 && index === 0) || (direction === 1 && index === formData.sections.length - 1)) return;
+    const newSections = [...formData.sections];
+    const temp = newSections[index];
+    newSections[index] = newSections[index + direction];
+    newSections[index + direction] = temp;
+    setFormData({ ...formData, sections: newSections });
   };
 
   if (loading) return <div className="p-8 text-center text-gray-500">Loading services...</div>;
@@ -154,7 +215,8 @@ const ServicesManager = () => {
           </table>
         </div>
       ) : (
-        <form onSubmit={handleSave} className="space-y-6">
+        <form onSubmit={handleSave} className="space-y-8">
+          
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Service Title</label>
@@ -196,29 +258,140 @@ const ServicesManager = () => {
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border" 
               />
             </div>
-            <div className="flex items-center mt-6">
-              <input 
-                id="isPublished"
-                type="checkbox" 
-                checked={formData.isPublished}
-                onChange={(e) => setFormData({...formData, isPublished: e.target.checked})}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
-              />
-              <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-900 font-medium">
-                Publish this Service publicly
-              </label>
+            <div className="flex flex-col justify-center space-y-3 mt-1">
+              <div className="flex items-center">
+                <input 
+                  id="isPublished"
+                  type="checkbox" 
+                  checked={formData.isPublished}
+                  onChange={(e) => setFormData({...formData, isPublished: e.target.checked})}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
+                />
+                <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-900 font-medium">
+                  Publish this Service publicly
+                </label>
+              </div>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Service Details (Content)</label>
-            <RichTextEditor 
-              value={formData.content} 
-              onChange={(val) => setFormData({...formData, content: val})} 
-            />
-          </div>
+          {/* Section Builder */}
+          <section className="space-y-4 border-t pt-6 border-gray-200">
+            <div className="flex items-center justify-between border-b pb-2">
+              <h3 className="text-lg font-semibold text-gray-800">Section Builder</h3>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => addSection('hero')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-image mr-1"></i> Add Hero</button>
+                <button type="button" onClick={() => addSection('featureList')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-list mr-1"></i> Add Features</button>
+                <button type="button" onClick={() => addSection('standard')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-align-left mr-1"></i> Add Content</button>
+              </div>
+            </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <div className="space-y-6">
+              {formData.sections.length === 0 && (
+                <div className="text-center p-8 border-2 border-dashed border-gray-200 rounded-lg text-gray-400">
+                  No sections added yet. Click a button above to start building.
+                </div>
+              )}
+              {formData.sections.map((section, index) => (
+                <div key={section.id} className="border border-gray-200 rounded-xl bg-gray-50/30 shadow-sm overflow-hidden">
+                  <div className="bg-gray-100/80 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{section.type} Section</span>
+                    <div className="flex gap-1">
+                      <button type="button" onClick={() => moveSection(index, -1)} disabled={index === 0} className="p-1.5 text-gray-400 hover:text-gray-700 disabled:opacity-30"><i className="fa-solid fa-arrow-up"></i></button>
+                      <button type="button" onClick={() => moveSection(index, 1)} disabled={index === formData.sections.length - 1} className="p-1.5 text-gray-400 hover:text-gray-700 disabled:opacity-30"><i className="fa-solid fa-arrow-down"></i></button>
+                      <button type="button" onClick={() => removeSection(index)} className="p-1.5 text-red-400 hover:text-red-600 ml-2"><i className="fa-solid fa-trash"></i></button>
+                    </div>
+                  </div>
+                  <div className="p-4 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Heading</label>
+                        <input type="text" value={section.heading || ''} onChange={(e) => updateSection(index, 'heading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Section Heading" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Subheading</label>
+                        <input type="text" value={section.subheading || ''} onChange={(e) => updateSection(index, 'subheading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Optional subheading" />
+                      </div>
+                    </div>
+                    {['hero', 'featureList'].includes(section.type) && (
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
+                        <input type="text" value={section.image || ''} onChange={(e) => updateSection(index, 'image', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="https://" />
+                      </div>
+                    )}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">Content</label>
+                      <RichTextEditor value={section.content || ''} onChange={(val) => updateSection(index, 'content', val)} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Custom Form Configuration */}
+          <section className="space-y-4 border-t pt-6 border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Custom Form Configuration</h3>
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="flex items-center">
+                <input 
+                  id="enableForm"
+                  type="checkbox" 
+                  checked={formData.customFormConfig?.enabled}
+                  onChange={(e) => setFormData({
+                    ...formData, 
+                    customFormConfig: { ...formData.customFormConfig, enabled: e.target.checked }
+                  })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
+                />
+                <label htmlFor="enableForm" className="ml-2 block text-sm text-gray-900 font-medium">
+                  Enable Custom Form on this Service Page
+                </label>
+              </div>
+              
+              {formData.customFormConfig?.enabled && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Form Type</label>
+                  <select 
+                    value={formData.customFormConfig?.type || 'basic'}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      customFormConfig: { ...formData.customFormConfig, type: e.target.value }
+                    })}
+                    className="block w-full max-w-xs rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border bg-white"
+                  >
+                    <option value="basic">Basic Consultation (Name, Email, Message)</option>
+                    <option value="detailed">Detailed Questionnaire (Full Application)</option>
+                  </select>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* SEO Metadata */}
+          <section className="space-y-4 border-t pt-6 border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">SEO Metadata</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">SEO Title Tag</label>
+                <input type="text" name="seoTitle" value={formData.seoTitle} onChange={(e) => setFormData({...formData, seoTitle: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Focus Keywords (comma separated)</label>
+                <input type="text" name="seoKeywords" value={formData.seoKeywords} onChange={(e) => setFormData({...formData, seoKeywords: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium text-gray-700">Meta Description</label>
+                <button type="button" className="text-xs font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100 flex items-center gap-1.5 transition-colors">
+                  <i className="fa-solid fa-wand-magic-sparkles"></i> AI Generate
+                </button>
+              </div>
+              <textarea name="seoDescription" value={formData.seoDescription} onChange={(e) => setFormData({...formData, seoDescription: e.target.value})} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+            </div>
+          </section>
+
+          <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
             <button 
               type="button" 
               onClick={() => setCurrentView('list')}
