@@ -65,6 +65,11 @@ const SiteSettings = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (file.size > 1024 * 1024) {
+      alert("File too large. Max 1MB.");
+      return;
+    }
+
     const isLogo = type === 'logo';
     isLogo ? setUploadingLogo(true) : setUploadingFavicon(true);
     setMessage('');
@@ -149,7 +154,9 @@ const SiteSettings = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Company Logo</label>
               <label className="border-2 border-dashed border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer relative overflow-hidden">
-                {logoUrl ? (
+                {uploadingLogo ? (
+                  <i className="fa-solid fa-spinner fa-spin text-2xl text-blue-600 mb-2"></i>
+                ) : logoUrl ? (
                   <img src={logoUrl} alt="Logo" className="h-16 object-contain mb-2" />
                 ) : (
                   <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
@@ -161,7 +168,9 @@ const SiteSettings = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Favicon</label>
               <label className="border-2 border-dashed border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer relative overflow-hidden">
-                {faviconUrl ? (
+                {uploadingFavicon ? (
+                  <i className="fa-solid fa-spinner fa-spin text-2xl text-blue-600 mb-2"></i>
+                ) : faviconUrl ? (
                   <img src={faviconUrl} alt="Favicon" className="h-12 w-12 object-contain mb-2" />
                 ) : (
                   <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>

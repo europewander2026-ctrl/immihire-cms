@@ -23,6 +23,11 @@ const Profile = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (file.size > 1024 * 1024) {
+      alert("File too large. Max 1MB.");
+      return;
+    }
+
     setUploading(true);
     setMessage('');
     
