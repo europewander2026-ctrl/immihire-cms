@@ -1,13 +1,6 @@
 import React from 'react';
-
-// PATCH: older ReactQuill versions require React.findDOMNode, which is deprecated.
-// This empty function resolves the error for compatible rendering.
-if (typeof React.findDOMNode !== 'function') {
-  React.findDOMNode = (node) => node;
-}
-
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 const RichTextEditor = ({ value, onChange }) => {
   const modules = {
