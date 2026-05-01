@@ -16,6 +16,7 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 const app = express();
+app.set('trust proxy', 1); // Fix for Vercel edge network rate limiting
 
 // Security Middleware
 app.use(helmet());
