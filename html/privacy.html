@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="assets/images/immihire-logo.webp">
+    <title>Privacy Policy | ImmiHire</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Montserrat"', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#0d5fb7',
+                        darkBlue: '#002366',
+                        accent: '#090927',
+                        lightGray: '#f0f0f0',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(13, 95, 183, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Shared Styles */
+        body {
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header Styles */
+        .pill-header {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 90%;
+            max-width: 1200px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 24px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 20px 40px -4px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        .pill-header.scrolled {
+            width: 98%;
+            top: 10px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            min-width: 240px;
+            padding: 8px;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .nav-item:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: #334155;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f5f9;
+            color: #0d5fb7;
+        }
+
+        .magnetic-btn {
+            position: relative;
+            display: inline-flex;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        /* --- Policy Page Specific Styles --- */
+
+        /* 1. Policy Container */
+        .policy-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* 2. Sticky Navigation */
+        .sticky-nav {
+            position: sticky;
+            top: 150px;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 2rem;
+        }
+
+        .nav-link {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #0d5fb7;
+        }
+
+        .nav-link.active {
+            color: #0d5fb7;
+            padding-left: 10px;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: -34px;
+            /* Align with border */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: #0d5fb7;
+            border-radius: 4px;
+        }
+
+        /* 3. Section Styling */
+        .policy-section {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            border: 1px solid transparent;
+            transition: all 0.5s ease;
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+
+        .policy-section.active-focus {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            border-color: #e2e8f0;
+        }
+
+        .policy-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #475569;
+        }
+
+        /* 4. Interactive Tooltips */
+        .tooltip-term {
+            color: #0d5fb7;
+            font-weight: 600;
+            border-bottom: 1px dashed #0d5fb7;
+            cursor: help;
+            position: relative;
+        }
+
+        .tooltip-term::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #002366;
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            width: 250px;
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 50;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .tooltip-term:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Arrow for tooltip */
+        .tooltip-term:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #002366;
+            opacity: 1;
+        }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(5px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- Header (Consistent) -->
+    <header id="header" class="fixed z-50 pill-header py-3 px-8 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2 group">
+            <img src="assets/images/immihire-logo.webp" alt="ImmiHire Logo"
+                class="h-10 w-auto object-contain">
+            <span class="font-heading font-bold text-xl text-black tracking-tight">Immi<span
+                    class="text-primary">Hire</span></span>
+        </a>
+        <nav class="hidden lg:flex items-center gap-8 text-[0.8rem] font-bold text-gray-700 tracking-widest uppercase">
+            <a href="index.html" class="hover:text-primary transition-colors">Home</a>
+            <a href="about.html" class="hover:text-primary transition-colors">About</a>
+            <div class="nav-item group cursor-pointer">
+                <a href="services.html" class="hover:text-primary transition-colors flex items-center gap-1">Services <i
+                        class="fa-solid fa-chevron-down text-[0.6rem]"></i></span>
+                <div class="dropdown-menu">
+                    <a href="services-detail.html" class="dropdown-item">USA Visit Visa</a>
+                    <a href="services-detail.html" class="dropdown-item">Schengen Work Permits</a>
+                    <a href="services-detail.html" class="dropdown-item">Canada Express Entry</a>
+                    <a href="services-detail.html" class="dropdown-item">Germany Opportunity Card</a>
+                    <a href="services-detail.html" class="dropdown-item">Australia SkillSelect</a>
+                </div>
+            </div>
+            <a href="blog.html" class="hover:text-primary transition-colors">Insights</a>
+        </nav>
+        <div class="hidden md:block">
+            <a href="contact.html"
+                class="magnetic-btn px-6 py-3 bg-primary text-white font-bold rounded-full shadow-lg transition-all flex items-center gap-2 text-xs uppercase tracking-wider">
+                <span>Contact Us</span>
+                <i class="fa-solid fa-arrow-right text-[0.6rem]"></i>
+            </a>
+        </div>
+        <button class="lg:hidden text-2xl text-black"><i class="fa-solid fa-bars"></i></button>
+    </header>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white/95 backdrop-blur-2xl transform translate-x-full transition-transform duration-500 flex flex-col justify-center px-10">
+        <button id="close-menu-btn" class="absolute top-8 right-8 text-3xl text-darkBlue hover:text-primary transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <nav class="flex flex-col items-start gap-6 w-full max-w-md mx-auto">
+            <a href="index.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Home</a>
+            <a href="about.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">About</a>
+            
+            <!-- Services Accordion -->
+            <div class="w-full">
+                <button id="mobile-services-btn" class="flex justify-between items-center w-full text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors focus:outline-none">
+                    <span>Services</span>
+                    <i class="fa-solid fa-chevron-down text-xl transition-transform duration-300"></i>
+                </button>
+                <div id="mobile-services-menu" class="hidden flex-col gap-4 mt-4 pl-4 border-l-2 border-primary/20">
+                    <a href="service-usa.html" class="text-lg font-medium text-gray-600 hover:text-primary">USA Visit Visa</a>
+                    <a href="service-schengen.html" class="text-lg font-medium text-gray-600 hover:text-primary">Schengen Work Permits</a>
+                    <a href="service-canada.html" class="text-lg font-medium text-gray-600 hover:text-primary">Canada Express Entry</a>
+                    <a href="service-germany.html" class="text-lg font-medium text-gray-600 hover:text-primary">Germany Opportunity Card</a>
+                    <a href="service-australia.html" class="text-lg font-medium text-gray-600 hover:text-primary">Australia SkillSelect</a>
+                </div>
+            </div>
+            
+            <a href="blog.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Insights</a>
+            <a href="contact.html" class="text-3xl font-heading font-bold text-primary hover:text-darkBlue transition-colors mt-4">Contact Us</a>
+        </nav>
+    </div>
+
+
+    <!-- Hero Section -->
+    <section class="pt-48 pb-16 relative bg-white">
+        <div class="container mx-auto px-6 text-center reveal active">
+            <div
+                class="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">
+                Legal Hub
+            </div>
+            <h1 class="font-heading font-bold text-4xl md:text-6xl text-darkBlue mb-6">
+                Transparency <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Protocol</span>
+            </h1>
+            <p class="text-gray-500 text-lg max-w-2xl mx-auto">
+                We believe trust is built on clarity. Here is a comprehensive breakdown of how we protect, process, and
+                respect your data.
+            </p>
+            <p class="text-xs text-gray-400 mt-8 font-mono">Last Updated: <span id="date-update">October 24, 2025</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="pb-24 px-6 bg-gray-50 pt-16">
+        <div class="policy-wrapper flex flex-col lg:flex-row gap-16">
+
+            <!-- Sticky Navigation (Sidebar) -->
+            <div class="lg:w-1/4 hidden lg:block">
+                <div class="sticky-nav">
+                    <h3 class="font-heading font-bold text-darkBlue mb-6 uppercase text-sm tracking-widest">Table of
+                        Contents</h3>
+                    <nav id="toc">
+                        <a href="#intro" class="nav-link active">1. Introduction</a>
+                        <a href="#collection" class="nav-link">2. Data Collection</a>
+                        <a href="#usage" class="nav-link">3. Usage of Information</a>
+                        <a href="#protection" class="nav-link">4. Data Protection</a>
+                        <a href="#cookies" class="nav-link">5. Cookies & Tracking</a>
+                        <a href="#rights" class="nav-link">6. User Rights</a>
+                    </nav>
+
+                    <div class="mt-10 p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-xs text-gray-400 mb-2 uppercase font-bold">Have Questions?</p>
+                        <a href="mailto:privacy@immihire.com"
+                            class="text-primary font-bold text-sm hover:underline">privacy@immihire.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="lg:w-3/4">
+
+                <!-- Section 1 -->
+                <div id="intro" class="policy-section">
+                    <h2 class="font-heading text-2xl font-bold text-darkBlue mb-4 flex items-center gap-3">
+                        <span
+                            class="bg-blue-100 text-primary w-8 h-8 rounded-lg flex items-center justify-center text-sm">01</span>
+                        Introduction
+                    </h2>
+                    <p class="policy-text">
+                        Welcome to ImmiHire. Your privacy is paramount to us. This Privacy Policy outlines how ImmiHire
+                        ("we", "our", or "us") collects, uses, and safeguards your <span class="tooltip-term"
+                            data-tooltip="Information that can identify you, such as your name, email, or passport details.">Personal
+                            Data</span> when you visit our website or use our immigration services. By accessing our
+                        platform, you agree to the terms laid out in this protocol.
+                    </p>
+                </div>
+
+                <!-- Section 2 -->
+                <div id="collection" class="policy-section">
+                    <h2 class="font-heading text-2xl font-bold text-darkBlue mb-4 flex items-center gap-3">
+                        <span
+                            class="bg-blue-100 text-primary w-8 h-8 rounded-lg flex items-center justify-center text-sm">02</span>
+                        Data Collection
+                    </h2>
+                    <p class="policy-text mb-4">
+                        To facilitate your global mobility, we collect specific categories of data. This ensures we can
+                        accurately assess your eligibility for various visa programs.
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-600">
+                        <li><strong>Identity Data:</strong> Name, date of birth, passport details, and marital status.
+                        </li>
+                        <li><strong>Contact Data:</strong> Email address, phone number, and residential address.</li>
+                        <li><strong>Professional Data:</strong> CV/Resume, employment history, and educational
+                            qualifications.</li>
+                        <li><strong>Technical Data:</strong> IP address, browser type, and device information collected
+                            automatically.</li>
+                    </ul>
+                </div>
+
+                <!-- Section 3 -->
+                <div id="usage" class="policy-section">
+                    <h2 class="font-heading text-2xl font-bold text-darkBlue mb-4 flex items-center gap-3">
+                        <span
+                            class="bg-blue-100 text-primary w-8 h-8 rounded-lg flex items-center justify-center text-sm">03</span>
+                        Usage of Information
+                    </h2>
+                    <p class="policy-text">
+                        We are not in the business of selling data. Your information is used strictly for:
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4 mt-6">
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
+                            <h4 class="font-bold text-darkBlue mb-2">Service Delivery</h4>
+                            <p class="text-sm text-gray-500">Processing visa applications and eligibility assessments.
+                            </p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
+                            <h4 class="font-bold text-darkBlue mb-2">Communication</h4>
+                            <p class="text-sm text-gray-500">Sending updates regarding your application status or policy
+                                changes.</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
+                            <h4 class="font-bold text-darkBlue mb-2">Legal Compliance</h4>
+                            <p class="text-sm text-gray-500">Meeting requirements set by government immigration
+                                authorities.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4 -->
+                <div id="protection" class="policy-section">
+                    <h2 class="font-heading text-2xl font-bold text-darkBlue mb-4 flex items-center gap-3">
+                        <span
+                            class="bg-blue-100 text-primary w-8 h-8 rounded-lg flex items-center justify-center text-sm">04</span>
+                        Data Protection
+                    </h2>
+                    <p class="policy-text">
+                        We implement enterprise-grade security measures. Your data is stored on secure <span
+                            class="tooltip-term"
+                            data-tooltip="We use AWS and Google Cloud servers encrypted with AES-256 standards.">Encrypted
+                            Servers</span> and access is restricted to authorized personnel only. We regularly conduct
+                        vulnerability assessments to ensure our defenses remain impenetrable against unauthorized
+                        access.
+                    </p>
+                </div>
+
+                <!-- Section 5 -->
+                <div id="cookies" class="policy-section">
+                    <h2 class="font-heading text-2xl font-bold text-darkBlue mb-4 flex items-center gap-3">
+                        <span
+                            class="bg-blue-100 text-primary w-8 h-8 rounded-lg flex items-center justify-center text-sm">05</span>
+                        Cookies & Tracking
+                    </h2>
+                    <p class="policy-text">
+                        Our website uses <span class="tooltip-term"
+                            data-tooltip="Small text files stored on your device to remember preferences.">Cookies</span>
+                        to enhance your browsing experience. These allow us to remember your language preferences and
+                        analyze traffic patterns. You can choose to disable cookies through your browser settings,
+                        though this may affect site functionality.
+                    </p>
+                </div>
+
+                <!-- Section 6 -->
+                <div id="rights" class="policy-section">
+                    <h2 class="font-heading text-2xl font-bold text-darkBlue mb-4 flex items-center gap-3">
+                        <span
+                            class="bg-blue-100 text-primary w-8 h-8 rounded-lg flex items-center justify-center text-sm">06</span>
+                        User Rights
+                    </h2>
+                    <p class="policy-text mb-4">
+                        Under GDPR and other international privacy laws, you have the right to:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-600">
+                        <li>Access the personal data we hold about you.</li>
+                        <li>Request correction of inaccurate data.</li>
+                        <li>Request deletion of your data ("Right to be Forgotten").</li>
+                        <li>Withdraw consent for marketing communications at any time.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Consistent) -->
+    <footer class="bg-[#000814] text-white pt-24 pb-12 rounded-t-[3rem] mt-[-3rem] relative z-20 overflow-hidden">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-overlay filter blur-[100px] opacity-20 animate-pulse"></div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex flex-col md:flex-row justify-between gap-12 mb-20">
+            <div class="md:w-1/2">
+                <h2 class="font-heading font-bold text-5xl md:text-7xl mb-6 leading-none tracking-tight">Ready to <br><span class="text-primary">Fly?</span></h2>
+                <p class="text-gray-400 text-lg max-w-md mb-8">Your global future is just one click away. Book your consultation today and let's get started.</p>
+                <a href="contact.html" class="magnetic-btn px-8 py-4 bg-white text-darkBlue font-bold rounded-full text-lg hover:bg-gray-200 transition-colors">Book Consultation</a>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-8 md:w-1/3">
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-primary">Explore</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="index.html" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="about.html" class="hover:text-white transition-colors">About</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
+                        <li><a href="blog.html" class="hover:text-white transition-colors">Insights</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy</a></li><li><a href="terms.html" class="hover:text-white transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-primary">Contact</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li>Dubai, UAE</li>
+                        <li>+971 50 752 6626</li>
+                        <li>info@immihire.com</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2025 ImmiHire Consultants. All Rights Reserved.</p>
+            <div class="flex gap-6 mt-4 md:mt-0">
+                <a href="https://www.facebook.com/profile.php?id=61560909444669&sk=about" class="hover:text-white transition-colors" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://ae.linkedin.com/company/immihire-management-consultancy" class="hover:text-white transition-colors" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="https://www.instagram.com/immihire/" class="hover:text-white transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- Scripts -->
+    <script>
+        // 1. Header Scroll
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+        });
+
+        // 2. Magnetic Buttons
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            btn.addEventListener('mouseleave', () => btn.style.transform = 'translate(0px, 0px)');
+        });
+
+        // 3. Scroll Spy & Focus Highlighting
+        const sections = document.querySelectorAll('.policy-section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -50% 0px', // Trigger when section is near top-center
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Highlight TOC
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+
+                    // Focus Effect on Content
+                    sections.forEach(sec => sec.classList.remove('active-focus'));
+                    entry.target.classList.add('active-focus');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        // 4. Reveal Animation on Load
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) reveals[i].classList.add("active");
+            }
+        }
+        window.addEventListener("scroll", reveal); reveal();
+    </script>
+
+    
+
+
+    <script>
+        // Mobile Menu Logic
+        const menuBtn = document.querySelector('button .fa-bars').parentElement;
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const servicesBtn = document.getElementById('mobile-services-btn');
+        const servicesMenu = document.getElementById('mobile-services-menu');
+
+        if (menuBtn && mobileMenu && closeMenuBtn) { 
+            menuBtn.addEventListener('click', () => { mobileMenu.classList.remove('translate-x-full'); });
+
+            closeMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+            
+            // Close on link click (except services toggle) 
+            mobileMenu.querySelectorAll('a').forEach(link => { 
+                link.addEventListener('click', () => { mobileMenu.classList.add('translate-x-full'); }); 
+            });
+
+            // Services Accordion Logic
+            if (servicesBtn && servicesMenu) {
+                servicesBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent closing menu
+                    servicesMenu.classList.toggle('hidden');
+                    servicesMenu.classList.toggle('flex');
+                    const icon = servicesBtn.querySelector('i');
+                    if (icon) icon.classList.toggle('rotate-180');
+                });
+            }
+        }
+    </script>
+
+<!-- WhatsApp Button -->
+<a href="https://wa.me/971585281090" target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center group" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp text-3xl"></i>
+    <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap ml-0 group-hover:ml-3 font-bold">Chat with us</span>
+</a>
+
+</body>
+
+</html>

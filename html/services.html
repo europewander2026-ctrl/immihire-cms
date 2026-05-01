@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="assets/images/immihire-logo.webp">
+    <title>Our Services | ImmiHire</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Montserrat"', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#0d5fb7',
+                        darkBlue: '#002366',
+                        accent: '#090927',
+                        lightGray: '#f0f0f0',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(13, 95, 183, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Shared Styles */
+        body {
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header Styles (Consistent) */
+        .pill-header {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 90%;
+            max-width: 1200px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 24px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 20px 40px -4px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            z-index: 1000;
+        }
+
+        .pill-header.scrolled {
+            width: 98%;
+            top: 10px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-item {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            min-width: 240px;
+            padding: 8px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+        }
+
+        .nav-item:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: #334155;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f5f9;
+            color: #0d5fb7;
+        }
+
+        .magnetic-btn {
+            position: relative;
+            display: inline-flex;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* --- Services Page Specific Styles --- */
+
+        /* 1. Spotlight Cinema Styles */
+        .cinema-container {
+            position: relative;
+            height: 100vh;
+            background-color: #000814;
+            color: white;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .cinema-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            filter: brightness(0.4);
+            z-index: 0;
+        }
+
+        .cinema-bg.active {
+            opacity: 1;
+        }
+
+        /* The List */
+        .service-list-item {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            line-height: 1.1;
+        }
+
+        .service-list-item:hover {
+            color: white;
+            -webkit-text-stroke: 0px;
+            padding-left: 20px;
+        }
+
+        /* 2. Boarding Pass Card Styles */
+        .pass-stack-container {
+            position: relative;
+            padding-bottom: 100px;
+        }
+
+        .boarding-pass {
+            position: sticky;
+            top: 120px;
+            /* Offset from header */
+            margin-bottom: 40px;
+            /* Space between stacked cards */
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease;
+        }
+
+        @media(min-width: 768px) {
+            .boarding-pass {
+                flex-direction: row;
+                height: 400px;
+            }
+        }
+
+        .boarding-pass:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Ticket Rip Effect */
+        .pass-rip {
+            position: absolute;
+            right: 28%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            border-left: 2px dashed #cbd5e1;
+            display: none;
+        }
+
+        @media(min-width: 768px) {
+            .pass-rip {
+                display: block;
+            }
+        }
+
+        .pass-notch {
+            position: absolute;
+            right: 28%;
+            width: 30px;
+            height: 30px;
+            background-color: #f8f9fa;
+            /* Match body bg */
+            border-radius: 50%;
+            transform: translate(50%, 0);
+            z-index: 10;
+        }
+
+        .pass-notch-top {
+            top: -15px;
+        }
+
+        .pass-notch-bottom {
+            bottom: -15px;
+        }
+
+        /* 3. Pulse Calculator */
+        .gauge-container {
+            width: 200px;
+            height: 100px;
+            /* Half circle */
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .gauge-body {
+            width: 200px;
+            height: 200px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+        }
+
+        .gauge-fill {
+            width: 200px;
+            height: 200px;
+            background: #0d5fb7;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+            /* Start hidden/manipulated via rotate */
+            transform-origin: center center;
+            transform: rotate(0deg);
+            /* Control this */
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gauge-cover {
+            width: 160px;
+            height: 160px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(5px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    </style>
+    <meta name="description"
+        content="Explore our immigration services: Canada PR, Australia Skilled Migration, USA Visit Visas, Germany Opportunity Card, and Schengen Work Permits.">
+    <meta name="keywords"
+        content="Visa services Dubai, Canada PR process, Work permit Europe, USA tourist visa assistance">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Immigration Consulting",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "ImmiHire"
+  },
+  "areaServed": "Global"
+}
+</script>
+</head>
+
+<body class="text-gray-800">
+
+    <header id="header" class="fixed z-50 pill-header py-3 px-8 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2 group">
+            <img src="assets/images/immihire-logo.webp" alt="ImmiHire Logo" class="h-10 w-auto object-contain">
+            <span class="font-heading font-bold text-xl text-black tracking-tight">Immi<span
+                    class="text-primary">Hire</span></span>
+        </a>
+        <nav class="hidden lg:flex items-center gap-8 text-[0.8rem] font-bold text-gray-700 tracking-widest uppercase">
+            <a href="index.html" class="hover:text-primary transition-colors">Home</a>
+            <a href="about.html" class="hover:text-primary transition-colors">About</a>
+            <div class="nav-item group cursor-pointer">
+                <a href="services.html" class="hover:text-primary transition-colors flex items-center gap-1">
+                    Services <i class="fa-solid fa-chevron-down text-[0.6rem]"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="service-usa.html" class="dropdown-item">USA Visit Visa</a>
+                    <a href="service-schengen.html" class="dropdown-item">Schengen Work Permits</a>
+                    <a href="service-canada.html" class="dropdown-item">Canada Express Entry</a>
+                    <a href="service-germany.html" class="dropdown-item">Germany Opportunity Card</a>
+                    <a href="service-australia.html" class="dropdown-item">Australia SkillSelect</a>
+                </div>
+            </div>
+            <a href="blog.html" class="hover:text-primary transition-colors">Insights</a>
+        </nav>
+        <div class="hidden md:block">
+            <a href="contact.html"
+                class="magnetic-btn px-6 py-3 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all flex items-center gap-2 text-xs uppercase tracking-wider">
+                <span>Contact Us</span>
+                <i class="fa-solid fa-arrow-right text-[0.6rem]"></i>
+            </a>
+        </div>
+        <button class="lg:hidden text-2xl text-black"><i class="fa-solid fa-bars"></i></button>
+    </header>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white/95 backdrop-blur-2xl transform translate-x-full transition-transform duration-500 flex flex-col justify-center px-10">
+        <button id="close-menu-btn" class="absolute top-8 right-8 text-3xl text-darkBlue hover:text-primary transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <nav class="flex flex-col items-start gap-6 w-full max-w-md mx-auto">
+            <a href="index.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Home</a>
+            <a href="about.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">About</a>
+            
+            <!-- Services Accordion -->
+            <div class="w-full">
+                <button id="mobile-services-btn" class="flex justify-between items-center w-full text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors focus:outline-none">
+                    <span>Services</span>
+                    <i class="fa-solid fa-chevron-down text-xl transition-transform duration-300"></i>
+                </button>
+                <div id="mobile-services-menu" class="hidden flex-col gap-4 mt-4 pl-4 border-l-2 border-primary/20">
+                    <a href="service-usa.html" class="text-lg font-medium text-gray-600 hover:text-primary">USA Visit Visa</a>
+                    <a href="service-schengen.html" class="text-lg font-medium text-gray-600 hover:text-primary">Schengen Work Permits</a>
+                    <a href="service-canada.html" class="text-lg font-medium text-gray-600 hover:text-primary">Canada Express Entry</a>
+                    <a href="service-germany.html" class="text-lg font-medium text-gray-600 hover:text-primary">Germany Opportunity Card</a>
+                    <a href="service-australia.html" class="text-lg font-medium text-gray-600 hover:text-primary">Australia SkillSelect</a>
+                </div>
+            </div>
+            
+            <a href="blog.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Insights</a>
+            <a href="contact.html" class="text-3xl font-heading font-bold text-primary hover:text-darkBlue transition-colors mt-4">Contact Us</a>
+        </nav>
+    </div>
+
+
+    <!-- Section 1: Simple Hero -->
+    <section class="pt-48 pb-20 bg-white text-center">
+        <div class="container mx-auto px-6 reveal active">
+            <span class="text-primary font-bold tracking-widest text-sm uppercase mb-4 block">Our Expertise</span>
+            <h1 class="font-heading font-bold text-5xl md:text-7xl text-darkBlue mb-6">
+                Pathways to <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">The World</span>
+            </h1>
+            <p class="text-gray-500 text-lg max-w-2xl mx-auto">
+                Comprehensive immigration solutions tailored to your unique profile. Explore our specialized services
+                designed to make your global dreams a reality.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 2: Service Cards Grid -->
+    <section class="py-20 bg-gray-50 relative z-20">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a href="service-canada.html"
+                    class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 bg-red-100 w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform">
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                        <i class="fa-brands fa-canadian-maple-leaf"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-2xl text-darkBlue mb-3">Canada Express Entry</h3>
+                    <p class="text-gray-500 mb-6 text-sm leading-relaxed">The fastest pathway to Canadian Permanent
+                        Residence. Comprehensive CRS score analysis and profile optimization.</p>
+                    <span class="text-primary font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        Explore Program <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </a>
+                <a href="service-usa.html"
+                    class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 bg-blue-100 w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform">
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-flag-usa"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-2xl text-darkBlue mb-3">USA Visit Visas</h3>
+                    <p class="text-gray-500 mb-6 text-sm leading-relaxed">Expert guidance for B1/B2 tourist and business
+                        visas. Interview preparation and documentation support.</p>
+                    <span class="text-primary font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        Explore Program <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </a>
+                <a href="service-schengen.html"
+                    class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 bg-yellow-100 w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform">
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-yellow-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-earth-europe"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-2xl text-darkBlue mb-3">Schengen Work Permits</h3>
+                    <p class="text-gray-500 mb-6 text-sm leading-relaxed">Secure your right to work across 27 European
+                        countries. Poland, Lithuania, and Czech Republic pathways.</p>
+                    <span class="text-primary font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        Explore Program <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </a>
+                <a href="service-germany.html"
+                    class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 bg-gray-200 w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform">
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-gray-100 text-gray-700 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-gray-800 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-passport"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-2xl text-darkBlue mb-3">Germany Opportunity Card</h3>
+                    <p class="text-gray-500 mb-6 text-sm leading-relaxed">The new 'Chancenkarte' points-based system.
+                        Enter Germany to look for work without a prior job offer.</p>
+                    <span class="text-primary font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        Explore Program <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </a>
+                <a href="service-australia.html"
+                    class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 bg-green-100 w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform">
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-koala"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-2xl text-darkBlue mb-3">Australia SkillSelect</h3>
+                    <p class="text-gray-500 mb-6 text-sm leading-relaxed">Subclass 189 & 190 Visa assistance. Points
+                        calculation and Expression of Interest (EOI) filing.</p>
+                    <span class="text-primary font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        Explore Program <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </a>
+                <a href="contact.html"
+                    class="group bg-primary rounded-3xl p-8 shadow-lg hover:shadow-primary/50 hover:-translate-y-2 transition-all duration-300 border border-primary relative overflow-hidden flex flex-col justify-center items-center text-center">
+                    <div class="absolute top-0 right-0 bg-white/10 w-40 h-40 rounded-full -mr-10 -mt-10 animate-pulse">
+                    </div>
+                    <div
+                        class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mb-6 text-white">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-2xl text-white mb-3">Not Sure?</h3>
+                    <p class="text-blue-100 mb-6 text-sm leading-relaxed">Book a general consultation with our experts
+                        to find the right pathway for you.</p>
+                    <span
+                        class="bg-white text-primary px-6 py-2 rounded-full font-bold text-sm uppercase tracking-wider">
+                        Contact Us
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Spotlight Cinema (The Twist - Interactive) -->
+    <section class="cinema-container" id="cinema-section">
+        <!-- Dynamic Backgrounds -->
+        <div class="cinema-bg active" id="bg-default"
+            style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');">
+        </div>
+        <div class="cinema-bg" id="bg-skilled"
+            style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop');">
+        </div>
+        <div class="cinema-bg" id="bg-study"
+            style="background-image: url('https://plus.unsplash.com/premium_photo-1661909267383-58991abdca51?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        </div>
+        <div class="cinema-bg" id="bg-business"
+            style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop'); filter: hue-rotate(200deg) brightness(0.4);">
+        </div>
+        <div class="cinema-bg" id="bg-visit"
+            style="background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop');">
+        </div>
+
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent z-10"></div>
+
+        <div class="container mx-auto px-6 relative z-20 flex items-center">
+            <div class="w-full md:w-2/3 lg:w-1/2">
+                <p class="text-gray-400 uppercase tracking-widest text-sm mb-8">Select a Category</p>
+                <ul class="space-y-4">
+                    <li class="service-list-item" onmouseenter="changeCinema('bg-skilled')">Skilled Migration</li>
+                    <li class="service-list-item" onmouseenter="changeCinema('bg-study')">Study Abroad</li>
+                    <li class="service-list-item" onmouseenter="changeCinema('bg-business')">Business Investor</li>
+                    <li class="service-list-item" onmouseenter="changeCinema('bg-visit')">Visit & Tourist</li>
+                </ul>
+            </div>
+
+            <!-- Context Info (Changes with JS) -->
+            <div class="hidden lg:block w-1/3 text-right">
+                <div id="cinema-info" class="p-8 border-l border-white/20 backdrop-blur-sm bg-white/5 rounded-r-2xl">
+                    <h3 class="text-3xl font-bold mb-2 text-white">Explore</h3>
+                    <p class="text-gray-300">Hover over a category to see where we can take you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The Boarding Pass Stack (Sticky Cards) -->
+    <section class="py-32 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="font-heading font-bold text-4xl text-darkBlue mb-4">Your Ticket to the Future</h2>
+                <p class="text-gray-500">Detailed breakdown of our premium services.</p>
+            </div>
+
+            <div class="pass-stack-container max-w-5xl mx-auto">
+
+                <!-- Pass 1: Express Entry -->
+                <div class="boarding-pass reveal">
+                    <!-- Main Content -->
+                    <div class="flex-grow p-8 md:p-10 flex flex-col justify-between relative">
+                        <div>
+                            <div class="flex justify-between items-start mb-6">
+                                <span
+                                    class="bg-blue-100 text-primary px-3 py-1 rounded text-xs font-bold uppercase tracking-widest">Canada</span>
+                                <i
+                                    class="fa-brands fa-canadian-maple-leaf text-gray-200 text-6xl absolute top-6 right-10 rotate-12"></i>
+                            </div>
+                            <h3 class="font-heading font-bold text-3xl text-darkBlue mb-2">Express Entry</h3>
+                            <p class="text-gray-500 text-sm mb-6">Federal Skilled Worker Program</p>
+                            <p class="text-gray-600 leading-relaxed mb-6">
+                                The fastest pathway to Canadian PR for skilled professionals. We optimize your CRS score
+                                through strategic profile enhancement.
+                            </p>
+                        </div>
+                        <div class="flex gap-6 text-sm">
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase">Processing</p>
+                                <p class="font-bold text-darkBlue font-mono">6-8 Months</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase">Family</p>
+                                <p class="font-bold text-darkBlue font-mono">Included</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Stub / Right Side -->
+                    <div
+                        class="w-full md:w-1/3 bg-primary p-8 md:p-10 text-white flex flex-col justify-center items-center relative md:border-l-2 md:border-dashed md:border-white/30">
+                        <div class="pass-rip"></div>
+                        <div class="pass-notch pass-notch-top hidden md:block"></div>
+                        <div class="pass-notch pass-notch-bottom hidden md:block"></div>
+
+                        <div class="text-center">
+                            <i class="fa-solid fa-plane-up text-4xl mb-4"></i>
+                            <h4 class="font-bold text-xl mb-1">Boarding</h4>
+                            <p class="text-blue-200 text-sm mb-6">Priority Group 1</p>
+                            <a href="#"
+                                class="inline-block bg-white text-primary px-6 py-2 rounded-full font-bold text-sm hover:bg-blue-50 transition-colors">Apply
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pass 2: Opportunity Card -->
+                <div class="boarding-pass reveal">
+                    <div class="flex-grow p-8 md:p-10 flex flex-col justify-between relative">
+                        <div>
+                            <div class="flex justify-between items-start mb-6">
+                                <span
+                                    class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs font-bold uppercase tracking-widest">Germany</span>
+                                <i
+                                    class="fa-solid fa-briefcase text-gray-200 text-6xl absolute top-6 right-10 rotate-12"></i>
+                            </div>
+                            <h3 class="font-heading font-bold text-3xl text-darkBlue mb-2">Chancenkarte</h3>
+                            <p class="text-gray-500 text-sm mb-6">Opportunity Card</p>
+                            <p class="text-gray-600 leading-relaxed mb-6">
+                                A points-based system allowing skilled workers to enter Germany to look for work. No job
+                                offer required initially.
+                            </p>
+                        </div>
+                        <div class="flex gap-6 text-sm">
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase">Processing</p>
+                                <p class="font-bold text-darkBlue font-mono">3-4 Months</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase">Validity</p>
+                                <p class="font-bold text-darkBlue font-mono">1 Year</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="w-full md:w-1/3 bg-gray-900 p-8 md:p-10 text-white flex flex-col justify-center items-center relative md:border-l-2 md:border-dashed md:border-white/30">
+                        <div class="pass-rip"></div>
+                        <div class="pass-notch pass-notch-top hidden md:block"></div>
+                        <div class="pass-notch pass-notch-bottom hidden md:block"></div>
+
+                        <div class="text-center">
+                            <i class="fa-solid fa-passport text-4xl mb-4"></i>
+                            <h4 class="font-bold text-xl mb-1">Job Seeker</h4>
+                            <p class="text-gray-400 text-sm mb-6">New Pathway</p>
+                            <a href="#"
+                                class="inline-block bg-white text-gray-900 px-6 py-2 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors">Check
+                                Score</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pass 3: Student Visa -->
+                <div class="boarding-pass reveal">
+                    <div class="flex-grow p-8 md:p-10 flex flex-col justify-between relative">
+                        <div>
+                            <div class="flex justify-between items-start mb-6">
+                                <span
+                                    class="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-bold uppercase tracking-widest">Global</span>
+                                <i
+                                    class="fa-solid fa-graduation-cap text-gray-200 text-6xl absolute top-6 right-10 rotate-12"></i>
+                            </div>
+                            <h3 class="font-heading font-bold text-3xl text-darkBlue mb-2">Study Abroad</h3>
+                            <p class="text-gray-500 text-sm mb-6">UK, USA, Australia, Canada</p>
+                            <p class="text-gray-600 leading-relaxed mb-6">
+                                Complete guidance from university selection to SOP writing and visa filing. We partner
+                                with 500+ universities globally.
+                            </p>
+                        </div>
+                        <div class="flex gap-6 text-sm">
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase">Intakes</p>
+                                <p class="font-bold text-darkBlue font-mono">Jan / Sep</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400 text-xs uppercase">Scholarships</p>
+                                <p class="font-bold text-darkBlue font-mono">Available</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="w-full md:w-1/3 bg-green-600 p-8 md:p-10 text-white flex flex-col justify-center items-center relative md:border-l-2 md:border-dashed md:border-white/30">
+                        <div class="pass-rip"></div>
+                        <div class="pass-notch pass-notch-top hidden md:block"></div>
+                        <div class="pass-notch pass-notch-bottom hidden md:block"></div>
+
+                        <div class="text-center">
+                            <i class="fa-solid fa-book-open text-4xl mb-4"></i>
+                            <h4 class="font-bold text-xl mb-1">Student</h4>
+                            <p class="text-green-200 text-sm mb-6">Future Leader</p>
+                            <a href="#"
+                                class="inline-block bg-white text-green-700 px-6 py-2 rounded-full font-bold text-sm hover:bg-green-50 transition-colors">Learn
+                                More</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Eligibility Pulse (The Interactive Twist) -->
+    <section class="py-24 bg-white overflow-hidden relative">
+        <div class="absolute inset-0 bg-lightGray opacity-50"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row gap-16 items-center">
+
+                <div class="md:w-1/2 reveal">
+                    <h2 class="font-heading font-bold text-4xl text-darkBlue mb-6">What are your odds?</h2>
+                    <p class="text-gray-600 mb-8">
+                        Use our interactive eligibility pulse to see how experience impacts your immigration
+                        probability. <br><span class="text-xs text-gray-400 italic">*For demonstration purposes
+                            only.</span>
+                    </p>
+
+                    <div class="mb-8">
+                        <label class="block font-bold text-gray-700 mb-2">Years of Experience: <span id="exp-val"
+                                class="text-primary">3</span> Years</label>
+                        <input type="range" min="0" max="10" value="3"
+                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                            id="exp-slider">
+                        <div class="flex justify-between text-xs text-gray-400 mt-2">
+                            <span>Fresher</span>
+                            <span>Expert</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <label class="block font-bold text-gray-700 mb-2">Education Level</label>
+                        <div class="flex gap-2">
+                            <button
+                                class="px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-colors text-sm font-semibold bg-white">Bachelor's</button>
+                            <button
+                                class="px-4 py-2 rounded-lg border-2 border-primary text-primary transition-colors text-sm font-semibold bg-white">Master's</button>
+                            <button
+                                class="px-4 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-colors text-sm font-semibold bg-white">PhD</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:w-1/2 flex justify-center reveal delay-200">
+                    <div class="bg-white p-10 rounded-3xl shadow-2xl text-center w-80 relative">
+                        <div class="gauge-container">
+                            <div class="gauge-body"></div>
+                            <!-- Rotate this to fill -->
+                            <div class="gauge-fill" id="gauge-fill" style="transform: rotate(45deg);"></div>
+                            <div class="gauge-cover">
+                                <span class="text-4xl font-bold text-darkBlue block" id="score-text">65</span>
+                                <span class="text-xs text-gray-400 uppercase tracking-widest">Points</span>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-bold text-lg text-gray-800" id="status-text">Good Chance</h4>
+                            <p class="text-xs text-gray-400 mt-1">Based on simplified CRS grid</p>
+                        </div>
+
+                        <!-- Pulse Ring Animation -->
+                        <div
+                            class="absolute inset-0 border-4 border-blue-100 rounded-3xl animate-pulse pointer-events-none">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Comparison Matrix -->
+    <section class="py-24 bg-darkBlue text-white">
+        <div class="container mx-auto px-6">
+            <h2 class="font-heading font-bold text-3xl text-center mb-16">Visa Comparison Matrix</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-gray-400 border-b border-white/10 text-xs uppercase tracking-widest">
+                            <th class="p-4">Feature</th>
+                            <th class="p-4 text-white">Express Entry (CAN)</th>
+                            <th class="p-4">Subclass 189 (AUS)</th>
+                            <th class="p-4">Skilled Worker (UK)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                            <td class="p-4 font-bold text-blue-300">Job Offer</td>
+                            <td class="p-4">Not Required</td>
+                            <td class="p-4">Not Required</td>
+                            <td class="p-4 text-yellow-400">Mandatory</td>
+                        </tr>
+                        <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                            <td class="p-4 font-bold text-blue-300">Processing</td>
+                            <td class="p-4">6 Months</td>
+                            <td class="p-4">8-12 Months</td>
+                            <td class="p-4">3 Weeks</td>
+                        </tr>
+                        <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                            <td class="p-4 font-bold text-blue-300">IELTS Score</td>
+                            <td class="p-4">CLB 7+</td>
+                            <td class="p-4">Band 6+</td>
+                            <td class="p-4">UKVI 5.5+</td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="p-4 font-bold text-blue-300">PR Status</td>
+                            <td class="p-4 text-green-400">Direct</td>
+                            <td class="p-4 text-green-400">Direct</td>
+                            <td class="p-4">After 5 Years</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: FAQ -->
+    <section class="py-24 bg-white">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <h2 class="font-heading font-bold text-3xl text-center text-darkBlue mb-12">Common Questions</h2>
+
+            <div class="space-y-4">
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        What is the difference between a Work Permit and Permanent Residency?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        A <strong>Work Permit</strong> is a temporary authorization tied to a specific employer or time
+                        frame (e.g., Schengen Work Permit). <strong>Permanent Residency (PR)</strong>, like Canada
+                        Express Entry or Australia Subclass 189, grants you the right to live, work, and study anywhere
+                        in the country indefinitely, with access to healthcare and social benefits.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        How can I improve my Canada CRS score if it is too low?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        The most effective ways to boost your CRS score are: 1) Retaking IELTS to achieve CLB 9+ (8777),
+                        2) Learning French (TEF exam), 3) Obtaining a Provincial Nomination (PNP) which adds 600 points,
+                        or 4) Gaining more skilled work experience. ImmiHire provides dedicated strategies for each.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        Is German language proficiency mandatory for the Opportunity Card?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        While high-level German is not strictly required for the visa application itself (English A2 or
+                        German A1 is often sufficient for points), knowing German significantly improves your job
+                        prospects. For the <strong>Chancenkarte</strong>, you need 6 points total, and language skills
+                        are a key contributor to this score.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        What occupations are currently in demand for Australia?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        Australia's 2025 migration strategy prioritizes <strong>Healthcare</strong> (Nurses, GPs),
+                        <strong>Construction/Trades</strong> (Electricians, Carpenters), <strong>Teaching</strong>, and
+                        <strong>IT/Cybersecurity</strong>. If your occupation is on the Medium and Long-term Strategic
+                        Skills List (MLTSSL), you have a higher chance of invitation.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        How long is a US B1/B2 Visit Visa valid for?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        For many nationalities, the US B1/B2 visa is issued for **10 years** as a multiple-entry visa.
+                        However, the maximum duration of stay per visit is determined by the CBP officer at the port of
+                        entry, typically up to 6 months. ImmiHire assists with DS-160 filing and interview preparation.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        Which European countries offer the easiest work permits?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        Currently, <strong>Poland</strong>, <strong>Lithuania</strong>, and <strong>Czech
+                            Republic</strong> have more accessible work permit routes for non-EU citizens due to labor
+                        shortages in logistics, manufacturing, and construction. Processing times can be as fast as 3-4
+                        months.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        Do you provide job placement services upon arrival?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        We are an immigration legal advisory, not a recruitment agency. However, we provide extensive
+                        <strong>career readiness support</strong>. This includes revamping your resume to local
+                        standards (e.g., Europass format), optimizing your LinkedIn profile, and providing a database of
+                        verified recruiters in your destination country.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        Can I include my family in my application?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        Yes. For Permanent Residency programs (Canada, Australia), you can include your spouse and
+                        dependent children (usually under 22). Your spouse's education and language skills can even add
+                        valuable points to your total score.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        Do my documents need to be attested or apostilled?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        Almost always. For Canada, you need an <strong>ECA (Educational Credential Assessment)</strong>.
+                        For UAE or Europe, degree attestation/apostille is mandatory for visa stamping. ImmiHire handles
+                        the entire document clearing and attestation process as part of our full-service package.
+                    </div>
+                </div>
+                <div class="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        class="w-full text-left p-6 font-bold text-darkBlue flex justify-between items-center focus:outline-none hover:bg-gray-50 transition-colors"
+                        onclick="toggleFaq(this)">
+                        What happens if my visa application gets rejected?
+                        <i class="fa-solid fa-plus text-primary"></i>
+                    </button>
+                    <div class="hidden p-6 pt-0 text-gray-600 leading-relaxed bg-gray-50 text-sm">
+                        We operate on a strict <strong>Pre-Assessment Protocol</strong> to minimize this risk. We only
+                        take cases with a high probability of success. However, in the unlikely event of a rejection, we
+                        offer a re-filing service free of professional fees or a partial refund depending on the
+                        specific terms of your service agreement.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#000814] text-white pt-24 pb-12 rounded-t-[3rem] mt-[-3rem] relative z-20 overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-overlay filter blur-[100px] opacity-20 animate-pulse">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between gap-12 mb-20">
+                <div class="md:w-1/2">
+                    <h2 class="font-heading font-bold text-5xl md:text-7xl mb-6 leading-none tracking-tight">Ready to
+                        <br><span class="text-primary">Fly?</span></h2>
+                    <p class="text-gray-400 text-lg max-w-md mb-8">Your global future is just one click away. Book your
+                        consultation today and let's get started.</p>
+                    <a href="contact.html"
+                        class="magnetic-btn px-8 py-4 bg-white text-darkBlue font-bold rounded-full text-lg hover:bg-gray-200 transition-colors">Book
+                        Consultation</a>
+                </div>
+
+                <div class="grid grid-cols-2 gap-8 md:w-1/3">
+                    <div>
+                        <h4 class="font-bold text-lg mb-4 text-primary">Explore</h4>
+                        <ul class="space-y-3 text-gray-400">
+                            <li><a href="index.html" class="hover:text-white transition-colors">Home</a></li>
+                            <li><a href="about.html" class="hover:text-white transition-colors">About</a></li>
+                            <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
+                            <li><a href="blog.html" class="hover:text-white transition-colors">Insights</a></li>
+                            <li><a href="contact.html" class="hover:text-white transition-colors">Contact</a></li>
+                            <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy</a></li>
+                            <li><a href="terms.html" class="hover:text-white transition-colors">Terms</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-4 text-primary">Contact</h4>
+                        <ul class="space-y-3 text-gray-400">
+                            <li>Dubai, UAE</li>
+                            <li>+971 50 752 6626</li>
+                            <li>info@immihire.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2025 ImmiHire Consultants. All Rights Reserved.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="https://www.facebook.com/profile.php?id=61560909444669&sk=about"
+                        class="hover:text-white transition-colors" aria-label="Facebook"><i
+                            class="fa-brands fa-facebook"></i></a>
+                    <a href="https://ae.linkedin.com/company/immihire-management-consultancy"
+                        class="hover:text-white transition-colors" aria-label="LinkedIn"><i
+                            class="fa-brands fa-linkedin"></i></a>
+                    <a href="https://www.instagram.com/immihire/" class="hover:text-white transition-colors"
+                        aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Scripts -->
+    <script>
+        // 1. Header Scroll
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+        });
+
+        // 2. Magnetic Buttons
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            btn.addEventListener('mouseleave', () => btn.style.transform = 'translate(0px, 0px)');
+        });
+
+        // 3. Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) reveals[i].classList.add("active");
+            }
+        }
+        window.addEventListener("scroll", reveal); reveal();
+
+        // 4. Spotlight Cinema Logic
+        function changeCinema(bgId) {
+            // Hide all backgrounds
+            document.querySelectorAll('.cinema-bg').forEach(bg => bg.classList.remove('active'));
+            // Show target
+            const target = document.getElementById(bgId);
+            if (target) target.classList.add('active');
+
+            // Update Text Info (Optional dynamic content)
+            const info = document.getElementById('cinema-info');
+            if (bgId === 'bg-skilled') info.innerHTML = '<h3 class="text-3xl font-bold mb-2 text-white">Skilled Migration</h3><p class="text-gray-300">Canada Express Entry, Australia SkillSelect. High demand for IT, Engineering, and Healthcare.</p>';
+            if (bgId === 'bg-study') info.innerHTML = '<h3 class="text-3xl font-bold mb-2 text-white">Study Abroad</h3><p class="text-gray-300">Unlock global opportunities with degrees from top universities in UK and USA.</p>';
+            if (bgId === 'bg-business') info.innerHTML = '<h3 class="text-3xl font-bold mb-2 text-white">Business Investor</h3><p class="text-gray-300">Expand your empire. Golden Visas, Startup Visas, and Investment pathways.</p>';
+            if (bgId === 'bg-visit') info.innerHTML = '<h3 class="text-3xl font-bold mb-2 text-white">Visit & Tourist</h3><p class="text-gray-300">Explore the world with hassle-free tourist visa processing.</p>';
+        }
+
+        // 5. Interactive Calculator Logic
+        const slider = document.getElementById('exp-slider');
+        const scoreText = document.getElementById('score-text');
+        const gaugeFill = document.getElementById('gauge-fill');
+        const expVal = document.getElementById('exp-val');
+        const statusText = document.getElementById('status-text');
+
+        if (slider) {
+            slider.addEventListener('input', (e) => {
+                const val = e.target.value;
+                expVal.innerText = val;
+
+                // Simulated Score Logic
+                let score = 50 + (val * 4);
+                if (score > 100) score = 100;
+
+                // Update Text
+                scoreText.innerText = score;
+
+                // Update Gauge Rotation (0 to 180 degrees)
+                // 50 score = 0deg (empty), 100 score = 180deg (full)
+                // Map score 50-100 to 0-180
+                const degrees = ((score - 50) / 50) * 180;
+                gaugeFill.style.transform = `rotate(${degrees}deg)`;
+
+                // Update Color & Status
+                if (score < 70) {
+                    gaugeFill.style.background = '#f59e0b'; // Amber
+                    statusText.innerText = "Moderate Chance";
+                } else if (score < 85) {
+                    gaugeFill.style.background = '#3b82f6'; // Blue
+                    statusText.innerText = "Good Chance";
+                } else {
+                    gaugeFill.style.background = '#22c55e'; // Green
+                    statusText.innerText = "Excellent Chance";
+                }
+            });
+        }
+
+        // 6. FAQ Toggle
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.remove('fa-plus');
+                icon.classList.add('fa-minus');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('fa-minus');
+                icon.classList.add('fa-plus');
+            }
+        }
+    </script>
+
+    
+
+
+    <script>
+        // Mobile Menu Logic
+        const menuBtn = document.querySelector('button .fa-bars').parentElement;
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const servicesBtn = document.getElementById('mobile-services-btn');
+        const servicesMenu = document.getElementById('mobile-services-menu');
+
+        if (menuBtn && mobileMenu && closeMenuBtn) { 
+            menuBtn.addEventListener('click', () => { mobileMenu.classList.remove('translate-x-full'); });
+
+            closeMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+            
+            // Close on link click (except services toggle) 
+            mobileMenu.querySelectorAll('a').forEach(link => { 
+                link.addEventListener('click', () => { mobileMenu.classList.add('translate-x-full'); }); 
+            });
+
+            // Services Accordion Logic
+            if (servicesBtn && servicesMenu) {
+                servicesBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent closing menu
+                    servicesMenu.classList.toggle('hidden');
+                    servicesMenu.classList.toggle('flex');
+                    const icon = servicesBtn.querySelector('i');
+                    if (icon) icon.classList.toggle('rotate-180');
+                });
+            }
+        }
+    </script>
+
+<!-- WhatsApp Button -->
+<a href="https://wa.me/971585281090" target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center group" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp text-3xl"></i>
+    <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap ml-0 group-hover:ml-3 font-bold">Chat with us</span>
+</a>
+
+</body>
+
+</html>

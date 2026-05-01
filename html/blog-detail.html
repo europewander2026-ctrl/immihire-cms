@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="assets/images/immihire-logo.webp">
+    <title>The 2025 Talent Shift | ImmiHire Insights</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Montserrat"', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                        serif: ['"Merriweather"', 'serif'],
+                    },
+                    colors: {
+                        primary: '#0d5fb7',
+                        darkBlue: '#002366',
+                        accent: '#090927',
+                        lightGray: '#f0f0f0',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(13, 95, 183, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+                    },
+                    animation: {
+                        'stamp': 'stamp 0.5s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards',
+                    },
+                    keyframes: {
+                        stamp: {
+                            '0%': { opacity: 0, transform: 'scale(3) rotate(-10deg)' },
+                            '100%': { opacity: 1, transform: 'scale(1) rotate(-5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Shared Styles */
+        body {
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header Styles */
+        .pill-header {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 90%;
+            max-width: 1200px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 24px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 20px 40px -4px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            z-index: 1000;
+        }
+
+        .pill-header.scrolled {
+            width: 98%;
+            top: 10px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-item {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            min-width: 240px;
+            padding: 8px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+        }
+
+        .nav-item:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: #334155;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f5f9;
+            color: #0d5fb7;
+        }
+
+        .magnetic-btn {
+            position: relative;
+            display: inline-flex;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* --- Blog Detail Specific Styles --- */
+
+        /* 1. Article Typography */
+        .article-content p {
+            font-family: 'Merriweather', serif;
+            font-size: 1.125rem;
+            line-height: 1.9;
+            color: #334155;
+            margin-bottom: 2rem;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+
+        .article-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #002366;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .drop-cap::first-letter {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            float: left;
+            line-height: 0.8;
+            padding-right: 1rem;
+            font-weight: 800;
+            color: #0d5fb7;
+        }
+
+        /* 2. Focus Mode (The Twist) */
+        body.focus-active .article-content p {
+            opacity: 0.1;
+            filter: blur(2px);
+        }
+
+        body.focus-active .article-content p.in-view {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1.02);
+            /* Subtle pop */
+        }
+
+        body.focus-active nav,
+        body.focus-active footer,
+        body.focus-active .hero-section {
+            opacity: 0.2;
+            transition: opacity 0.5s;
+        }
+
+        /* 3. Sticky Sidebar */
+        .sticky-sidebar {
+            position: sticky;
+            top: 150px;
+        }
+
+        /* 4. Live Counter Inline */
+        .live-counter {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            background: rgba(13, 95, 183, 0.1);
+            color: #0d5fb7;
+            padding: 0 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            border-bottom: 2px solid #0d5fb7;
+        }
+
+        /* 5. The Verdict Stamp */
+        .verdict-stamp {
+            border: 4px solid #ef4444;
+            color: #ef4444;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 1rem 2rem;
+            display: inline-block;
+            font-size: 2rem;
+            transform: rotate(-5deg);
+            opacity: 0;
+            mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+            mask-size: 900px;
+            mix-blend-mode: multiply;
+        }
+
+        .verdict-stamp.stamped {
+            animation: stamp 0.4s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards;
+        }
+
+        /* 6. Author Card (Floating) */
+        .author-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(5px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- Header (Consistent) -->
+    <header id="header" class="fixed z-50 pill-header py-3 px-8 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2 group">
+            <img src="assets/images/immihire-logo.webp" alt="ImmiHire Logo" class="h-10 w-auto object-contain">
+            <span class="font-heading font-bold text-xl text-black tracking-tight">Immi<span
+                    class="text-primary">Hire</span></span>
+        </a>
+        <nav class="hidden lg:flex items-center gap-8 text-[0.8rem] font-bold text-gray-700 tracking-widest uppercase">
+            <a href="index.html" class="hover:text-primary transition-colors">Home</a>
+            <a href="about.html" class="hover:text-primary transition-colors">About</a>
+            <div class="nav-item group cursor-pointer">
+                <a href="services.html" class="hover:text-primary transition-colors flex items-center gap-1">Services <i
+                        class="fa-solid fa-chevron-down text-[0.6rem]"></i></a></span>
+                <div class="dropdown-menu">
+                    <a href="services-detail.html" class="dropdown-item">USA Visit Visa</a>
+                    <a href="services-detail.html" class="dropdown-item">Schengen Work Permits</a>
+                    <a href="services-detail.html" class="dropdown-item">Canada Express Entry</a>
+                    <a href="services-detail.html" class="dropdown-item">Germany Opportunity Card</a>
+                    <a href="services-detail.html" class="dropdown-item">Australia SkillSelect</a>
+                </div>
+            </div>
+            <a href="blog.html" class="text-primary transition-colors">Insights</a>
+        </nav>
+        <div class="hidden md:block">
+            <a href="contact.html"
+                class="magnetic-btn px-6 py-3 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all flex items-center gap-2 text-xs uppercase tracking-wider">
+                <span>Contact Us</span>
+                <i class="fa-solid fa-arrow-right text-[0.6rem]"></i>
+            </a>
+        </div>
+        <button class="lg:hidden text-2xl text-black"><i class="fa-solid fa-bars"></i></button>
+    </header>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white/95 backdrop-blur-2xl transform translate-x-full transition-transform duration-500 flex flex-col justify-center px-10">
+        <button id="close-menu-btn" class="absolute top-8 right-8 text-3xl text-darkBlue hover:text-primary transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <nav class="flex flex-col items-start gap-6 w-full max-w-md mx-auto">
+            <a href="index.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Home</a>
+            <a href="about.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">About</a>
+            
+            <!-- Services Accordion -->
+            <div class="w-full">
+                <button id="mobile-services-btn" class="flex justify-between items-center w-full text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors focus:outline-none">
+                    <span>Services</span>
+                    <i class="fa-solid fa-chevron-down text-xl transition-transform duration-300"></i>
+                </button>
+                <div id="mobile-services-menu" class="hidden flex-col gap-4 mt-4 pl-4 border-l-2 border-primary/20">
+                    <a href="service-usa.html" class="text-lg font-medium text-gray-600 hover:text-primary">USA Visit Visa</a>
+                    <a href="service-schengen.html" class="text-lg font-medium text-gray-600 hover:text-primary">Schengen Work Permits</a>
+                    <a href="service-canada.html" class="text-lg font-medium text-gray-600 hover:text-primary">Canada Express Entry</a>
+                    <a href="service-germany.html" class="text-lg font-medium text-gray-600 hover:text-primary">Germany Opportunity Card</a>
+                    <a href="service-australia.html" class="text-lg font-medium text-gray-600 hover:text-primary">Australia SkillSelect</a>
+                </div>
+            </div>
+            
+            <a href="blog.html" class="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Insights</a>
+            <a href="contact.html" class="text-3xl font-heading font-bold text-primary hover:text-darkBlue transition-colors mt-4">Contact Us</a>
+        </nav>
+    </div>
+
+
+    <!-- Hero Section -->
+    <section class="hero-section relative pt-48 pb-24 bg-[#000814] text-white overflow-hidden">
+        <!-- Background Overlay -->
+        <div class="absolute inset-0 opacity-40">
+            <img src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=2669&auto=format&fit=crop"
+                class="w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#000814] via-[#000814]/80 to-transparent"></div>
+
+        <div class="container mx-auto px-6 relative z-10 max-w-4xl text-center">
+            <div class="flex items-center justify-center gap-4 mb-6 reveal active">
+                <span
+                    class="bg-primary/20 text-blue-300 border border-primary/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Policy
+                    Analysis</span>
+                <span class="text-gray-400 text-xs font-mono">Oct 24, 2025</span>
+                <span class="text-gray-400 text-xs font-mono">&bull; 8 Min Read</span>
+            </div>
+            <h1 class="font-heading font-bold text-4xl md:text-6xl leading-tight mb-8 reveal active delay-100">
+                The 2025 Global Talent Strategy: <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">Game Over for
+                    Traditional Points?</span>
+            </h1>
+            <div class="flex items-center justify-center gap-4 reveal active delay-200">
+                <div class="w-12 h-12 rounded-full border-2 border-white/20 p-0.5">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2576&auto=format&fit=crop"
+                        class="w-full h-full rounded-full object-cover">
+                </div>
+                <div class="text-left">
+                    <p class="text-sm font-bold text-white">Immihire Team</p>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Editor in Chief</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Layout -->
+    <section class="py-20 relative">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-16">
+
+                <!-- Left: Sticky Sidebar & Tools -->
+                <div class="lg:w-1/4 hidden lg:block">
+                    <div class="sticky-sidebar space-y-8">
+                        <!-- Reading Tools Card -->
+                        <div class="author-card">
+                            <h4 class="font-heading font-bold text-sm text-gray-400 uppercase tracking-widest mb-4">
+                                Reading Tools</h4>
+
+                            <!-- Focus Mode Toggle -->
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-sm font-bold text-darkBlue"><i class="fa-solid fa-eye mr-2"></i> Focus
+                                    Mode</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="focus-toggle" class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-gray-200 rounded-full h-1.5 mb-2">
+                                <div class="bg-primary h-1.5 rounded-full" id="read-progress" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 text-right" id="read-percent">0% Read</p>
+                        </div>
+
+                        <!-- Share -->
+                        <div class="flex gap-4 justify-center">
+                            <button
+                                class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-600 hover:text-white hover:border-transparent transition-all"><i
+                                    class="fa-brands fa-twitter"></i></button>
+                            <button
+                                class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-800 hover:text-white hover:border-transparent transition-all"><i
+                                    class="fa-brands fa-linkedin-in"></i></button>
+                            <button
+                                class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-transparent transition-all"><i
+                                    class="fa-brands fa-whatsapp"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center: Article Body -->
+                <div class="lg:w-2/3 article-content">
+                    <p class="drop-cap">
+                        The era of generic immigration applications is officially drawing to a close. For over a decade,
+                        systems like Express Entry and SkillSelect have dominated the landscape, rewarding candidates
+                        based purely on a calculated matrix of age, education, and language proficiency. However, 2025
+                        marks a pivotal shift toward what experts are calling "Targeted Recruitment."
+                    </p>
+
+                    <p>
+                        In a stunning announcement last week, Immigration Refugees and Citizenship Canada (IRCC)
+                        revealed that <span class="live-counter" data-target="65">0</span>% of all invitations issued
+                        this year will be category-based. This isn't just a tweak; it's a complete overhaul of the
+                        selection philosophy.
+                    </p>
+
+                    <h2>The Death of the General Draw?</h2>
+                    <p>
+                        While general draws aren't disappearing entirely, their frequency has plummeted. Candidates
+                        sitting in the pool with a score of 480 used to be safe. Today, that score is effectively
+                        invisible without a targeted attribute. The market has shifted from "How high is your score?" to
+                        "What can you do?".
+                    </p>
+
+                    <div
+                        class="my-12 p-8 bg-blue-50 border-l-4 border-primary rounded-r-xl italic text-darkBlue font-serif text-lg">
+                        "Governments are no longer looking for 'good' immigrants. They are looking for 'specific'
+                        solutions to labor shortages. If you are a Nurse or a Carpenter, your CRS score matters less
+                        than your license."
+                    </div>
+
+                    <h2>The Rise of Trade-Based Selection</h2>
+                    <p>
+                        Australia has followed suit. The latest round saw a massive intake of <span class="live-counter"
+                            data-target="15000">0</span> trade workers, prioritizing skills that build infrastructure
+                        over general corporate experience. This aligns with the global push for housing and healthcare
+                        development.
+                    </p>
+
+                    <p>
+                        For applicants, this means strategy is now more important than ever. Improving your IELTS score
+                        by 0.5 bands might not be as effective as learning basic French or obtaining a provincial
+                        certification in a trade. The return on investment for "strategic skills" is at an all-time
+                        high.
+                    </p>
+
+                    <!-- The Verdict Section -->
+                    <div class="mt-20 pt-10 border-t border-gray-200 text-center" id="verdict-section">
+                        <p class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">ImmiHire Official
+                            Analysis</p>
+                        <div class="verdict-stamp" id="verdict-stamp">
+                            HIGH PRIORITY <br> CHANGE STRATEGY
+                        </div>
+                        <p class="mt-6 text-gray-600 max-w-lg mx-auto">
+                            We strongly advise all candidates in the pool to review their NOC codes and consider
+                            targeted provincial nominations immediately.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Articles -->
+    <section class="py-24 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h3 class="font-heading font-bold text-2xl text-darkBlue mb-10">Continue Reading</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold text-primary uppercase">Real Estate</span>
+                        <h4 class="font-heading font-bold text-lg mt-2 mb-4 line-clamp-2">
+                            <a href="blog-housing-toronto.html" class="hover:text-primary transition-colors">Buying Your First Home in Toronto</a>
+                        </h4>
+                        <a href="blog-housing-toronto.html" class="text-sm text-gray-500 hover:text-darkBlue flex items-center gap-2">Read Article <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2669&auto=format&fit=crop" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold text-primary uppercase">Career</span>
+                        <h4 class="font-heading font-bold text-lg mt-2 mb-4 line-clamp-2">
+                            <a href="blog-jobs-australia.html" class="hover:text-primary transition-colors">Ace Your Job Interview in Australia</a>
+                        </h4>
+                        <a href="blog-jobs-australia.html" class="text-sm text-gray-500 hover:text-darkBlue flex items-center gap-2">Read Article <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://plus.unsplash.com/premium_photo-1661909267383-58991abdca51?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold text-primary uppercase">Education</span>
+                        <h4 class="font-heading font-bold text-lg mt-2 mb-4 line-clamp-2">
+                            <a href="blog-study-europe.html" class="hover:text-primary transition-colors">Top 10 Affordable Universities in Europe</a>
+                        </h4>
+                        <a href="blog-study-europe.html" class="text-sm text-gray-500 hover:text-darkBlue flex items-center gap-2">Read Article <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#000814] text-white pt-24 pb-12 rounded-t-[3rem] mt-[-3rem] relative z-20 overflow-hidden">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-overlay filter blur-[100px] opacity-20 animate-pulse"></div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex flex-col md:flex-row justify-between gap-12 mb-20">
+            <div class="md:w-1/2">
+                <h2 class="font-heading font-bold text-5xl md:text-7xl mb-6 leading-none tracking-tight">Ready to <br><span class="text-primary">Fly?</span></h2>
+                <p class="text-gray-400 text-lg max-w-md mb-8">Your global future is just one click away. Book your consultation today and let's get started.</p>
+                <a href="contact.html" class="magnetic-btn px-8 py-4 bg-white text-darkBlue font-bold rounded-full text-lg hover:bg-gray-200 transition-colors">Book Consultation</a>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-8 md:w-1/3">
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-primary">Explore</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="index.html" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="about.html" class="hover:text-white transition-colors">About</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Services</a></li>
+                        <li><a href="blog.html" class="hover:text-white transition-colors">Insights</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy</a></li><li><a href="terms.html" class="hover:text-white transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-primary">Contact</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li>Dubai, UAE</li>
+                        <li>+971 50 752 6626</li>
+                        <li>info@immihire.com</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2025 ImmiHire Consultants. All Rights Reserved.</p>
+            <div class="flex gap-6 mt-4 md:mt-0">
+                <a href="https://www.facebook.com/profile.php?id=61560909444669&sk=about" class="hover:text-white transition-colors" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://ae.linkedin.com/company/immihire-management-consultancy" class="hover:text-white transition-colors" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="https://www.instagram.com/immihire/" class="hover:text-white transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+    <!-- Scripts -->
+    <script>
+        // 1. Header Scroll
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+        });
+
+        // 2. Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) reveals[i].classList.add("active");
+            }
+        }
+        window.addEventListener("scroll", reveal); reveal();
+
+        // 3. Focus Mode Logic
+        const focusToggle = document.getElementById('focus-toggle');
+        const paragraphs = document.querySelectorAll('.article-content p');
+
+        focusToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                document.body.classList.add('focus-active');
+            } else {
+                document.body.classList.remove('focus-active');
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            if (!focusToggle.checked) return;
+
+            // Highlight paragraph in viewport
+            const triggerLine = window.innerHeight / 2;
+
+            paragraphs.forEach(p => {
+                const rect = p.getBoundingClientRect();
+                if (rect.top < triggerLine && rect.bottom > triggerLine) {
+                    p.classList.add('in-view');
+                } else {
+                    p.classList.remove('in-view');
+                }
+            });
+        });
+
+        // 4. Reading Progress
+        const readProgress = document.getElementById('read-progress');
+        const readPercent = document.getElementById('read-percent');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+
+            readProgress.style.width = `${scrollPercent}%`;
+            readPercent.innerText = `${Math.round(scrollPercent)}% Read`;
+        });
+
+        // 5. Live Counters in Text
+        const counters = document.querySelectorAll('.live-counter');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                    const target = +entry.target.getAttribute('data-target');
+                    let count = 0;
+                    const increment = target / 50;
+
+                    const timer = setInterval(() => {
+                        count += increment;
+                        if (count >= target) {
+                            entry.target.innerText = target.toLocaleString();
+                            clearInterval(timer);
+                        } else {
+                            entry.target.innerText = Math.ceil(count).toLocaleString();
+                        }
+                    }, 20);
+                    entry.target.classList.add('counted');
+                }
+            });
+        });
+        counters.forEach(c => counterObserver.observe(c));
+
+        // 6. Verdict Stamp Logic
+        const verdictSection = document.getElementById('verdict-section');
+        const verdictStamp = document.getElementById('verdict-stamp');
+
+        const verdictObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    verdictStamp.classList.add('stamped');
+                }
+            });
+        }, { threshold: 0.8 });
+
+        if (verdictSection) verdictObserver.observe(verdictSection);
+
+    </script>
+
+    
+
+
+    <script>
+        // Mobile Menu Logic
+        const menuBtn = document.querySelector('button .fa-bars').parentElement;
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const servicesBtn = document.getElementById('mobile-services-btn');
+        const servicesMenu = document.getElementById('mobile-services-menu');
+
+        if (menuBtn && mobileMenu && closeMenuBtn) { 
+            menuBtn.addEventListener('click', () => { mobileMenu.classList.remove('translate-x-full'); });
+
+            closeMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+            });
+            
+            // Close on link click (except services toggle) 
+            mobileMenu.querySelectorAll('a').forEach(link => { 
+                link.addEventListener('click', () => { mobileMenu.classList.add('translate-x-full'); }); 
+            });
+
+            // Services Accordion Logic
+            if (servicesBtn && servicesMenu) {
+                servicesBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent closing menu
+                    servicesMenu.classList.toggle('hidden');
+                    servicesMenu.classList.toggle('flex');
+                    const icon = servicesBtn.querySelector('i');
+                    if (icon) icon.classList.toggle('rotate-180');
+                });
+            }
+        }
+    </script>
+
+<!-- WhatsApp Button -->
+<a href="https://wa.me/971585281090" target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center group" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp text-3xl"></i>
+    <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap ml-0 group-hover:ml-3 font-bold">Chat with us</span>
+</a>
+
+</body>
+
+</html>
