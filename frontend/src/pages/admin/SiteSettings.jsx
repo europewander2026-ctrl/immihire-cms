@@ -9,7 +9,9 @@ const SiteSettings = () => {
     contactPhone: '',
     copyrightText: '',
     headerNav: '[]',
-    footerNav: '[]'
+    footerNav: '[]',
+    whatsappNumber: '',
+    floatingSocialIcons: '[]'
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -36,7 +38,9 @@ const SiteSettings = () => {
             contactPhone: globalRes.data.contactPhone || '',
             copyrightText: globalRes.data.copyrightText || '',
             headerNav: typeof globalRes.data.headerNav === 'string' ? globalRes.data.headerNav : JSON.stringify(globalRes.data.headerNav, null, 2),
-            footerNav: typeof globalRes.data.footerNav === 'string' ? globalRes.data.footerNav : JSON.stringify(globalRes.data.footerNav, null, 2)
+            footerNav: typeof globalRes.data.footerNav === 'string' ? globalRes.data.footerNav : JSON.stringify(globalRes.data.footerNav, null, 2),
+            whatsappNumber: globalRes.data.whatsappNumber || '',
+            floatingSocialIcons: typeof globalRes.data.floatingSocialIcons === 'string' ? globalRes.data.floatingSocialIcons : JSON.stringify(globalRes.data.floatingSocialIcons || [], null, 2)
           });
         }
         if (siteRes.data) {
@@ -105,17 +109,20 @@ const SiteSettings = () => {
       // Parse JSON before sending
       let headerNavParsed = [];
       let footerNavParsed = [];
+      let floatingSocialIconsParsed = [];
       try {
         headerNavParsed = JSON.parse(settings.headerNav || '[]');
         footerNavParsed = JSON.parse(settings.footerNav || '[]');
+        floatingSocialIconsParsed = JSON.parse(settings.floatingSocialIcons || '[]');
       } catch (e) {
-        throw new Error('Invalid JSON format in navigation settings.');
+        throw new Error('Invalid JSON format in settings.');
       }
 
       await api.put('/api/settings/global', {
         ...settings,
         headerNav: headerNavParsed,
-        footerNav: footerNavParsed
+        footerNav: footerNavParsed,
+        floatingSocialIcons: floatingSocialIconsParsed
       });
       setMessage('Settings saved successfully!');
       setTimeout(() => setMessage(''), 3000);
@@ -205,6 +212,22 @@ const SiteSettings = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Copyright Text</label>
                 <input type="text" name="copyrightText" value={settings.copyrightText} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              </div>
+            </div>
+          </div>
+
+          {/* Social Widgets */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-4">Social Widgets</h2>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
+                <input type="text" name="whatsappNumber" placeholder="e.g. 1234567890" value={settings.whatsappNumber} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Floating Social Icons (JSON Array)</label>
+                <p className="text-xs text-gray-500 mb-2">{'Example: [{"icon": "fa-brands fa-facebook", "url": "https://facebook.com", "color": "bg-blue-600"}]'}</p>
+                <textarea name="floatingSocialIcons" rows="4" value={settings.floatingSocialIcons} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm font-mono text-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
               </div>
             </div>
           </div>

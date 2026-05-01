@@ -10,6 +10,7 @@ import BlogList from './pages/BlogList';
 import BlogDetail from './components/BlogDetail';
 import PillHeader from './components/PillHeader';
 import Footer from './components/Footer';
+import FloatingWidget from './components/public/FloatingWidget';
 
 
 
@@ -57,6 +58,7 @@ function App() {
 
   return (
     <BrowserRouter basename="/immihire-cms">
+      <FloatingWidget />
       <Routes>
         {/* Public Routes with Header & Footer */}
         <Route element={<PublicLayout logoUrl={siteSettings?.logoUrl} />}>
