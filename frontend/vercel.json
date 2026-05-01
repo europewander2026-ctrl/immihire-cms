@@ -9,7 +9,7 @@
       "destination": "/immi-admin/index.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/immihire-cms/(.*)",
       "destination": "/index.html"
     }
   ]
