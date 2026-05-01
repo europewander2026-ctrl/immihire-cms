@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: 'https://demo.hmhlabz.com',
+  origin: ['https://demo.hmhlabz.com', 'https://immihire-cms-frontend.vercel.app'],
   credentials: true,
   optionsSuccessStatus: 200
 };
