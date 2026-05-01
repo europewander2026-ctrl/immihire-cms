@@ -53,7 +53,7 @@ const MinimalAuthLayout = ({ children }) => {
 
 const AdminApp = () => {
   return (
-    <BrowserRouter basename="/immi-admin">
+    <BrowserRouter basename="/immihire-cms/immi-admin">
       <Routes>
         <Route path="/login" element={<MinimalAuthLayout><Login /></MinimalAuthLayout>} />
         <Route path="/forgot-password" element={<MinimalAuthLayout><ForgotPassword /></MinimalAuthLayout>} />

@@ -56,7 +56,7 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/immihire-cms">
       <Routes>
         {/* Public Routes with Header & Footer */}
         <Route element={<PublicLayout logoUrl={siteSettings?.logoUrl} />}>

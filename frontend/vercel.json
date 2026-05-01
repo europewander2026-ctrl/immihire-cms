@@ -1,16 +1,7 @@
 {
   "rewrites": [
-    {
-      "source": "/immi-admin/(.*)",
-      "destination": "/immi-admin/index.html"
-    },
-    {
-      "source": "/immi-admin",
-      "destination": "/immi-admin/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/immihire-cms/immi-admin/(.*)", "destination": "/immi-admin/index.html" },
+    { "source": "/immihire-cms/immi-admin", "destination": "/immi-admin/index.html" },
+    { "source": "/immihire-cms/(.*)", "destination": "/index.html" }
   ]
 }
