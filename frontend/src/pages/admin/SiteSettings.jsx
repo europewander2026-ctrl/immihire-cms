@@ -15,20 +15,33 @@ const SiteSettings = () => {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
+  const [logoUrl, setLogoUrl] = useState('');
+  const [faviconUrl, setFaviconUrl] = useState('');
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingFavicon, setUploadingFavicon] = useState(false);
+
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await api.get('/api/settings/global');
-        if (res.data) {
+        const [globalRes, siteRes] = await Promise.all([
+          api.get('/api/settings/global'),
+          api.get('/api/settings')
+        ]);
+        
+        if (globalRes.data) {
           setSettings({
-            siteName: res.data.siteName || '',
-            contactAddress: res.data.contactAddress || '',
-            contactEmail: res.data.contactEmail || '',
-            contactPhone: res.data.contactPhone || '',
-            copyrightText: res.data.copyrightText || '',
-            headerNav: typeof res.data.headerNav === 'string' ? res.data.headerNav : JSON.stringify(res.data.headerNav, null, 2),
-            footerNav: typeof res.data.footerNav === 'string' ? res.data.footerNav : JSON.stringify(res.data.footerNav, null, 2)
+            siteName: globalRes.data.siteName || '',
+            contactAddress: globalRes.data.contactAddress || '',
+            contactEmail: globalRes.data.contactEmail || '',
+            contactPhone: globalRes.data.contactPhone || '',
+            copyrightText: globalRes.data.copyrightText || '',
+            headerNav: typeof globalRes.data.headerNav === 'string' ? globalRes.data.headerNav : JSON.stringify(globalRes.data.headerNav, null, 2),
+            footerNav: typeof globalRes.data.footerNav === 'string' ? globalRes.data.footerNav : JSON.stringify(globalRes.data.footerNav, null, 2)
           });
+        }
+        if (siteRes.data) {
+          setLogoUrl(siteRes.data.logoUrl || '');
+          setFaviconUrl(siteRes.data.faviconUrl || '');
         }
       } catch (err) {
         console.error('Failed to load settings:', err);
@@ -42,6 +55,46 @@ const SiteSettings = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSettings(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = async (e, type) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const isLogo = type === 'logo';
+    isLogo ? setUploadingLogo(true) : setUploadingFavicon(true);
+    setMessage('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'logos');
+
+      const uploadRes = await api.post('/api/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const url = uploadRes.data.url;
+      
+      if (isLogo) {
+        setLogoUrl(url);
+      } else {
+        setFaviconUrl(url);
+      }
+
+      await api.post('/api/settings', {
+        logoUrl: isLogo ? url : logoUrl,
+        faviconUrl: isLogo ? faviconUrl : url
+      });
+
+      setMessage(`${isLogo ? 'Logo' : 'Favicon'} updated successfully!`);
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      console.error(err);
+      setMessage('Failed to upload image.');
+    } finally {
+      isLogo ? setUploadingLogo(false) : setUploadingFavicon(false);
+    }
   };
 
   const handleSave = async (e) => {
@@ -88,19 +141,27 @@ const SiteSettings = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Company Logo</label>
-              <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer">
-                <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
-                <span className="text-sm text-gray-500">Click to upload image</span>
-                <input type="file" className="hidden" accept="image/*" />
-              </div>
+              <label className="border-2 border-dashed border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer relative overflow-hidden">
+                {logoUrl ? (
+                  <img src={logoUrl} alt="Logo" className="h-16 object-contain mb-2" />
+                ) : (
+                  <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
+                )}
+                <span className="text-sm text-gray-500">{uploadingLogo ? 'Uploading...' : (logoUrl ? 'Click to change logo' : 'Click to upload image')}</span>
+                <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'logo')} disabled={uploadingLogo} />
+              </label>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Favicon</label>
-              <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer">
-                <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
-                <span className="text-sm text-gray-500">Click to upload icon</span>
-                <input type="file" className="hidden" accept="image/x-icon,image/png,image/svg+xml" />
-              </div>
+              <label className="border-2 border-dashed border-gray-200 rounded-lg p-6 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer relative overflow-hidden">
+                {faviconUrl ? (
+                  <img src={faviconUrl} alt="Favicon" className="h-12 w-12 object-contain mb-2" />
+                ) : (
+                  <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
+                )}
+                <span className="text-sm text-gray-500">{uploadingFavicon ? 'Uploading...' : (faviconUrl ? 'Click to change favicon' : 'Click to upload icon')}</span>
+                <input type="file" className="hidden" accept="image/x-icon,image/png,image/svg+xml" onChange={(e) => handleImageUpload(e, 'favicon')} disabled={uploadingFavicon} />
+              </label>
             </div>
           </div>
         </div>
