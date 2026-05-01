@@ -14,7 +14,11 @@ module.exports = function(app, prisma, requireAuth) {
       }
 
       // Allow frontend to specify a folder, default to "general"
-      const folder = req.body.folder ? req.body.folder.replace(/^\/|\/$/g, '') : 'general';
+      let folder = req.body.folder ? req.body.folder.replace(/^\/|\/$/g, '') : 'general';
+      const allowedFolders = ['logos', 'profiles', 'services', 'general'];
+      if (!allowedFolders.includes(folder)) {
+        folder = 'general';
+      }
       const filename = `${folder}/${Date.now()}-${req.file.originalname}`;
       
       const blob = await put(filename, req.file.buffer, {

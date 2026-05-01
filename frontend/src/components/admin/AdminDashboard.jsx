@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import defaultLogo from '../../assets/images/immihire-logo.webp';
+import api from '../../utils/api';
 
 const AdminDashboard = () => {
   const location = useLocation();
+  const [profile, setProfile] = useState(null);
+
+  const fetchProfile = async () => {
+    try {
+      const res = await api.get('/api/profile');
+      setProfile(res.data);
+    } catch (error) {
+      console.error('Failed to load profile for header', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+    window.addEventListener('profileUpdated', fetchProfile);
+    return () => window.removeEventListener('profileUpdated', fetchProfile);
+  }, []);
 
   const handleLogout = async () => {
-    // In a real app, you might ping an /api/logout endpoint first to clear HTTP-only cookies
-    // For now, we clear any potential JS cookies and force a hard redirect
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     window.location.href = '/immihire-cms/immi-admin/login';
   };
@@ -27,6 +42,8 @@ const AdminDashboard = () => {
         return 'Global Settings';
       case '/users':
         return 'User Management';
+      case '/profile':
+        return 'My Profile';
       default:
         return 'Dashboard';
     }
@@ -115,6 +132,18 @@ const AdminDashboard = () => {
             <i className="fa-solid fa-users-gear w-5 text-center"></i>
             User Management
           </NavLink>
+          
+          <NavLink 
+            to="/profile" 
+            className={({ isActive }) => 
+              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`
+            }
+          >
+            <i className="fa-solid fa-id-badge w-5 text-center"></i>
+            My Profile
+          </NavLink>
         </div>
 
         <div className="p-4 border-t border-gray-100">
@@ -134,9 +163,13 @@ const AdminDashboard = () => {
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
           <h2 className="text-xl font-bold text-gray-800">{getPageTitle()}</h2>
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-600">Admin User</span>
-            <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold shadow-inner">
-              A
+            <span className="text-sm font-medium text-gray-600">{profile?.name || 'Admin'}</span>
+            <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm shadow-inner overflow-hidden border border-gray-200">
+              {profile?.profileImage ? (
+                <img src={profile.profileImage} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                profile?.name ? profile.name.charAt(0).toUpperCase() : 'A'
+              )}
             </div>
           </div>
         </header>

@@ -8,6 +8,7 @@ import UserManagement from './pages/admin/UserManagement';
 import PagesManager from './pages/admin/PagesManager';
 import ServicesManager from './pages/admin/ServicesManager';
 import InsightsManager from './pages/admin/InsightsManager';
+import Profile from './pages/admin/Profile';
 import Login from './pages/admin/Login';
 import api from './utils/api';
 import './index.css';
@@ -69,6 +70,7 @@ const AdminApp = () => {
           <Route path="insights" element={<InsightsManager />} />
           <Route path="settings" element={<SiteSettings />} />
           <Route path="users" element={<UserManagement />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>

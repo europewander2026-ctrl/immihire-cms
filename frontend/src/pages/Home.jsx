@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MagneticButton from '../components/MagneticButton';
 import RevealWrapper from '../components/RevealWrapper';
+import SEOHead from '../components/public/SEOHead';
 import api from '../utils/api';
 
 const Home = () => {
+  const [pageData, setPageData] = useState(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -21,6 +23,16 @@ const Home = () => {
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   useEffect(() => {
+    const fetchPageData = async () => {
+      try {
+        const res = await api.get('/api/pages/home');
+        if (res.data) setPageData(res.data);
+      } catch (err) {
+        console.error('Failed to load home page data');
+      }
+    };
+    fetchPageData();
+
     // 4. Zig-Zag Flight Path Logic
     const processSection = document.getElementById('process-journey');
     const track = document.getElementById('process-track');
@@ -109,6 +121,13 @@ const Home = () => {
 
   return (
     <div className="text-gray-800">
+      {pageData && (
+        <SEOHead 
+          title={pageData.seoTitle || 'ImmiHire Immigration Consultants'}
+          description={pageData.seoDescription}
+          keywords={pageData.seoKeywords}
+        />
+      )}
       {/* Hero Section */}
       <section className="relative min-h-[120vh] flex flex-col items-center pt-48 pb-20 bg-[#000814] text-white overflow-hidden">
         <div className="absolute inset-0 z-0">

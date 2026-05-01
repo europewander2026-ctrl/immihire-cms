@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import api from './utils/api';
 
 import Home from './pages/Home';
@@ -57,22 +58,24 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter basename="/immihire-cms">
-      <FloatingWidget />
-      <Routes>
-        {/* Public Routes with Header & Footer */}
-        <Route element={<PublicLayout logoUrl={siteSettings?.logoUrl} />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/insights" element={<BlogList />} />
-          <Route path="/insights/:slug" element={<BlogDetailWrapper />} />
-        </Route>
+    <HelmetProvider>
+      <BrowserRouter basename="/immihire-cms">
+        <FloatingWidget />
+        <Routes>
+          {/* Public Routes with Header & Footer */}
+          <Route element={<PublicLayout logoUrl={siteSettings?.logoUrl} />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/insights" element={<BlogList />} />
+            <Route path="/insights/:slug" element={<BlogDetailWrapper />} />
+          </Route>
 
-        {/* Fallback 404 */}
-        <Route path="*" element={<div className="p-10 text-center text-xl">404 - Page Not Found</div>} />
-      </Routes>
-    </BrowserRouter>
+          {/* Fallback 404 */}
+          <Route path="*" element={<div className="p-10 text-center text-xl">404 - Page Not Found</div>} />
+        </Routes>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
