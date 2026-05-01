@@ -1,15 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/immihire-cms/immi-admin/(.*)",
+      "source": "/immi-admin/(.*)",
       "destination": "/immi-admin/index.html"
     },
     {
-      "source": "/immihire-cms/immi-admin",
+      "source": "/immi-admin",
       "destination": "/immi-admin/index.html"
     },
     {
-      "source": "/immihire-cms/(.*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

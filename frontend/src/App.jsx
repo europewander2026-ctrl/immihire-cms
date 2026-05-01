@@ -56,8 +56,7 @@ function App() {
   }, []);
 
   return (
-    /* FIX #1: Add the basename so React Router understands the cPanel subfolder */
-    <BrowserRouter basename="/immihire-cms">
+    <BrowserRouter>
       <Routes>
         {/* Public Routes with Header & Footer */}
         <Route element={<PublicLayout logoUrl={siteSettings?.logoUrl} />}>

@@ -9,7 +9,7 @@ const AdminDashboard = () => {
     // In a real app, you might ping an /api/logout endpoint first to clear HTTP-only cookies
     // For now, we clear any potential JS cookies and force a hard redirect
     document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.href = '/immihire-cms/immi-admin/login';
+    window.location.href = '/immi-admin/login';
   };
 
   // Helper to determine the current page title based on the route
