@@ -7,9 +7,9 @@ const Home = () => <div className="p-10 text-center text-2xl font-bold">Home Pag
 const About = () => <div className="p-10 text-center text-2xl font-bold">About Page</div>;
 const Contact = () => <div className="p-10 text-center text-2xl font-bold">Contact Page</div>;
 const Insights = () => <div className="p-10 text-center text-2xl font-bold">Insights (Blog List)</div>;
-const Login = () => <div className="p-10 text-center text-2xl font-bold">Login Page</div>;
 
 // --- Imports for completed components ---
+import Login from './pages/Login';
 import BlogDetail from './components/BlogDetail';
 import AdminDashboard from './components/AdminDashboard';
 
@@ -73,7 +73,7 @@ function App() {
 
         {/* Protected Routes */}
         <Route 
-          path="/admin/*" 
+          path="/immi-admin/*" 
           element={
             <ProtectedRoute>
               <AdminDashboard />
