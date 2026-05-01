@@ -23,21 +23,19 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const verifySession = async () => {
       try {
-        await api.get('/api/blogs'); // Dummy check
+        // FIX #2: Must ping a protected route to verify the JWT cookie!
+        await api.get('/api/me');
         setIsAuthenticated(true);
       } catch (error) {
-        if (error.response?.status === 401) {
-          setIsAuthenticated(false);
-        } else {
-          setIsAuthenticated(true); 
-        }
+        // If it fails for ANY reason (no cookie, expired token, network error), lock them out.
+        setIsAuthenticated(false);
       }
     };
     verifySession();
   }, []);
 
   if (isAuthenticated === null) {
-    return <div className="min-h-screen flex items-center justify-center text-xl">Verifying session...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-xl">Verifying secure session...</div>;
   }
 
   if (!isAuthenticated) {
@@ -88,7 +86,8 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    /* FIX #1: Add the basename so React Router understands the cPanel subfolder */
+    <BrowserRouter basename="/immihire-cms">
       <Routes>
         {/* Public Routes with Header & Footer */}
         <Route element={<PublicLayout logoUrl={siteSettings?.logoUrl} />}>
@@ -103,15 +102,15 @@ function App() {
         </Route>
 
         {/* Protected Admin Routes (No public header/footer) */}
-        <Route 
-          path="/immi-admin/*" 
+        <Route
+          path="/immi-admin/*"
           element={
             <ProtectedRoute>
               <AdminDashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        
+
         {/* Fallback 404 */}
         <Route path="*" element={<div className="p-10 text-center text-xl">404 - Page Not Found</div>} />
       </Routes>

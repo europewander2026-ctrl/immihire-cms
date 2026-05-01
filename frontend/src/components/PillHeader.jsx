@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MagneticButton from './MagneticButton';
 
+// 1. Import the image directly so Vite knows to apply the correct subfolder base path
+import defaultLogo from '../assets/images/immihire-logo.webp';
+
 const PillHeader = ({ logoUrl }) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,12 +24,13 @@ const PillHeader = ({ logoUrl }) => {
     <>
       <header id="header" className={`fixed z-50 pill-header py-3 px-8 flex justify-between items-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] left-1/2 -translate-x-1/2 rounded-full border border-white/80 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02),0_20px_40px_-4px_rgba(0,0,0,0.05),inset_0_0_20px_rgba(255,255,255,0.5)] ${scrolled ? 'w-[98%] top-[10px] bg-white/90' : 'w-[90%] max-w-[1200px] top-[24px] bg-white/75 backdrop-blur-[20px] saturate-180'}`}>
         <Link to="/" className="flex items-center gap-2 group">
-          <img src={logoUrl || "/assets/images/immihire-logo.webp"} alt="ImmiHire Logo" className="h-10 w-auto object-contain" />
+          {/* 2. Use the imported variable as the fallback */}
+          <img src={logoUrl || defaultLogo} alt="ImmiHire Logo" className="h-10 w-auto object-contain" />
           <span className="font-heading font-bold text-xl text-black tracking-tight">
             Immi<span className="text-primary">Hire</span>
           </span>
         </Link>
-        
+
         <nav className="hidden lg:flex items-center gap-8 text-[0.8rem] font-bold text-gray-700 tracking-widest uppercase">
           <Link to="/" className="hover:text-primary transition-colors">Home</Link>
           <Link to="/about" className="hover:text-primary transition-colors">About</Link>
@@ -44,7 +48,7 @@ const PillHeader = ({ logoUrl }) => {
           </div>
           <Link to="/insights" className="hover:text-primary transition-colors">Insights</Link>
         </nav>
-        
+
         <div className="hidden md:block">
           <Link to="/contact">
             <MagneticButton className="px-6 py-3 bg-primary text-white font-bold rounded-full shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all flex items-center gap-2 text-xs uppercase tracking-wider">
@@ -53,7 +57,7 @@ const PillHeader = ({ logoUrl }) => {
             </MagneticButton>
           </Link>
         </div>
-        
+
         <button onClick={() => setMenuOpen(true)} className="lg:hidden text-2xl text-black">
           <i className="fa-solid fa-bars"></i>
         </button>
@@ -64,15 +68,15 @@ const PillHeader = ({ logoUrl }) => {
         <button onClick={closeMenu} className="absolute top-8 right-8 text-3xl text-darkBlue hover:text-primary transition-colors">
           <i className="fa-solid fa-xmark"></i>
         </button>
-        
+
         <nav className="flex flex-col items-start gap-6 w-full max-w-md mx-auto">
           <Link to="/" onClick={closeMenu} className="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Home</Link>
           <Link to="/about" onClick={closeMenu} className="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">About</Link>
-          
+
           {/* Services Accordion */}
           <div className="w-full">
-            <button 
-              onClick={() => setServicesOpen(!servicesOpen)} 
+            <button
+              onClick={() => setServicesOpen(!servicesOpen)}
               className="flex justify-between items-center w-full text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors focus:outline-none"
             >
               <span>Services</span>
@@ -86,7 +90,7 @@ const PillHeader = ({ logoUrl }) => {
               <Link to="/service-australia" onClick={closeMenu} className="text-lg font-medium text-gray-600 hover:text-primary">Australia SkillSelect</Link>
             </div>
           </div>
-          
+
           <Link to="/insights" onClick={closeMenu} className="text-3xl font-heading font-bold text-darkBlue hover:text-primary transition-colors">Insights</Link>
           <Link to="/contact" onClick={closeMenu} className="text-3xl font-heading font-bold text-primary hover:text-darkBlue transition-colors mt-4">Contact Us</Link>
         </nav>
