@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import AdminDashboard from './components/AdminDashboard';
+import AdminDashboard from './components/admin/AdminDashboard';
+import Consultations from './pages/admin/Consultations';
+import SiteSettings from './pages/admin/SiteSettings';
+import UserManagement from './pages/admin/UserManagement';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -55,13 +58,17 @@ const AdminApp = () => {
         <Route path="/reset-password" element={<MinimalAuthLayout><ResetPassword /></MinimalAuthLayout>} />
         
         <Route
-          path="/*"
+          path="/"
           element={
             <ProtectedRoute>
               <AdminDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<Consultations />} />
+          <Route path="settings" element={<SiteSettings />} />
+          <Route path="users" element={<UserManagement />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
