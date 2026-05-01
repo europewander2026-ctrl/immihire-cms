@@ -6,6 +6,7 @@ import Consultations from './pages/admin/Consultations';
 import SiteSettings from './pages/admin/SiteSettings';
 import UserManagement from './pages/admin/UserManagement';
 import PagesManager from './pages/admin/PagesManager';
+import ServicesManager from './pages/admin/ServicesManager';
 import Login from './pages/admin/Login';
 import ForgotPassword from './pages/admin/ForgotPassword';
 import ResetPassword from './pages/admin/ResetPassword';
@@ -67,6 +68,7 @@ const AdminApp = () => {
         >
           <Route index element={<Consultations />} />
           <Route path="pages" element={<PagesManager />} />
+          <Route path="services" element={<ServicesManager />} />
           <Route path="settings" element={<SiteSettings />} />
           <Route path="users" element={<UserManagement />} />
         </Route>
