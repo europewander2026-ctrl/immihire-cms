@@ -8,6 +8,8 @@ import Contact from './pages/Contact';
 import BlogList from './pages/BlogList';
 
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import BlogDetail from './components/BlogDetail';
 import AdminDashboard from './components/AdminDashboard';
 import PillHeader from './components/PillHeader';
@@ -96,6 +98,8 @@ function App() {
           <Route path="/insights" element={<BlogList />} />
           <Route path="/insights/:slug" element={<BlogDetailWrapper />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
 
         {/* Protected Admin Routes (No public header/footer) */}
