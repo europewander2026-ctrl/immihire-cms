@@ -18,8 +18,6 @@
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/immi-admin/(.*)", "destination": "/immi-admin/index.html" },
-    { "source": "/immi-admin", "destination": "/immi-admin/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 
 const ServicesManager = () => {
+  const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [currentView, setCurrentView] = useState('list');
   const [loading, setLoading] = useState(true);
@@ -67,6 +69,7 @@ const ServicesManager = () => {
       }
       fetchServices();
       setCurrentView('list');
+      navigate('/services');
     } catch (error) {
       console.error('Failed to save service', error);
       alert('Error saving service');
@@ -394,7 +397,7 @@ const ServicesManager = () => {
           <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
             <button 
               type="button" 
-              onClick={() => setCurrentView('list')}
+              onClick={() => { setCurrentView('list'); navigate('/services'); }}
               className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
             >
               Cancel

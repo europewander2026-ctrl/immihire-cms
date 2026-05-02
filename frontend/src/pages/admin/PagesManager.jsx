@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 
 const PagesManager = () => {
+  const navigate = useNavigate();
   const [pages, setPages] = useState([]);
   const [selectedPage, setSelectedPage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -109,7 +111,11 @@ const PagesManager = () => {
 
       setMessage('Page saved successfully!');
       fetchPages(); // Refresh list to update titles
-      setTimeout(() => setMessage(''), 3000);
+      setTimeout(() => { 
+        setMessage(''); 
+        setSelectedPage(null); 
+        navigate('/pages'); 
+      }, 1500);
     } catch (err) {
       setMessage(err.message || 'Failed to save page.');
     } finally {
@@ -193,9 +199,14 @@ const PagesManager = () => {
                 <h2 className="text-xl font-bold text-gray-900">Editing: /{selectedPage.slug}</h2>
                 {message && <span className={`text-sm ml-4 font-medium ${message.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>{message}</span>}
               </div>
-              <button type="submit" disabled={saving} className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2">
-                <i className="fa-solid fa-floppy-disk"></i> {saving ? 'Saving...' : 'Save Page'}
-              </button>
+              <div className="flex items-center">
+                <button type="button" onClick={() => { setSelectedPage(null); navigate('/pages'); }} className="text-gray-500 hover:text-gray-700 bg-gray-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors mr-3">
+                  Cancel
+                </button>
+                <button type="submit" disabled={saving} className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2">
+                  <i className="fa-solid fa-floppy-disk"></i> {saving ? 'Saving...' : 'Save Page'}
+                </button>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
