@@ -8,7 +8,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import BlogList from './pages/BlogList';
 
-import BlogDetail from './components/BlogDetail';
+import InsightDetail from './pages/public/InsightDetail';
 import PillHeader from './components/PillHeader';
 import Footer from './components/Footer';
 import FloatingWidget from './components/public/FloatingWidget';
@@ -68,7 +68,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/insights" element={<BlogList />} />
-            <Route path="/insights/:slug" element={<BlogDetailWrapper />} />
+            <Route path="/insights/:slug" element={<InsightDetail />} />
           </Route>
 
           {/* Fallback 404 */}
@@ -78,12 +78,5 @@ function App() {
     </HelmetProvider>
   );
 }
-
-// Wrapper to extract slug for BlogDetail
-const BlogDetailWrapper = () => {
-  const { pathname } = useLocation();
-  const slug = pathname.split('/').pop();
-  return <BlogDetail slug={slug} />;
-};
 
 export default App;
