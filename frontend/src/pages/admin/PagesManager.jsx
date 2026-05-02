@@ -163,7 +163,7 @@ const PagesManager = () => {
   };
 
   const addSection = (type) => {
-    const newSection = {
+    let newSection = {
       id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
       type,
       heading: '',
@@ -171,6 +171,18 @@ const PagesManager = () => {
       content: '',
       image: ''
     };
+
+    // Initialize component-specific default data
+    if (type === 'kinetic-accordion') {
+      newSection.heading = 'Our Core Values';
+      newSection.subheading = 'The principles that drive every decision we make.';
+      newSection.content = { panels: [] };
+    } else if (type === 'spotlight-cinema') {
+      newSection.content = { categories: [] };
+    } else if (type === 'eligibility-pulse') {
+      newSection.heading = 'What are your odds?';
+    }
+
     setFormData(prev => ({
       ...prev,
       sections: [...prev.sections, newSection]
@@ -261,9 +273,12 @@ const PagesManager = () => {
                 <div className="flex items-center justify-between border-b pb-2">
                   <h3 className="text-lg font-semibold text-gray-800">Section Builder</h3>
                   <div className="flex gap-2">
-                    <button type="button" onClick={() => addSection('hero')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-image mr-1"></i> Add Hero</button>
-                    <button type="button" onClick={() => addSection('featureList')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-list mr-1"></i> Add Features</button>
-                    <button type="button" onClick={() => addSection('standard')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-align-left mr-1"></i> Add Content</button>
+                    <button type="button" onClick={() => addSection('hero')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-image mr-1"></i> Hero</button>
+                    <button type="button" onClick={() => addSection('featureList')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-list mr-1"></i> Features</button>
+                    <button type="button" onClick={() => addSection('standard')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-align-left mr-1"></i> Content</button>
+                    <button type="button" onClick={() => addSection('kinetic-accordion')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-bars-staggered mr-1"></i> Accordion</button>
+                    <button type="button" onClick={() => addSection('spotlight-cinema')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-film mr-1"></i> Cinema</button>
+                    <button type="button" onClick={() => addSection('eligibility-pulse')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-gauge-high mr-1"></i> Pulse</button>
                   </div>
                 </div>
 
@@ -284,26 +299,63 @@ const PagesManager = () => {
                         </div>
                       </div>
                       <div className="p-4 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-1">Heading</label>
-                            <input type="text" value={section.heading || ''} onChange={(e) => updateSection(index, 'heading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Section Heading" />
+                        {/* Interactive Component Placeholders */}
+                        {section.type === 'kinetic-accordion' ? (
+                          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center">
+                            <i className="fa-solid fa-bars-staggered text-3xl text-indigo-400 mb-3"></i>
+                            <h4 className="font-bold text-indigo-800 mb-1">Kinetic Accordion Component</h4>
+                            <p className="text-sm text-indigo-600 mb-4">Renders an interactive expanding panel accordion on the public page.</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-xs font-medium text-indigo-500 mb-1">Heading</label>
+                                <input type="text" value={section.heading || ''} onChange={(e) => updateSection(index, 'heading', e.target.value)} className="w-full px-3 py-2 border border-indigo-200 rounded-md text-sm" placeholder="e.g. Our Core Values" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-indigo-500 mb-1">Subtitle</label>
+                                <input type="text" value={section.subheading || ''} onChange={(e) => updateSection(index, 'subheading', e.target.value)} className="w-full px-3 py-2 border border-indigo-200 rounded-md text-sm" placeholder="Optional subtitle" />
+                              </div>
+                            </div>
+                            <p className="text-xs text-indigo-400 mt-3">Uses default panels. Custom panels can be configured via JSON.</p>
                           </div>
-                          <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-1">Subheading</label>
-                            <input type="text" value={section.subheading || ''} onChange={(e) => updateSection(index, 'subheading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Optional subheading" />
+                        ) : section.type === 'spotlight-cinema' ? (
+                          <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 text-center">
+                            <i className="fa-solid fa-film text-3xl text-purple-400 mb-3"></i>
+                            <h4 className="font-bold text-purple-800 mb-1">Spotlight Cinema Component</h4>
+                            <p className="text-sm text-purple-600">Full-screen interactive service category selector with cinematic background transitions.</p>
+                            <p className="text-xs text-purple-400 mt-3">Uses default categories. Custom categories can be configured via JSON.</p>
                           </div>
-                        </div>
-                        {['hero', 'featureList'].includes(section.type) && (
-                          <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
-                            <input type="text" value={section.image || ''} onChange={(e) => updateSection(index, 'image', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="https://" />
+                        ) : section.type === 'eligibility-pulse' ? (
+                          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
+                            <i className="fa-solid fa-gauge-high text-3xl text-emerald-400 mb-3"></i>
+                            <h4 className="font-bold text-emerald-800 mb-1">Eligibility Pulse Calculator</h4>
+                            <p className="text-sm text-emerald-600">Interactive gauge calculator with experience slider and education selector.</p>
+                            <p className="text-xs text-emerald-400 mt-3">Self-contained component — no configuration needed.</p>
                           </div>
+                        ) : (
+                          /* Default editor for standard section types */
+                          <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-medium text-gray-500 mb-1">Heading</label>
+                                <input type="text" value={section.heading || ''} onChange={(e) => updateSection(index, 'heading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Section Heading" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-gray-500 mb-1">Subheading</label>
+                                <input type="text" value={section.subheading || ''} onChange={(e) => updateSection(index, 'subheading', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Optional subheading" />
+                              </div>
+                            </div>
+                            {['hero', 'featureList'].includes(section.type) && (
+                              <div>
+                                <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
+                                <input type="text" value={section.image || ''} onChange={(e) => updateSection(index, 'image', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="https://" />
+                              </div>
+                            )}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">Content</label>
+                              <RichTextEditor value={section.content || ''} onChange={(val) => updateSection(index, 'content', val)} />
+                            </div>
+                          </>
                         )}
-                        <div>
-                          <label className="block text-xs font-medium text-gray-500 mb-1">Content</label>
-                          <RichTextEditor value={section.content || ''} onChange={(val) => updateSection(index, 'content', val)} />
-                        </div>
                       </div>
                     </div>
                   ))}

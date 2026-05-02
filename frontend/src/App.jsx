@@ -9,6 +9,7 @@ import Contact from './pages/Contact';
 import BlogList from './pages/BlogList';
 
 import InsightDetail from './pages/public/InsightDetail';
+import PageDetail from './pages/public/PageDetail';
 import Layout from './components/layout/Layout';
 
 // --- App Component ---
@@ -49,6 +50,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/insights" element={<BlogList />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
+            <Route path="/:slug" element={<PageDetail />} />
           </Route>
 
           {/* Fallback 404 */}
