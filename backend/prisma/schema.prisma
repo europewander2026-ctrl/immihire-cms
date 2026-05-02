@@ -111,7 +111,10 @@ model Insight {
   title           String
   slug            String   @unique
   excerpt         String?  @db.Text
-  content         String   @db.Text
+  sections        Json     @default("[]")
+  seoTitle        String?
+  seoDescription  String?
+  seoKeywords     String?
   author          String?
   featuredImage   String?
   isPublished     Boolean  @default(false)

@@ -30,7 +30,7 @@ module.exports = function(app, prisma, requireAuth) {
 
         // Allow frontend to specify a folder, default to "general"
       let folder = req.body.folder ? req.body.folder.replace(/^\/|\/$/g, '') : 'general';
-      const allowedFolders = ['logos', 'profiles', 'services', 'general'];
+      const allowedFolders = ['logos', 'profiles', 'services', 'insights', 'general'];
       if (!allowedFolders.includes(folder)) {
         folder = 'general';
       }

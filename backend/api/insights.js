@@ -27,25 +27,35 @@ module.exports = function(app, prisma, requireAuth) {
   // POST create insight
   app.post('/api/insights', requireAuth, async (req, res) => {
     try {
+      const { title, slug, excerpt, sections, author, featuredImage, isPublished, seoTitle, seoDescription, seoKeywords } = req.body;
       const insight = await prisma.insight.create({
-        data: req.body
+        data: { title, slug, excerpt, sections, author, featuredImage, isPublished, seoTitle, seoDescription, seoKeywords }
       });
       res.status(201).json(insight);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to create insight' });
+      if (error.code === 'P2002') {
+        return res.status(400).json({ error: 'Slug already exists' });
+      }
+      console.error('Create insight error:', error);
+      res.status(500).json({ error: error.message || 'Failed to create insight' });
     }
   });
 
   // PUT update insight
   app.put('/api/insights/:slug', requireAuth, async (req, res) => {
     try {
+      const { title, slug, excerpt, sections, author, featuredImage, isPublished, seoTitle, seoDescription, seoKeywords } = req.body;
       const insight = await prisma.insight.update({
         where: { slug: req.params.slug },
-        data: req.body
+        data: { title, slug, excerpt, sections, author, featuredImage, isPublished, seoTitle, seoDescription, seoKeywords }
       });
       res.json(insight);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to update insight' });
+      if (error.code === 'P2002') {
+        return res.status(400).json({ error: 'Slug already exists' });
+      }
+      console.error('Update insight error:', error);
+      res.status(500).json({ error: error.message || 'Failed to update insight' });
     }
   });
 
