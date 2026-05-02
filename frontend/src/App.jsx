@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import api from './utils/api';
 
@@ -9,26 +9,7 @@ import Contact from './pages/Contact';
 import BlogList from './pages/BlogList';
 
 import InsightDetail from './pages/public/InsightDetail';
-import PillHeader from './components/PillHeader';
-import Footer from './components/Footer';
-import FloatingWidget from './components/public/FloatingWidget';
-
-
-
-// --- Public Layout Wrapper ---
-const PublicLayout = ({ logoUrl }) => {
-  return (
-    <>
-      <PillHeader logoUrl={logoUrl} />
-      <div className="min-h-screen">
-        <Outlet />
-      </div>
-      <Footer />
-    </>
-  );
-};
-
-
+import Layout from './components/layout/Layout';
 
 // --- App Component ---
 function App() {
@@ -60,10 +41,9 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter basename="/immihire-cms">
-        <FloatingWidget />
         <Routes>
           {/* Public Routes with Header & Footer */}
-          <Route element={<PublicLayout logoUrl={siteSettings?.logoUrl} />}>
+          <Route element={<Layout logoUrl={siteSettings?.logoUrl} />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />

@@ -64,56 +64,6 @@ const InsightDetail = () => {
         image={insight.featuredImage}
       />
 
-      <style>{`
-        .article-content p {
-            font-family: 'Merriweather', serif;
-            font-size: 1.125rem;
-            line-height: 1.9;
-            color: #334155;
-            margin-bottom: 2rem;
-            transition: opacity 0.3s ease, filter 0.3s ease;
-        }
-        .article-content h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #002366;
-            margin-top: 3rem;
-            margin-bottom: 1.5rem;
-        }
-        .drop-cap p:first-child::first-letter,
-        .drop-cap::first-letter {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 4rem;
-            float: left;
-            line-height: 0.8;
-            padding-right: 1rem;
-            font-weight: 800;
-            color: #0d5fb7;
-        }
-        .live-counter {
-            display: inline-block;
-            font-family: 'Space Mono', monospace;
-            background: rgba(13, 95, 183, 0.1);
-            color: #0d5fb7;
-            padding: 0 6px;
-            border-radius: 4px;
-            font-weight: 700;
-            border-bottom: 2px solid #0d5fb7;
-        }
-        .verdict-stamp {
-            border: 4px solid #ef4444;
-            color: #ef4444;
-            font-family: 'Space Mono', monospace;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 1rem 2rem;
-            display: inline-block;
-            font-size: 2rem;
-            transform: rotate(-5deg);
-        }
-      `}</style>
-
       {/* Hero Section */}
       <section className="hero-section relative pt-48 pb-24 bg-[#000814] text-white overflow-hidden">
         {/* Background Overlay */}
