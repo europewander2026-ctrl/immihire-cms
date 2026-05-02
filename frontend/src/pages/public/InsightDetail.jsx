@@ -151,52 +151,88 @@ const InsightDetail = () => {
 
       {/* Main Content Layout */}
       <section className="py-20 relative">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="article-content">
-            {Array.isArray(insight.sections) && insight.sections.length > 0 ? (
-              insight.sections.map((section, index) => {
-                switch (section.type) {
-                  case 'standard':
-                    return (
-                      <div key={index} className="prose max-w-none" dangerouslySetInnerHTML={{ __html: section.content }} />
-                    );
-                  case 'dropcap':
-                    return (
-                      <div key={index} className="drop-cap" dangerouslySetInnerHTML={{ __html: section.content }} />
-                    );
-                  case 'heading':
-                    return (
-                      <h2 key={index}>{section.heading}</h2>
-                    );
-                  case 'quote':
-                    return (
-                      <div key={index} className="my-12 p-8 bg-blue-50 border-l-4 border-primary rounded-r-xl italic text-darkBlue font-serif text-lg shadow-sm">
-                        "{section.content}"
-                      </div>
-                    );
-                  case 'verdict':
-                    return (
-                      <div key={index} className="mt-20 pt-10 border-t border-gray-200 text-center">
-                        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">ImmiHire Official Analysis</p>
-                        <div className="verdict-stamp">{section.heading}</div>
-                        {section.content && (
-                          <div className="mt-6 text-gray-600 max-w-lg mx-auto" dangerouslySetInnerHTML={{ __html: section.content }} />
-                        )}
-                      </div>
-                    );
-                  case 'counter':
-                    return (
-                      <p key={index} className="text-xl font-medium text-gray-800 text-center my-10">
-                        {section.heading}: <span className="live-counter">{section.subheading}</span>
-                      </p>
-                    );
-                  default:
-                    return null;
-                }
-              })
-            ) : (
-              <div className="text-center text-gray-500 my-10 italic">This insight currently has no content.</div>
-            )}
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col lg:flex-row gap-16">
+
+            {/* Left: Sticky Sidebar & Tools */}
+            <div className="lg:w-1/4 hidden lg:block">
+              <div className="sticky top-[150px] space-y-8">
+                {/* Reading Tools Card */}
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                  <h4 className="font-heading font-bold text-sm text-gray-400 uppercase tracking-widest mb-4">Reading Tools</h4>
+                  {/* Progress Bar */}
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
+                    <div className="bg-primary h-1.5 rounded-full" style={{ width: '0%' }}></div>
+                  </div>
+                  <p className="text-xs text-gray-400 text-right">Scroll to read</p>
+                </div>
+
+                {/* Share */}
+                <div className="flex gap-4 justify-center">
+                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-600 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-twitter"></i></button>
+                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-800 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-linkedin-in"></i></button>
+                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-whatsapp"></i></button>
+                </div>
+
+                {/* Author Card */}
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+                  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-3 overflow-hidden">
+                    <i className="fa-solid fa-user text-gray-400 text-2xl"></i>
+                  </div>
+                  <p className="font-heading font-bold text-darkBlue">{insight.author || 'Immihire Team'}</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider mt-1">Author</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Center: Article Body */}
+            <div className="lg:w-2/3 article-content">
+              {Array.isArray(insight.sections) && insight.sections.length > 0 ? (
+                insight.sections.map((section, index) => {
+                  switch (section.type) {
+                    case 'standard':
+                      return (
+                        <div key={index} dangerouslySetInnerHTML={{ __html: section.content }} />
+                      );
+                    case 'dropcap':
+                      return (
+                        <div key={index} className="drop-cap" dangerouslySetInnerHTML={{ __html: section.content }} />
+                      );
+                    case 'heading':
+                      return (
+                        <h2 key={index}>{section.heading}</h2>
+                      );
+                    case 'quote':
+                      return (
+                        <div key={index} className="my-12 p-8 bg-blue-50 border-l-4 border-primary rounded-r-xl italic text-darkBlue font-serif text-lg">
+                          "{section.content}"
+                        </div>
+                      );
+                    case 'verdict':
+                      return (
+                        <div key={index} className="mt-20 pt-10 border-t border-gray-200 text-center">
+                          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">ImmiHire Official Analysis</p>
+                          <div className="verdict-stamp">{section.heading}</div>
+                          {section.content && (
+                            <div className="mt-6 text-gray-600 max-w-lg mx-auto" dangerouslySetInnerHTML={{ __html: section.content }} />
+                          )}
+                        </div>
+                      );
+                    case 'counter':
+                      return (
+                        <p key={index} className="text-xl font-medium text-gray-800 text-center my-10">
+                          {section.heading}: <span className="live-counter">{section.subheading}</span>
+                        </p>
+                      );
+                    default:
+                      return null;
+                  }
+                })
+              ) : (
+                <div className="text-center text-gray-500 my-10 italic">This insight currently has no content.</div>
+              )}
+            </div>
+
           </div>
         </div>
       </section>

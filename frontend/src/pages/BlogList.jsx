@@ -8,7 +8,10 @@ const BlogList = () => {
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [featuredInsight, setFeaturedInsight] = useState(null);
   const [latestInsights, setLatestInsights] = useState([]);
+  const [allNonFeatured, setAllNonFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [uniqueCategories, setUniqueCategories] = useState(['All']);
 
   React.useEffect(() => {
     const fetchInsights = async () => {
@@ -18,8 +21,12 @@ const BlogList = () => {
         const featured = published.find(i => i.featured) || published[0];
         const latest = published.filter(i => i.id !== featured?.id);
         
+        const categories = ['All', ...new Set(published.map(i => i.category).filter(Boolean))];
+        
         setFeaturedInsight(featured);
+        setAllNonFeatured(latest);
         setLatestInsights(latest);
+        setUniqueCategories(categories);
       } catch (err) {
         console.error(err);
       } finally {
@@ -175,10 +182,27 @@ const BlogList = () => {
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-end mb-12">
             <h2 className="font-heading font-bold text-3xl text-darkBlue">Latest Articles</h2>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-full border border-primary bg-primary text-white text-xs font-bold transition-colors">All</button>
-              <button className="px-4 py-2 rounded-full border border-gray-300 text-gray-500 text-xs font-bold hover:border-primary hover:text-primary transition-colors">Policy</button>
-              <button className="px-4 py-2 rounded-full border border-gray-300 text-gray-500 text-xs font-bold hover:border-primary hover:text-primary transition-colors">Lifestyle</button>
+            <div className="flex gap-2 flex-wrap">
+              {uniqueCategories.map((cat) => (
+                <button 
+                  key={cat}
+                  onClick={() => {
+                    setActiveCategory(cat);
+                    if (cat === 'All') {
+                      setLatestInsights(allNonFeatured);
+                    } else {
+                      setLatestInsights(allNonFeatured.filter(i => i.category === cat));
+                    }
+                  }}
+                  className={`px-4 py-2 rounded-full border text-xs font-bold transition-colors ${
+                    activeCategory === cat 
+                      ? 'border-primary bg-primary text-white' 
+                      : 'border-gray-300 text-gray-500 hover:border-primary hover:text-primary'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
           

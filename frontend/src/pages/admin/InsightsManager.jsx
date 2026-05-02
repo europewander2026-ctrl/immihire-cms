@@ -345,19 +345,13 @@ const InsightsManager = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select
+              <input 
+                type="text" 
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border bg-white"
-              >
-                <option value="">Select Category</option>
-                <option value="Policy">Policy</option>
-                <option value="Lifestyle">Lifestyle</option>
-                <option value="Real Estate">Real Estate</option>
-                <option value="Career Advice">Career Advice</option>
-                <option value="Education">Education</option>
-                <option value="News">News</option>
-              </select>
+                placeholder="e.g. Policy, Lifestyle, Career Advice"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border" 
+              />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
