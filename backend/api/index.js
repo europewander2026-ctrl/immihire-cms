@@ -375,6 +375,7 @@ require('./profile')(app, prisma, requireAuth);
 require('./consultations')(app, prisma, requireAuth);
 require('./upload')(app, prisma, requireAuth);
 require('./settings')(app, prisma, requireAuth);
+app.use('/api/seo', requireAuth, require('./seo'));
 
 // Export the app for Vercel
 module.exports = app;
