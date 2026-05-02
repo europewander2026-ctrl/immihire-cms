@@ -15,6 +15,8 @@ const InsightsManager = () => {
     sections: [],
     author: '',
     featuredImage: '',
+    category: '',
+    featured: false,
     isPublished: false,
     seoTitle: '',
     seoDescription: '',
@@ -144,6 +146,8 @@ const InsightsManager = () => {
       excerpt: insight.excerpt || '',
       author: insight.author || '',
       featuredImage: insight.featuredImage || '',
+      category: insight.category || '',
+      featured: insight.featured || false,
       sections: parsedSections,
       seoTitle: insight.seoTitle || '',
       seoDescription: insight.seoDescription || '',
@@ -299,6 +303,22 @@ const InsightsManager = () => {
               />
             </div>
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({...formData, category: e.target.value})}
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border bg-white"
+              >
+                <option value="">Select Category</option>
+                <option value="Policy">Policy</option>
+                <option value="Lifestyle">Lifestyle</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Career Advice">Career Advice</option>
+                <option value="Education">Education</option>
+                <option value="News">News</option>
+              </select>
+            </div>
+            <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
               <label className="border-2 border-dashed border-gray-200 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer relative overflow-hidden">
                 {uploadingImage ? (
@@ -314,17 +334,31 @@ const InsightsManager = () => {
             </div>
           </div>
           
-          <div className="flex items-center">
-            <input 
-              id="isPublished"
-              type="checkbox" 
-              checked={formData.isPublished}
-              onChange={(e) => setFormData({...formData, isPublished: e.target.checked})}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
-            />
-            <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-900 font-medium">
-              Publish this Insight publicly
-            </label>
+          <div className="flex flex-col sm:flex-row gap-6">
+            <div className="flex items-center">
+              <input 
+                id="isPublished"
+                type="checkbox" 
+                checked={formData.isPublished}
+                onChange={(e) => setFormData({...formData, isPublished: e.target.checked})}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
+              />
+              <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-900 font-medium">
+                Publish this Insight publicly
+              </label>
+            </div>
+            <div className="flex items-center">
+              <input 
+                id="featured"
+                type="checkbox" 
+                checked={formData.featured}
+                onChange={(e) => setFormData({...formData, featured: e.target.checked})}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
+              />
+              <label htmlFor="featured" className="ml-2 block text-sm text-gray-900 font-medium">
+                Feature Article (Highlight on Homepage)
+              </label>
+            </div>
           </div>
 
           <section className="space-y-4 pt-6 border-t border-gray-100">
