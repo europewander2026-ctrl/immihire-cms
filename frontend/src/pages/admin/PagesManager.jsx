@@ -9,6 +9,7 @@ const PagesManager = () => {
   const [selectedPage, setSelectedPage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isGeneratingSEO, setIsGeneratingSEO] = useState(false);
   const [message, setMessage] = useState('');
 
   // Form state
@@ -120,6 +121,44 @@ const PagesManager = () => {
       setMessage(err.message || 'Failed to save page.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleGenerateSEO = async () => {
+    setIsGeneratingSEO(true);
+    try {
+      const rawText = formData.sections
+        .map(sec => {
+          let text = '';
+          if (sec.heading) text += sec.heading + ' ';
+          if (sec.content) text += sec.content.replace(/<[^>]*>?/gm, '') + ' ';
+          return text;
+        })
+        .join(' ');
+
+      if (!rawText.trim()) {
+        alert('Please add some content to the sections first before generating SEO.');
+        setIsGeneratingSEO(false);
+        return;
+      }
+
+      const res = await api.post('/api/seo/generate', { content: rawText });
+      
+      if (res.data) {
+        setFormData(prev => ({
+          ...prev,
+          seoTitle: res.data.seoTitle || prev.seoTitle,
+          seoDescription: res.data.seoDescription || prev.seoDescription,
+          seoKeywords: res.data.seoKeywords || prev.seoKeywords
+        }));
+        setMessage('SEO generated successfully!');
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (error) {
+      console.error('Failed to generate SEO', error);
+      setMessage('Failed to generate SEO. Please try again.');
+    } finally {
+      setIsGeneratingSEO(false);
     }
   };
 
@@ -273,7 +312,17 @@ const PagesManager = () => {
 
               {/* SEO Metadata */}
               <section className="space-y-4 pt-4">
-                <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">SEO Metadata</h3>
+                <div className="flex items-center justify-between border-b pb-2">
+                  <h3 className="text-lg font-semibold text-gray-800">SEO Metadata</h3>
+                  <button 
+                    type="button" 
+                    onClick={handleGenerateSEO} 
+                    disabled={isGeneratingSEO}
+                    className="text-xs font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                  >
+                    {isGeneratingSEO ? <><i className="fa-solid fa-spinner fa-spin"></i> Generating...</> : <>✨ Auto-Generate with AI</>}
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">SEO Title Tag</label>
@@ -285,12 +334,7 @@ const PagesManager = () => {
                   </div>
                 </div>
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-sm font-medium text-gray-700">Meta Description</label>
-                    <button type="button" className="text-xs font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100 flex items-center gap-1.5 transition-colors">
-                      <i className="fa-solid fa-wand-magic-sparkles"></i> AI Generate
-                    </button>
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
                   <textarea name="seoDescription" value={formData.seoDescription} onChange={handleChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
                 </div>
               </section>

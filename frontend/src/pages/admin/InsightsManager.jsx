@@ -9,7 +9,8 @@ const InsightsManager = () => {
   const [currentView, setCurrentView] = useState('list');
   const [loading, setLoading] = useState(true);
   const [uploadingImage, setUploadingImage] = useState(false);
-  
+  const [isGeneratingSEO, setIsGeneratingSEO] = useState(false);
+
   const defaultForm = {
     title: '',
     slug: '',
@@ -125,6 +126,43 @@ const InsightsManager = () => {
         console.error('Failed to delete insight', error);
         alert('Error deleting insight');
       }
+    }
+  };
+
+  const handleGenerateSEO = async () => {
+    setIsGeneratingSEO(true);
+    try {
+      const rawText = formData.sections
+        .map(sec => {
+          let text = '';
+          if (sec.heading) text += sec.heading + ' ';
+          if (sec.content) text += sec.content.replace(/<[^>]*>?/gm, '') + ' ';
+          return text;
+        })
+        .join(' ');
+
+      if (!rawText.trim()) {
+        alert('Please add some content to the sections first before generating SEO.');
+        setIsGeneratingSEO(false);
+        return;
+      }
+
+      const res = await api.post('/api/seo/generate', { content: rawText });
+      
+      if (res.data) {
+        setFormData(prev => ({
+          ...prev,
+          seoTitle: res.data.seoTitle || prev.seoTitle,
+          seoDescription: res.data.seoDescription || prev.seoDescription,
+          seoKeywords: res.data.seoKeywords || prev.seoKeywords
+        }));
+        alert('SEO generated successfully!');
+      }
+    } catch (error) {
+      console.error('Failed to generate SEO', error);
+      alert('Failed to generate SEO. Please try again.');
+    } finally {
+      setIsGeneratingSEO(false);
     }
   };
 
@@ -448,7 +486,17 @@ const InsightsManager = () => {
 
           {/* SEO Metadata */}
           <section className="space-y-4 pt-6 border-t border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-800">SEO Metadata</h3>
+            <div className="flex items-center justify-between border-b pb-2">
+              <h3 className="text-lg font-semibold text-gray-800">SEO Metadata</h3>
+              <button 
+                type="button" 
+                onClick={handleGenerateSEO} 
+                disabled={isGeneratingSEO}
+                className="text-xs font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100 flex items-center gap-1.5 transition-colors disabled:opacity-50"
+              >
+                {isGeneratingSEO ? <><i className="fa-solid fa-spinner fa-spin"></i> Generating...</> : <>✨ Auto-Generate with AI</>}
+              </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">SEO Title Tag</label>
