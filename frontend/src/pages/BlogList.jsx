@@ -6,6 +6,28 @@ import api from '../utils/api';
 const BlogList = () => {
   const [email, setEmail] = useState('');
   const [isSubscribing, setIsSubscribing] = useState(false);
+  const [featuredInsight, setFeaturedInsight] = useState(null);
+  const [latestInsights, setLatestInsights] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchInsights = async () => {
+      try {
+        const res = await api.get('/api/insights');
+        const published = res.data.filter(i => i.isPublished);
+        const featured = published.find(i => i.featured) || published[0];
+        const latest = published.filter(i => i.id !== featured?.id);
+        
+        setFeaturedInsight(featured);
+        setLatestInsights(latest);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInsights();
+  }, []);
 
   const handleNewsletter = async (e) => {
     e.preventDefault();
@@ -65,29 +87,35 @@ const BlogList = () => {
                 </div>
               </div>
 
-              <Link to="/insights/talent-strategy" className="relative group block cursor-pointer">
-                <div className="absolute inset-0 bg-darkBlue rounded-3xl transform rotate-3 transition-transform group-hover:rotate-6"></div>
-                <div className="relative bg-white rounded-3xl overflow-hidden shadow-2xl transition-transform group-hover:-translate-y-2">
-                  <img src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=2669&auto=format&fit=crop" className="w-full h-64 object-cover" alt="Featured" />
-                  <div className="p-8">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">Policy Shift</span>
-                      <span className="text-gray-400 text-xs">Today</span>
-                    </div>
-                    <h3 className="font-heading font-bold text-2xl text-darkBlue mb-3 group-hover:text-primary transition-colors">
-                      The 2025 Global Talent Strategy: What Changes for Applicants?
-                    </h3>
-                    <p className="text-gray-500 text-sm line-clamp-2">
-                      An in-depth look at how major economies are reshaping their skilled worker programs to attract top tier talent in the post-digital age.
-                    </p>
-                    <div className="mt-6 flex items-center text-primary font-bold text-sm">
-                      <span className="flex items-center">
-                        Read Analysis <i className="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-                      </span>
+              {loading ? (
+                <div className="relative bg-white rounded-3xl overflow-hidden shadow-2xl h-64 flex items-center justify-center">
+                  <span className="text-gray-400">Loading featured insight...</span>
+                </div>
+              ) : featuredInsight ? (
+                <Link to={`/insights/${featuredInsight.slug}`} className="relative group block cursor-pointer">
+                  <div className="absolute inset-0 bg-darkBlue rounded-3xl transform rotate-3 transition-transform group-hover:rotate-6"></div>
+                  <div className="relative bg-white rounded-3xl overflow-hidden shadow-2xl transition-transform group-hover:-translate-y-2">
+                    <img src={featuredInsight.featuredImage || "https://images.unsplash.com/photo-1455849318743-b2233052fcff?q=80&w=2669&auto=format&fit=crop"} className="w-full h-64 object-cover" alt="Featured" />
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">{featuredInsight.category || 'Article'}</span>
+                        <span className="text-gray-400 text-xs">{new Date(featuredInsight.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <h3 className="font-heading font-bold text-2xl text-darkBlue mb-3 group-hover:text-primary transition-colors">
+                        {featuredInsight.title}
+                      </h3>
+                      <p className="text-gray-500 text-sm line-clamp-2">
+                        {featuredInsight.excerpt}
+                      </p>
+                      <div className="mt-6 flex items-center text-primary font-bold text-sm">
+                        <span className="flex items-center">
+                          Read Analysis <i className="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              ) : null}
             </RevealWrapper>
           </div>
         </div>
@@ -155,49 +183,37 @@ const BlogList = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            <article className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col md:flex-row h-full">
-              <div className="md:w-2/5 relative overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2670&auto=format&fit=crop" alt="Toronto Housing" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg text-xs font-bold text-darkBlue">Real Estate</div>
-              </div>
-              <div className="p-8 md:w-3/5 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-3 text-xs text-gray-400 mb-4 font-mono">
-                    <span><i className="fa-regular fa-calendar"></i> Oct 24, 2025</span>
-                    <span><i className="fa-regular fa-clock"></i> 5 min read</span>
+            {loading ? (
+              <div className="col-span-2 text-center text-gray-400 py-10">Loading insights...</div>
+            ) : latestInsights.length > 0 ? (
+              latestInsights.map((insight) => (
+                <article key={insight.id} className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col md:flex-row h-full">
+                  <div className="md:w-2/5 relative overflow-hidden">
+                    <img src={insight.featuredImage || "https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2670&auto=format&fit=crop"} alt={insight.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
+                    {insight.category && (
+                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg text-xs font-bold text-darkBlue">{insight.category}</div>
+                    )}
                   </div>
-                  <h3 className="font-heading font-bold text-2xl text-darkBlue mb-3 group-hover:text-primary transition-colors">
-                    <Link to="/insights/housing-toronto">Buying Your First Home in Toronto: A Newcomer's Guide</Link>
-                  </h3>
-                  <p className="text-gray-500 line-clamp-3">Navigating the GTA market as a new Permanent Resident. Understanding the foreign buyer ban exceptions and mortgage stress tests.</p>
-                </div>
-                <Link to="/insights/housing-toronto" className="mt-6 inline-flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase hover:gap-4 transition-all">
-                  Read Article <i className="fa-solid fa-arrow-right"></i>
-                </Link>
-              </div>
-            </article>
-
-            <article className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col md:flex-row h-full">
-              <div className="md:w-2/5 relative overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2669&auto=format&fit=crop" alt="Australia Jobs" className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg text-xs font-bold text-darkBlue">Career Advice</div>
-              </div>
-              <div className="p-8 md:w-3/5 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-3 text-xs text-gray-400 mb-4 font-mono">
-                    <span><i className="fa-regular fa-calendar"></i> Oct 20, 2025</span>
-                    <span><i className="fa-regular fa-clock"></i> 6 min read</span>
+                  <div className="p-8 md:w-3/5 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 text-xs text-gray-400 mb-4 font-mono">
+                        <span><i className="fa-regular fa-calendar"></i> {new Date(insight.createdAt).toLocaleDateString()}</span>
+                        <span><i className="fa-regular fa-clock"></i> 5 min read</span>
+                      </div>
+                      <h3 className="font-heading font-bold text-2xl text-darkBlue mb-3 group-hover:text-primary transition-colors">
+                        <Link to={`/insights/${insight.slug}`}>{insight.title}</Link>
+                      </h3>
+                      <p className="text-gray-500 line-clamp-3">{insight.excerpt}</p>
+                    </div>
+                    <Link to={`/insights/${insight.slug}`} className="mt-6 inline-flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase hover:gap-4 transition-all">
+                      Read Article <i className="fa-solid fa-arrow-right"></i>
+                    </Link>
                   </div>
-                  <h3 className="font-heading font-bold text-2xl text-darkBlue mb-3 group-hover:text-primary transition-colors">
-                    <Link to="/insights/jobs-australia">Ace Your Job Interview in Australia: Cultural Codes</Link>
-                  </h3>
-                  <p className="text-gray-500 line-clamp-3">Tall Poppy Syndrome, the 'Coffee Test', and why being too formal might cost you the job in Sydney or Melbourne.</p>
-                </div>
-                <Link to="/insights/jobs-australia" className="mt-6 inline-flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase hover:gap-4 transition-all">
-                  Read Article <i className="fa-solid fa-arrow-right"></i>
-                </Link>
-              </div>
-            </article>
+                </article>
+              ))
+            ) : (
+              <div className="col-span-2 text-center text-gray-400 py-10">No latest articles available.</div>
+            )}
           </div>
         </div>
       </section>
