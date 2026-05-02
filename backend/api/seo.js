@@ -36,18 +36,17 @@ The JSON must strictly follow this schema:
       response_format: { type: "json_object" }
     });
 
-    const responseContent = chatCompletion.choices[0]?.message?.content;
+    let rawResponse = chatCompletion.choices[0]?.message?.content || '{}';
     
-    if (!responseContent) {
-      throw new Error('No response from Groq API');
-    }
-
-    const seoData = JSON.parse(responseContent);
+    // Strip markdown code blocks if the LLM included them
+    const jsonString = rawResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
+    
+    const seoData = JSON.parse(jsonString);
     res.json(seoData);
     
   } catch (error) {
-    console.error('SEO Generation Error:', error);
-    res.status(500).json({ error: 'Failed to generate SEO metadata.' });
+    console.error('Groq SEO Error:', error);
+    res.status(500).json({ error: 'Failed to generate SEO', details: error.message });
   }
 });
 

@@ -16,7 +16,7 @@ const RichTextEditor = ({ value, onChange }) => {
   const formats = [
     'header',
     'bold', 'italic', 'underline',
-    'list', 'bullet',
+    'list',
     'link', 'image'
   ];
 
