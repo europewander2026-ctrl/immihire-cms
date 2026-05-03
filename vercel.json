@@ -18,6 +18,7 @@
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/immihire-cms/immi-admin/(.*)", "destination": "/immi-admin/index.html" },
     { "source": "/immihire-cms/(.*)", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
