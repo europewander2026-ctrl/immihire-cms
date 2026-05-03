@@ -10,6 +10,16 @@ const InsightDetail = () => {
   const [error, setError] = useState(null);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState([]);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScrollProgress = () => {
+      const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      setScrollProgress(scrolled);
+    };
+    window.addEventListener('scroll', handleScrollProgress);
+    return () => window.removeEventListener('scroll', handleScrollProgress);
+  }, []);
 
   useEffect(() => {
     const fetchInsight = async () => {
@@ -181,9 +191,9 @@ const InsightDetail = () => {
                   </div>
                   {/* Progress Bar */}
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
-                    <div className="bg-primary h-1.5 rounded-full" style={{ width: '0%' }}></div>
+                    <div className="bg-primary h-1.5 rounded-full" style={{ width: `${scrollProgress}%` }}></div>
                   </div>
-                  <p className="text-xs text-gray-400 text-right">Scroll to read</p>
+                  <p className="text-xs text-gray-400 text-right">{Math.round(scrollProgress || 0)}% Read</p>
                 </div>
 
                 {/* Share */}
@@ -211,11 +221,11 @@ const InsightDetail = () => {
                   switch (section.type) {
                     case 'standard':
                       return (
-                        <div key={index} dangerouslySetInnerHTML={{ __html: section.content }} />
+                        <p key={index} className={index === 0 ? "drop-cap" : ""} dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
                       );
                     case 'dropcap':
                       return (
-                        <div key={index} className="drop-cap" dangerouslySetInnerHTML={{ __html: section.content }} />
+                        <p key={index} className="drop-cap" dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
                       );
                     case 'heading':
                       return (
@@ -260,19 +270,19 @@ const InsightDetail = () => {
           <div className="container mx-auto px-6 max-w-5xl">
             <h3 className="font-heading font-bold text-3xl text-darkBlue mb-10 text-center">Continue Reading</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {relatedArticles.map((article, idx) => (
-                <Link to={`/insights/${article.slug}`} key={idx} className="group block">
-                  <div className="bg-gray-50 rounded-2xl overflow-hidden aspect-[4/3] mb-4 relative">
-                    <img src={article.featuredImage || "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2664&auto=format&fit=crop"} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-primary text-xs font-bold uppercase tracking-wider">{article.category || 'News'}</span>
-                    <span className="text-gray-400 text-xs">&bull; {Math.max(1, Math.ceil(JSON.stringify(article.sections || []).length / 1000))} Min Read</span>
-                  </div>
-                  <h4 className="font-heading font-bold text-lg text-darkBlue group-hover:text-primary transition-colors line-clamp-2">
-                    {article.title}
-                  </h4>
-                </Link>
+              {relatedArticles.map((relatedInsight) => (
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow" key={relatedInsight.id || relatedInsight.slug}>
+                    <div className="h-48 overflow-hidden">
+                        <img src={relatedInsight.featuredImage || relatedInsight.image || '/placeholder.jpg'} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" alt={relatedInsight.title} />
+                    </div>
+                    <div className="p-6">
+                        <span className="text-xs font-bold text-primary uppercase">{relatedInsight.category || 'Insight'}</span>
+                        <h4 className="font-heading font-bold text-lg mt-2 mb-4 line-clamp-2">
+                            <Link to={`/insights/${relatedInsight.slug}`} className="hover:text-primary transition-colors">{relatedInsight.title}</Link>
+                        </h4>
+                        <Link to={`/insights/${relatedInsight.slug}`} className="text-sm text-gray-500 hover:text-darkBlue flex items-center gap-2">Read Article <i className="fa-solid fa-arrow-right"></i></Link>
+                    </div>
+                </div>
               ))}
             </div>
           </div>
