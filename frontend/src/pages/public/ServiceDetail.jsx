@@ -4,6 +4,7 @@ import api from '../../utils/api';
 import SEOHead from '../../components/public/SEOHead';
 import EligibilityPulse from '../../components/sections/EligibilityPulse';
 import SpotlightCinema from '../../components/sections/SpotlightCinema';
+import SectionRenderer from '../../components/SectionRenderer';
 
 const ServiceDetail = () => {
   const { slug } = useParams();
@@ -99,43 +100,7 @@ const ServiceDetail = () => {
       <section className="py-20 relative">
         <div className="container mx-auto px-6 max-w-4xl">
           {Array.isArray(service.sections) && service.sections.length > 0 ? (
-            service.sections.map((section, index) => {
-              switch (section.type) {
-                case 'standard':
-                  return (
-                    <div key={index} className="article-content mb-8" dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
-                  );
-                case 'heading':
-                  return (
-                    <h2 key={index} className="font-heading font-bold text-3xl md:text-4xl text-darkBlue mb-6 mt-12">{section.heading || section.content}</h2>
-                  );
-                case 'quote':
-                  return (
-                    <div key={index} className="my-12 p-8 bg-blue-50 border-l-4 border-primary rounded-r-xl italic text-darkBlue font-serif text-lg">
-                      <div dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
-                    </div>
-                  );
-                case 'feature_list':
-                  return (
-                     <div key={index} className="my-8">
-                       <ul className="space-y-4">
-                         {(section.items || []).map((item, i) => (
-                            <li key={i} className="flex items-start gap-4">
-                              <i className="fa-solid fa-check text-green-500 mt-1"></i>
-                              <span className="text-gray-700">{item}</span>
-                            </li>
-                         ))}
-                       </ul>
-                     </div>
-                  );
-                case 'eligibility_pulse':
-                  return <EligibilityPulse key={index} />;
-                case 'spotlight_cinema':
-                  return <SpotlightCinema key={index} />;
-                default:
-                  return null;
-              }
-            })
+            <SectionRenderer sections={service.sections} />
           ) : (
             <div className="text-center text-gray-500 my-10 italic">More details coming soon.</div>
           )}

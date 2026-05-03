@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../../utils/api';
 import SEOHead from '../../components/public/SEOHead';
+import SectionRenderer from '../../components/SectionRenderer';
 
 const InsightDetail = () => {
   const { slug } = useParams();
@@ -219,46 +220,7 @@ const InsightDetail = () => {
             {/* Center: Article Body */}
             <div className="lg:w-2/3 article-content">
               {Array.isArray(insight.sections) && insight.sections.length > 0 ? (
-                insight.sections.map((section, index) => {
-                  switch (section.type) {
-                    case 'standard': {
-                      const isFirstStandard = index === insight.sections.findIndex(s => s.type === 'standard');
-                      return (
-                        <div key={index} className={`article-content ${isFirstStandard ? "drop-cap" : ""}`} dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
-                      );
-                    }
-                    case 'dropcap':
-                      return (
-                        <p key={index} className="drop-cap" dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
-                      );
-                    case 'heading':
-                      return (
-                        <h2 key={index}>{section.heading}</h2>
-                      );
-                    case 'quote':
-                      return (
-                        <div key={index} className="my-12 p-8 bg-blue-50 border-l-4 border-primary rounded-r-xl italic text-darkBlue font-serif text-lg">
-                          <div dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
-                        </div>
-                      );
-                    case 'verdict':
-                      return (
-                        <div className="mt-20 pt-10 border-t border-gray-200 text-center verdict-section" key={index}>
-                          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">ImmiHire Official Analysis</p>
-                          <div className="verdict-stamp">{section.content?.text || "VERDICT"}</div>
-                          <p className="mt-6 text-gray-600 max-w-lg mx-auto">{section.content?.description}</p>
-                        </div>
-                      );
-                    case 'counter':
-                      return (
-                        <p key={index} className="text-xl font-medium text-gray-800 text-center my-10">
-                          {section.heading}: <span className="live-counter">{section.subheading}</span>
-                        </p>
-                      );
-                    default:
-                      return null;
-                  }
-                })
+                <SectionRenderer sections={insight.sections} />
               ) : (
                 <div className="text-center text-gray-500 my-10 italic">This insight currently has no content.</div>
               )}
