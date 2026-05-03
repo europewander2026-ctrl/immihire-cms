@@ -13,14 +13,14 @@ const InsightDetail = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const handleScrollProgress = () => {
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-      setScrollProgress(scrollPercent);
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scroll = `${totalScroll / windowHeight * 100}`;
+      setScrollProgress(Number(scroll));
     };
-    window.addEventListener('scroll', handleScrollProgress);
-    return () => window.removeEventListener('scroll', handleScrollProgress);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -224,7 +224,7 @@ const InsightDetail = () => {
                     case 'standard': {
                       const isFirstStandard = index === insight.sections.findIndex(s => s.type === 'standard');
                       return (
-                        <p key={index} className={isFirstStandard ? "drop-cap" : ""} dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
+                        <div key={index} className={`article-content ${isFirstStandard ? "drop-cap" : ""}`} dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
                       );
                     }
                     case 'dropcap':
@@ -238,7 +238,7 @@ const InsightDetail = () => {
                     case 'quote':
                       return (
                         <div key={index} className="my-12 p-8 bg-blue-50 border-l-4 border-primary rounded-r-xl italic text-darkBlue font-serif text-lg">
-                          "{section.content}"
+                          <div dangerouslySetInnerHTML={{ __html: section.content?.text || section.content }} />
                         </div>
                       );
                     case 'verdict':
