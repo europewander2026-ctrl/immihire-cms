@@ -4,8 +4,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import api from './utils/api';
 
 import Home from './pages/public/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
+import About from './pages/public/About';
+import Contact from './pages/public/Contact';
 import BlogList from './pages/BlogList';
 
 import InsightDetail from './pages/public/InsightDetail';
