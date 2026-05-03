@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import api from './utils/api';
 
-import Home from './pages/Home';
+import Home from './pages/public/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import BlogList from './pages/BlogList';
