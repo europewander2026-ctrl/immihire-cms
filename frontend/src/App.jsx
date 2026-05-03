@@ -12,6 +12,9 @@ import InsightDetail from './pages/public/InsightDetail';
 import PageDetail from './pages/public/PageDetail';
 import Services from './pages/public/Services';
 import ServiceDetail from './pages/public/ServiceDetail';
+import Privacy from './pages/public/Privacy';
+import Terms from './pages/public/Terms';
+import NotFound from './pages/public/NotFound';
 import Layout from './components/layout/Layout';
 
 // --- App Component ---
@@ -53,12 +56,12 @@ function App() {
             <Route path="/insights" element={<BlogList />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/:slug" element={<PageDetail />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
-
-          {/* Fallback 404 */}
-          <Route path="*" element={<div className="p-10 text-center text-xl">404 - Page Not Found</div>} />
         </Routes>
       </BrowserRouter>
     </HelmetProvider>
