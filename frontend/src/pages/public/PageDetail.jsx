@@ -50,6 +50,14 @@ const PageDetail = () => {
 
   const sections = Array.isArray(page.sections) ? page.sections : [];
 
+  return (
+    <div className="bg-[#f8f9fa] text-gray-800 min-h-screen">
+      <SEOHead
+        title={page.seoTitle || page.title}
+        description={page.seoDescription}
+        keywords={page.seoKeywords}
+      />
+
       {sections.length > 0 ? (
         <SectionRenderer sections={sections} />
       ) : (
