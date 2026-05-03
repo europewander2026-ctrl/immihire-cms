@@ -11,6 +11,7 @@ import BlogList from './pages/BlogList';
 import InsightDetail from './pages/public/InsightDetail';
 import PageDetail from './pages/public/PageDetail';
 import Services from './pages/public/Services';
+import ServiceDetail from './pages/public/ServiceDetail';
 import Layout from './components/layout/Layout';
 
 // --- App Component ---
@@ -51,6 +52,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/insights" element={<BlogList />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/:slug" element={<PageDetail />} />
           </Route>
