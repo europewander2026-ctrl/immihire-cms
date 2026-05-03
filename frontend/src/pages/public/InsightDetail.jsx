@@ -8,6 +8,8 @@ const InsightDetail = () => {
   const [insight, setInsight] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFocusMode, setIsFocusMode] = useState(false);
+  const [relatedArticles, setRelatedArticles] = useState([]);
 
   useEffect(() => {
     const fetchInsight = async () => {
@@ -15,6 +17,12 @@ const InsightDetail = () => {
         setLoading(true);
         const res = await api.get(`/api/insights/${slug}`);
         setInsight(res.data);
+        
+        // Fetch all insights for related articles
+        const allRes = await api.get('/api/insights');
+        const allInsights = allRes.data;
+        const related = allInsights.filter(i => i.slug !== slug).slice(0, 3);
+        setRelatedArticles(related);
       } catch (err) {
         console.error('Failed to fetch insight:', err);
         setError('Article not found.');
@@ -24,6 +32,54 @@ const InsightDetail = () => {
     };
     fetchInsight();
   }, [slug]);
+
+  useEffect(() => {
+    if (isFocusMode) {
+      document.body.classList.add('focus-active');
+    } else {
+      document.body.classList.remove('focus-active');
+    }
+    return () => document.body.classList.remove('focus-active');
+  }, [isFocusMode]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const paragraphs = document.querySelectorAll('.article-content p');
+      const triggerBottom = window.innerHeight * 0.6; // Middle/lower part of viewport
+
+      paragraphs.forEach(p => {
+        const pTop = p.getBoundingClientRect().top;
+        if (pTop < triggerBottom) {
+          p.classList.add('in-view');
+        } else {
+          p.classList.remove('in-view');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [insight]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const stamp = entry.target.querySelector('.verdict-stamp');
+          if (stamp) stamp.classList.add('stamped');
+        }
+      });
+    }, { threshold: 0.5 });
+
+    const verdictSections = document.querySelectorAll('.verdict-section');
+    verdictSections.forEach(section => observer.observe(section));
+
+    return () => {
+      verdictSections.forEach(section => observer.unobserve(section));
+    };
+  }, [insight]);
 
   if (loading) {
     return (
@@ -110,6 +166,19 @@ const InsightDetail = () => {
                 {/* Reading Tools Card */}
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                   <h4 className="font-heading font-bold text-sm text-gray-400 uppercase tracking-widest mb-4">Reading Tools</h4>
+                  {/* Focus Mode Toggle */}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm font-medium text-gray-700">Focus Mode</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={isFocusMode}
+                        onChange={(e) => setIsFocusMode(e.target.checked)}
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
                   {/* Progress Bar */}
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
                     <div className="bg-primary h-1.5 rounded-full" style={{ width: '0%' }}></div>
@@ -119,9 +188,9 @@ const InsightDetail = () => {
 
                 {/* Share */}
                 <div className="flex gap-4 justify-center">
-                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-600 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-twitter"></i></button>
-                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-800 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-linkedin-in"></i></button>
-                  <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-whatsapp"></i></button>
+                  <a href={`https://twitter.com/intent/tweet?url=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-600 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-twitter"></i></a>
+                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-blue-800 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-linkedin-in"></i></a>
+                  <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-transparent transition-all"><i className="fa-brands fa-whatsapp"></i></a>
                 </div>
 
                 {/* Author Card */}
@@ -160,12 +229,10 @@ const InsightDetail = () => {
                       );
                     case 'verdict':
                       return (
-                        <div key={index} className="mt-20 pt-10 border-t border-gray-200 text-center">
+                        <div className="mt-20 pt-10 border-t border-gray-200 text-center verdict-section" key={index}>
                           <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">ImmiHire Official Analysis</p>
-                          <div className="verdict-stamp">{section.heading}</div>
-                          {section.content && (
-                            <div className="mt-6 text-gray-600 max-w-lg mx-auto" dangerouslySetInnerHTML={{ __html: section.content }} />
-                          )}
+                          <div className="verdict-stamp">{section.content?.text || "VERDICT"}</div>
+                          <p className="mt-6 text-gray-600 max-w-lg mx-auto">{section.content?.description}</p>
                         </div>
                       );
                     case 'counter':
@@ -186,6 +253,31 @@ const InsightDetail = () => {
           </div>
         </div>
       </section>
+
+      {/* Continue Reading Section */}
+      {relatedArticles.length > 0 && (
+        <section className="py-20 bg-white border-t border-gray-100">
+          <div className="container mx-auto px-6 max-w-5xl">
+            <h3 className="font-heading font-bold text-3xl text-darkBlue mb-10 text-center">Continue Reading</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {relatedArticles.map((article, idx) => (
+                <Link to={`/insights/${article.slug}`} key={idx} className="group block">
+                  <div className="bg-gray-50 rounded-2xl overflow-hidden aspect-[4/3] mb-4 relative">
+                    <img src={article.featuredImage || "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2664&auto=format&fit=crop"} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-primary text-xs font-bold uppercase tracking-wider">{article.category || 'News'}</span>
+                    <span className="text-gray-400 text-xs">&bull; {Math.max(1, Math.ceil(JSON.stringify(article.sections || []).length / 1000))} Min Read</span>
+                  </div>
+                  <h4 className="font-heading font-bold text-lg text-darkBlue group-hover:text-primary transition-colors line-clamp-2">
+                    {article.title}
+                  </h4>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 };
