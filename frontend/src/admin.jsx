@@ -8,6 +8,7 @@ import UserManagement from './pages/admin/UserManagement';
 import PagesManager from './pages/admin/PagesManager';
 import ServicesManager from './pages/admin/ServicesManager';
 import InsightsManager from './pages/admin/InsightsManager';
+import LeadsManager from './pages/admin/LeadsManager';
 import Profile from './pages/admin/Profile';
 import Login from './pages/admin/Login';
 import api from './utils/api';
@@ -103,6 +104,7 @@ const AdminApp = () => {
           }
         >
           <Route index element={<Consultations />} />
+          <Route path="leads" element={<LeadsManager />} />
           <Route path="pages" element={<PagesManager />} />
           <Route path="services" element={<ServicesManager />} />
           <Route path="insights" element={<InsightsManager />} />

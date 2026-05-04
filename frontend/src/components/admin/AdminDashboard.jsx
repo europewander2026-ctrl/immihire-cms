@@ -40,6 +40,8 @@ const AdminDashboard = () => {
         return 'Insights Manager';
       case '/settings':
         return 'Global Settings';
+      case '/leads':
+        return 'Inbox / Leads';
       case '/users':
         return 'User Management';
       case '/profile':
@@ -71,6 +73,18 @@ const AdminDashboard = () => {
           >
             <i className="fa-solid fa-comments w-5 text-center"></i>
             Consultations
+          </NavLink>
+
+          <NavLink 
+            to="/leads" 
+            className={({ isActive }) => 
+              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`
+            }
+          >
+            <i className="fa-solid fa-inbox w-5 text-center"></i>
+            Inbox / Leads
           </NavLink>
           
           <NavLink 
