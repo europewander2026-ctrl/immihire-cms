@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 
 const NotFound = () => {
   const [gameState, setGameState] = useState({ won: false, opened: [] });
@@ -40,7 +40,9 @@ const NotFound = () => {
       className="text-gray-800 bg-[#f8f9fa] overflow-hidden min-h-screen flex flex-col"
       style={{ animation: isShaking ? "shake 0.5s cubic-bezier(.36,.07,.19,.97) both" : "" }}
     >
-      <SEOHead title="404 - Visa Denied | ImmiHire" />
+      <Helmet>
+        <title>404 - Visa Denied | ImmiHire</title>
+      </Helmet>
 
       {/* Embedded CSS for this specific page component if it's not in global CSS */}
       <style>{`

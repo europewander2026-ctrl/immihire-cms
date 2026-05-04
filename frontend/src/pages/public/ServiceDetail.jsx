@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../../utils/api';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 import EligibilityPulse from '../../components/sections/EligibilityPulse';
 import SpotlightCinema from '../../components/sections/SpotlightCinema';
 import SectionRenderer from '../../components/SectionRenderer';
@@ -60,12 +60,10 @@ const ServiceDetail = () => {
 
   return (
     <div className="bg-[#f8f9fa] text-gray-800 overflow-x-hidden min-h-screen">
-      <SEOHead 
-        title={service.seoTitle || service.title}
-        description={service.seoDescription || service.excerpt || service.description}
-        keywords={service.seoKeywords}
-        image={service.featuredImage || service.heroImage}
-      />
+      <Helmet>
+        <title>{service.title} | ImmiHire Consultants</title>
+        <meta name="description" content={`Expert immigration pathways for ${service.title}.`} />
+      </Helmet>
 
       {/* Hero Section */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">

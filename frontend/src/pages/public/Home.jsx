@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 import SectionRenderer from '../../components/SectionRenderer';
 
 const Home = () => {
@@ -37,11 +37,10 @@ const Home = () => {
 
   return (
     <div className="text-gray-800 overflow-x-hidden min-h-screen bg-[#f8f9fa]">
-      <SEOHead 
-        title={pageData?.seoTitle || "ImmiHire | Best Immigration Services in Dubai"}
-        description={pageData?.seoDescription || "ImmiHire is Dubai's premier immigration consultancy."}
-        keywords={pageData?.seoKeywords}
-      />
+      <Helmet>
+        <title>{pageData?.title || 'ImmiHire'} | Best Immigration Services in Dubai</title>
+        <meta name="description" content={`Welcome to ImmiHire.`} />
+      </Helmet>
       <main>
         {pageData && pageData.sections ? (
           <SectionRenderer sections={pageData.sections} />

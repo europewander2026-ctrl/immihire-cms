@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 
 const Privacy = () => {
   useEffect(() => {
@@ -46,7 +46,9 @@ const Privacy = () => {
 
   return (
     <div className="text-gray-800 bg-gray-50 min-h-screen overflow-x-hidden">
-      <SEOHead title="Privacy Policy | ImmiHire" />
+      <Helmet>
+        <title>Privacy Policy | ImmiHire</title>
+      </Helmet>
 
       <style>{`
         /* Policy Container */

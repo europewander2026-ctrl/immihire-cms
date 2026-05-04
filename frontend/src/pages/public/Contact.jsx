@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -231,10 +231,10 @@ const Contact = () => {
 
   return (
     <div className="text-gray-800 overflow-x-hidden min-h-screen relative">
-      <SEOHead 
-        title="Contact Us | ImmiHire"
-        description="Contact ImmiHire for a free consultation. Locate our offices in Dubai and Toronto. Call +971 50 752 6626 or email info@immihire.com."
-      />
+      <Helmet>
+        <title>Contact Us | ImmiHire</title>
+        <meta name="description" content="Contact ImmiHire for a free consultation. Locate our offices in Dubai and Toronto. Call +971 50 752 6626 or email info@immihire.com." />
+      </Helmet>
 
       <style>{`
         #globe-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 0; background: #000814; }

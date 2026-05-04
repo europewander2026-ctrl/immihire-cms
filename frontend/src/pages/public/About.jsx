@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 import KineticAccordion from '../../components/sections/KineticAccordion';
 
 const About = () => {
@@ -56,10 +56,10 @@ const About = () => {
 
   return (
     <div className="text-gray-800 bg-[#f8f9fa] min-h-screen overflow-x-hidden">
-      <SEOHead 
-        title="About Us | ImmiHire"
-        description="Learn about ImmiHire, the trusted immigration experts in Dubai. With 10+ years of experience and a 98% success rate, we bridge talent to global opportunities."
-      />
+      <Helmet>
+        <title>About Us | ImmiHire</title>
+        <meta name="description" content="Learn about ImmiHire, the trusted immigration experts in Dubai. With 10+ years of experience and a 98% success rate, we bridge talent to global opportunities." />
+      </Helmet>
 
       <style>{`
         .dna-strand {

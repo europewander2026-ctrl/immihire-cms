@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SpotlightCinema from '../../components/sections/SpotlightCinema';
 import EligibilityPulse from '../../components/sections/EligibilityPulse';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 
 const faqData = [
   {
@@ -52,10 +52,10 @@ const Services = () => {
 
   return (
     <div className="bg-[#f8f9fa] text-gray-800 overflow-x-hidden min-h-screen">
-      <SEOHead 
-        title="Our Services | ImmiHire"
-        description="Explore our immigration services: Canada PR, Australia Skilled Migration, USA Visit Visas, Germany Opportunity Card, and Schengen Work Permits."
-      />
+      <Helmet>
+        <title>Our Services | ImmiHire</title>
+        <meta name="description" content="Explore our immigration services: Canada PR, Australia Skilled Migration, USA Visit Visas, Germany Opportunity Card, and Schengen Work Permits." />
+      </Helmet>
 
       {/* Section 1: Simple Hero */}
       <section className="pt-48 pb-20 bg-white text-center">

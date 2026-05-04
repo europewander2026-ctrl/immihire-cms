@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../../utils/api';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 import SectionRenderer from '../../components/SectionRenderer';
 
 const InsightDetail = () => {
@@ -126,12 +126,10 @@ const InsightDetail = () => {
 
   return (
     <div className="bg-[#f8f9fa] text-gray-800 overflow-x-hidden min-h-screen">
-      <SEOHead 
-        title={insight.seoTitle || insight.title}
-        description={insight.seoDescription || insight.excerpt}
-        keywords={insight.seoKeywords}
-        image={insight.featuredImage}
-      />
+      <Helmet>
+        <title>{insight.title} | ImmiHire Consultants</title>
+        <meta name="description" content={`Insight: ${insight.title} at ImmiHire.`} />
+      </Helmet>
 
       {/* Hero Section */}
       <section className="hero-section relative pt-48 pb-24 bg-[#000814] text-white overflow-hidden">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../../utils/api';
-import SEOHead from '../../components/public/SEOHead';
+import { Helmet } from 'react-helmet-async';
 
 import SectionRenderer from '../../components/SectionRenderer';
 
@@ -52,11 +52,10 @@ const PageDetail = () => {
 
   return (
     <div className="bg-[#f8f9fa] text-gray-800 min-h-screen">
-      <SEOHead
-        title={page.seoTitle || page.title}
-        description={page.seoDescription}
-        keywords={page.seoKeywords}
-      />
+      <Helmet>
+        <title>{page.title} | ImmiHire Consultants</title>
+        <meta name="description" content={`Read more about ${page.title} at ImmiHire.`} />
+      </Helmet>
 
       {sections.length > 0 ? (
         <SectionRenderer sections={sections} />
