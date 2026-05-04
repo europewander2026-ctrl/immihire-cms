@@ -41,6 +41,44 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// --- Basic Token Gate (For Serverless Admin API) ---
+const AdminTokenGate = ({ children }) => {
+  const [token, setToken] = useState(localStorage.getItem('admin_token'));
+  const [inputValue, setInputValue] = useState('');
+
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm text-center">
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Admin API Access</h2>
+          <p className="text-sm text-gray-500 mb-6">Enter the serverless admin secret to continue.</p>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (inputValue.trim()) {
+              localStorage.setItem('admin_token', inputValue.trim());
+              setToken(inputValue.trim());
+              window.location.reload();
+            }
+          }}>
+            <input 
+              type="password" 
+              placeholder="Admin Secret" 
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <button type="submit" className="w-full bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              Unlock
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  return children;
+};
+
 // --- Minimal Auth Layout Wrapper ---
 const MinimalAuthLayout = ({ children }) => {
   return (
@@ -79,6 +117,8 @@ const AdminApp = () => {
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AdminApp />
+    <AdminTokenGate>
+      <AdminApp />
+    </AdminTokenGate>
   </React.StrictMode>
 );

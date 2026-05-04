@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import { adminApi } from '../../services/adminApi';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 
 const PagesManager = () => {
@@ -105,12 +106,24 @@ const PagesManager = () => {
         throw new Error('Invalid JSON in Google Schema field.');
       }
 
-      await api.put(`/api/pages/${selectedPage.slug}`, {
-        ...formData,
-        googleSchema: parsedSchema
-      });
+      const payload = {
+        id: selectedPage.id,
+        type: 'page',
+        slug: selectedPage.slug,
+        title: formData.title,
+        hero_image_url: formData.sections.find(s => s.type === 'hero')?.image || '',
+        content: {
+          sections: formData.sections,
+          seoTitle: formData.seoTitle,
+          seoDescription: formData.seoDescription,
+          seoKeywords: formData.seoKeywords,
+          googleSchema: parsedSchema
+        }
+      };
 
-      setMessage('Page saved successfully!');
+      await adminApi.saveContent(payload, !selectedPage.isNew);
+
+      setMessage('Published Successfully!');
       fetchPages(); // Refresh list to update titles
       setTimeout(() => { 
         setMessage(''); 
