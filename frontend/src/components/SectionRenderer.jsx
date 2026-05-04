@@ -2,6 +2,9 @@ import React from 'react';
 import SpotlightCinema from './sections/SpotlightCinema';
 import EligibilityPulse from './sections/EligibilityPulse';
 import KineticAccordion from './sections/KineticAccordion';
+import HeroSection from './sections/HeroSection';
+import ServicesGrid from './sections/ServicesGrid';
+import StatsBanner from './sections/StatsBanner';
 
 const SectionRenderer = ({ sections }) => {
   if (!sections || !Array.isArray(sections)) return null;
@@ -69,33 +72,15 @@ const SectionRenderer = ({ sections }) => {
         );
         
       case 'hero':
-        return (
-          <section key={index} className="relative pt-48 pb-24 bg-[#000814] text-white overflow-hidden -mt-20 mb-20 rounded-b-[3rem]">
-            {section.image && (
-              <>
-                <div className="absolute inset-0 opacity-40">
-                  <img src={section.image} alt={section.heading} className="w-full h-full object-cover" />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#000814] via-[#000814]/80 to-transparent"></div>
-              </>
-            )}
-            <div className="container mx-auto px-6 relative z-10 max-w-4xl text-center">
-              {section.subheading && (
-                <span className="bg-primary/20 text-blue-300 border border-primary/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6 inline-block">
-                  {section.subheading}
-                </span>
-              )}
-              <h1 className="font-heading font-bold text-4xl md:text-6xl leading-tight mb-8">
-                {section.heading}
-              </h1>
-              {sectionContent && (
-                <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                  {typeof sectionContent === 'string' ? sectionContent.replace(/<[^>]*>?/gm, '') : ''}
-                </p>
-              )}
-            </div>
-          </section>
-        );
+        return <HeroSection key={index} {...(section.data || section.content || {})} />;
+        
+      case 'services-grid':
+      case 'services_grid':
+        return <ServicesGrid key={index} {...(section.data || section.content || {})} />;
+        
+      case 'stats-banner':
+      case 'stats_banner':
+        return <StatsBanner key={index} {...(section.data || section.content || {})} />;
 
       case 'spotlight-cinema':
       case 'spotlight_cinema':
