@@ -5,6 +5,11 @@ import KineticAccordion from './sections/KineticAccordion';
 import HeroSection from './sections/HeroSection';
 import ServicesGrid from './sections/ServicesGrid';
 import StatsBanner from './sections/StatsBanner';
+import MissionVision from './sections/MissionVision';
+import TeamGrid from './sections/TeamGrid';
+import ContactWidget from './sections/ContactWidget';
+import LocationCards from './sections/LocationCards';
+import ServiceCatalog from './sections/ServiceCatalog';
 
 const SectionRenderer = ({ sections }) => {
   if (!sections || !Array.isArray(sections)) return null;
@@ -92,6 +97,21 @@ const SectionRenderer = ({ sections }) => {
         
       case 'kinetic-accordion':
         return <KineticAccordion key={index} panels={section.data?.panels || section.content?.panels || section.panels} heading={section.heading} subtitle={section.subheading} />;
+
+      case 'mission-vision':
+        return <MissionVision key={index} {...(section.data || section.content || {})} />;
+
+      case 'team-grid':
+        return <TeamGrid key={index} {...(section.data || section.content || {})} />;
+
+      case 'contact-widget':
+        return <ContactWidget key={index} {...(section.data || section.content || {})} />;
+
+      case 'location-cards':
+        return <LocationCards key={index} {...(section.data || section.content || {})} />;
+
+      case 'service-catalog':
+        return <ServiceCatalog key={index} {...(section.data || section.content || {})} />;
         
       default:
         console.warn(`Unknown section type: ${section.type}`);
