@@ -16,8 +16,12 @@ export const adminApi = {
       headers: getHeaders(),
       body: JSON.stringify(data)
     });
-    
+
+    const contentType = response.headers.get("content-type");
     if (!response.ok) {
+      if (contentType && contentType.includes("text/html")) {
+        throw new Error("API Route Not Found (404) - Server returned HTML instead of JSON. Check deployment environment.");
+      }
       const errorData = await response.json();
       throw new Error(errorData.message || 'Failed to save content');
     }
@@ -48,6 +52,26 @@ export const adminApi = {
       body: JSON.stringify({ id, status })
     });
     if (!response.ok) throw new Error('Failed to update lead status');
+    return response.json();
+  },
+
+  uploadImage: async (file) => {
+    const token = localStorage.getItem('admin_token');
+    const response = await fetch(`${API_BASE}/upload?filename=${encodeURIComponent(file.name)}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: file,
+    });
+    const contentType = response.headers.get("content-type");
+    if (!response.ok) {
+      if (contentType && contentType.includes("text/html")) {
+        throw new Error("Upload API not found. Check Vercel deployment.");
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Upload failed');
+    }
     return response.json();
   }
 };

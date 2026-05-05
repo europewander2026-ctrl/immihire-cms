@@ -4,6 +4,28 @@ import api from '../../utils/api';
 import { adminApi } from '../../services/adminApi';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 
+// Reusable Image Upload Field
+const ImageUploadField = ({ label, value, onChange, uploading }) => (
+  <div>
+    <label className="block text-xs font-medium text-gray-500 mb-1">{label}</label>
+    {value && <img src={value} alt="Preview" className="w-full max-h-32 object-cover rounded-lg mb-2 border" />}
+    <div className="flex gap-2">
+      <input type="text" value={value || ''} onChange={(e) => onChange(e.target.value)} className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm" placeholder="https://... or upload" />
+      <label className={`cursor-pointer bg-blue-50 text-blue-600 px-3 py-2 rounded-md text-sm font-medium border border-blue-200 hover:bg-blue-100 transition-colors flex items-center gap-1 ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+        <i className={`fa-solid ${uploading ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'}`}></i>
+        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          try {
+            const res = await adminApi.uploadImage(file);
+            onChange(res.url);
+          } catch (err) { alert('Upload failed: ' + err.message); }
+        }} />
+      </label>
+    </div>
+  </div>
+);
+
 const PagesManager = () => {
   const navigate = useNavigate();
   const [pages, setPages] = useState([]);
@@ -12,6 +34,7 @@ const PagesManager = () => {
   const [saving, setSaving] = useState(false);
   const [isGeneratingSEO, setIsGeneratingSEO] = useState(false);
   const [message, setMessage] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -194,6 +217,14 @@ const PagesManager = () => {
       newSection.content = { categories: [] };
     } else if (type === 'eligibility-pulse') {
       newSection.heading = 'What are your odds?';
+    } else if (type === 'home-hero') {
+      newSection.data = { titlePart1: 'Best Immigration', titleHighlight: 'Services in Dubai', subtitle: 'ImmiHire Immigration and Management Consultants', description: '', bgImage: '' };
+    } else if (type === 'home-about') {
+      newSection.data = { badgeNumber: '10+', badgeText: 'Years of\nExcellence', tagline: 'Who We Are', titleStandard: 'Bridging Talent to', titleHighlight: 'Global Opportunity', description: '', image: '', features: ['Licensed & Certified Consultants', 'Transparent, Flat-Fee Pricing', 'End-to-End Resettlement Support'], ctaText: 'Read Our Story', ctaLink: '/about' };
+    } else if (type === 'countries-bento') {
+      newSection.data = { title: 'Our Countries', subtitle: 'Migrate for a better future. Explore your options.', countries: [] };
+    } else if (type === 'journey-section') {
+      newSection.data = { tagline: 'The Journey', titleStandard: 'How We', titleHighlight: 'Make It Happen', steps: [] };
     }
 
     setFormData(prev => ({
@@ -292,6 +323,10 @@ const PagesManager = () => {
                     <button type="button" onClick={() => addSection('kinetic-accordion')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-bars-staggered mr-1"></i> Accordion</button>
                     <button type="button" onClick={() => addSection('spotlight-cinema')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-film mr-1"></i> Cinema</button>
                     <button type="button" onClick={() => addSection('eligibility-pulse')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-gauge-high mr-1"></i> Pulse</button>
+                    <button type="button" onClick={() => addSection('home-hero')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-plane mr-1"></i> HomeHero</button>
+                    <button type="button" onClick={() => addSection('home-about')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-users mr-1"></i> About</button>
+                    <button type="button" onClick={() => addSection('countries-bento')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-globe mr-1"></i> Countries</button>
+                    <button type="button" onClick={() => addSection('journey-section')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-route mr-1"></i> Journey</button>
                   </div>
                 </div>
 
@@ -344,6 +379,52 @@ const PagesManager = () => {
                             <p className="text-sm text-emerald-600">Interactive gauge calculator with experience slider and education selector.</p>
                             <p className="text-xs text-emerald-400 mt-3">Self-contained component — no configuration needed.</p>
                           </div>
+                        ) : section.type === 'home-hero' ? (
+                          <div className="bg-sky-50 border border-sky-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-plane text-2xl text-sky-400"></i><h4 className="font-bold text-sky-800">Homepage Hero Widget</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div><label className="block text-xs font-medium text-sky-600 mb-1">Title Part 1</label><input type="text" value={section.data?.titlePart1 || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titlePart1: e.target.value})} className="w-full px-3 py-2 border border-sky-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-sky-600 mb-1">Title Highlight</label><input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-sky-200 rounded-md text-sm" /></div>
+                            </div>
+                            <div><label className="block text-xs font-medium text-sky-600 mb-1">Subtitle</label><input type="text" value={section.data?.subtitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), subtitle: e.target.value})} className="w-full px-3 py-2 border border-sky-200 rounded-md text-sm" /></div>
+                            <div><label className="block text-xs font-medium text-sky-600 mb-1">Description</label><textarea value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} rows="2" className="w-full px-3 py-2 border border-sky-200 rounded-md text-sm" /></div>
+                            <ImageUploadField label="Background Image" value={section.data?.bgImage || ''} onChange={(url) => updateSection(index, 'data', {...(section.data||{}), bgImage: url})} uploading={uploadingImage} />
+                          </div>
+                        ) : section.type === 'home-about' ? (
+                          <div className="bg-teal-50 border border-teal-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-users text-2xl text-teal-400"></i><h4 className="font-bold text-teal-800">About Section</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div><label className="block text-xs font-medium text-teal-600 mb-1">Badge Number</label><input type="text" value={section.data?.badgeNumber || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeNumber: e.target.value})} className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-teal-600 mb-1">Badge Text</label><input type="text" value={section.data?.badgeText || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeText: e.target.value})} className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-teal-600 mb-1">Tagline</label><input type="text" value={section.data?.tagline || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), tagline: e.target.value})} className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div><label className="block text-xs font-medium text-teal-600 mb-1">Title Standard</label><input type="text" value={section.data?.titleStandard || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleStandard: e.target.value})} className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-teal-600 mb-1">Title Highlight</label><input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
+                            </div>
+                            <div><label className="block text-xs font-medium text-teal-600 mb-1">Description</label><textarea value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} rows="3" className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
+                            <ImageUploadField label="About Image" value={section.data?.image || ''} onChange={(url) => updateSection(index, 'data', {...(section.data||{}), image: url})} uploading={uploadingImage} />
+                            <div><label className="block text-xs font-medium text-teal-600 mb-1">Features (one per line)</label><textarea value={(section.data?.features || []).join('\n')} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), features: e.target.value.split('\n').filter(Boolean)})} rows="3" className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" placeholder="Licensed & Certified\nTransparent Pricing" /></div>
+                          </div>
+                        ) : section.type === 'countries-bento' ? (
+                          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-globe text-2xl text-amber-500"></i><h4 className="font-bold text-amber-800">Countries Bento Grid</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div><label className="block text-xs font-medium text-amber-600 mb-1">Section Title</label><input type="text" value={section.data?.title || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), title: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-amber-600 mb-1">Subtitle</label><input type="text" value={section.data?.subtitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), subtitle: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                            </div>
+                            <p className="text-xs text-amber-500">Countries use default data. Override via JSON in the countries array prop.</p>
+                          </div>
+                        ) : section.type === 'journey-section' ? (
+                          <div className="bg-violet-50 border border-violet-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-route text-2xl text-violet-400"></i><h4 className="font-bold text-violet-800">Journey Section</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div><label className="block text-xs font-medium text-violet-600 mb-1">Tagline</label><input type="text" value={section.data?.tagline || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), tagline: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-violet-600 mb-1">Title Standard</label><input type="text" value={section.data?.titleStandard || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleStandard: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-violet-600 mb-1">Title Highlight</label><input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
+                            </div>
+                            <p className="text-xs text-violet-500">Steps use default data. Override via JSON in the steps array prop.</p>
+                          </div>
                         ) : (
                           /* Default editor for standard section types */
                           <>
@@ -358,10 +439,7 @@ const PagesManager = () => {
                               </div>
                             </div>
                             {['hero', 'featureList'].includes(section.type) && (
-                              <div>
-                                <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
-                                <input type="text" value={section.image || ''} onChange={(e) => updateSection(index, 'image', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="https://" />
-                              </div>
+                              <ImageUploadField label="Image" value={section.image || ''} onChange={(url) => updateSection(index, 'image', url)} uploading={uploadingImage} />
                             )}
                             <div>
                               <label className="block text-xs font-medium text-gray-500 mb-1">Content</label>

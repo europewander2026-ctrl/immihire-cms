@@ -1,0 +1,24 @@
+{
+  "name": "immihire-cms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/europewander2026-ctrl/immihire-cms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/europewander2026-ctrl/immihire-cms/issues"
+  },
+  "homepage": "https://github.com/europewander2026-ctrl/immihire-cms#readme",
+  "dependencies": {
+    "@vercel/blob": "^2.3.3"
+  }
+}
