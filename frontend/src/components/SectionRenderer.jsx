@@ -10,6 +10,7 @@ import TeamGrid from './sections/TeamGrid';
 import ContactWidget from './sections/ContactWidget';
 import LocationCards from './sections/LocationCards';
 import ServiceCatalog from './sections/ServiceCatalog';
+import HomeHeroWidget from './sections/HomeHeroWidget';
 
 const SectionRenderer = ({ sections }) => {
   if (!sections || !Array.isArray(sections)) return null;
@@ -112,6 +113,9 @@ const SectionRenderer = ({ sections }) => {
 
       case 'service-catalog':
         return <ServiceCatalog key={index} {...(section.data || section.content || {})} />;
+
+      case 'home-hero':
+        return <HomeHeroWidget key={index} {...(section.data || section.content || {})} />;
         
       default:
         console.warn(`Unknown section type: ${section.type}`);

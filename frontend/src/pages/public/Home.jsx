@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../utils/api';
 import { Helmet } from 'react-helmet-async';
 import SectionRenderer from '../../components/SectionRenderer';
+import HomeHeroWidget from '../../components/sections/HomeHeroWidget';
 
 const Home = () => {
   const [pageData, setPageData] = useState(null);
@@ -39,13 +40,13 @@ const Home = () => {
     <div className="text-gray-800 overflow-x-hidden min-h-screen bg-[#f8f9fa]">
       <Helmet>
         <title>{pageData?.title || 'ImmiHire'} | Best Immigration Services in Dubai</title>
-        <meta name="description" content={`Welcome to ImmiHire.`} />
+        <meta name="description" content="ImmiHire is Dubai's premier immigration consultancy. We specialize in Canada Express Entry, Australia SkillSelect, USA Business Visas, and European Work Permits." />
       </Helmet>
       <main>
         {pageData && pageData.sections ? (
           <SectionRenderer sections={pageData.sections} />
         ) : (
-          <div className="text-center py-20">Homepage content not found.</div>
+          <HomeHeroWidget />
         )}
       </main>
     </div>
