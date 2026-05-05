@@ -11,6 +11,9 @@ import ContactWidget from './sections/ContactWidget';
 import LocationCards from './sections/LocationCards';
 import ServiceCatalog from './sections/ServiceCatalog';
 import HomeHeroWidget from './sections/HomeHeroWidget';
+import HomeAbout from './sections/HomeAbout';
+import CountriesBentoGrid from './sections/CountriesBentoGrid';
+import JourneySection from './sections/JourneySection';
 
 const SectionRenderer = ({ sections }) => {
   if (!sections || !Array.isArray(sections)) return null;
@@ -116,6 +119,15 @@ const SectionRenderer = ({ sections }) => {
 
       case 'home-hero':
         return <HomeHeroWidget key={index} {...(section.data || section.content || {})} />;
+
+      case 'home-about':
+        return <HomeAbout key={index} {...(section.data || section.content || {})} />;
+
+      case 'countries-bento':
+        return <CountriesBentoGrid key={index} {...(section.data || section.content || {})} />;
+
+      case 'journey-section':
+        return <JourneySection key={index} {...(section.data || section.content || {})} />;
         
       default:
         console.warn(`Unknown section type: ${section.type}`);
