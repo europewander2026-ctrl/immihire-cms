@@ -1,7 +1,7 @@
-import { sql } from './_utils/db.js';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
@@ -9,24 +9,23 @@ export default async function handler(req, res) {
   try {
     const { name, email, phone, subject, message } = req.body;
 
-    // Basic validation
     if (!name || !email || !message) {
       return res.status(400).json({ message: 'Name, email, and message are required.' });
     }
 
-    // Insert into leads table
-    const result = await sql`
-      INSERT INTO leads (name, email, phone, subject, message, status)
-      VALUES (${name}, ${email}, ${phone || null}, ${subject || 'General Inquiry'}, ${message}, 'New')
-      RETURNING id, name, email, created_at
-    `;
-
-    return res.status(201).json({
-      message: 'Your inquiry has been submitted successfully.',
-      lead: result[0]
+    const newLead = await prisma.consultation.create({
+      data: {
+        name,
+        email,
+        phone,
+        service: subject || 'General Inquiry',
+        message,
+      },
     });
+
+    return res.status(200).json({ success: true, lead: newLead });
   } catch (error) {
-    console.error('Contact API Error:', error);
-    return res.status(500).json({ message: 'Internal Server Error. Please try again later.' });
+    console.error('Lead capture error:', error);
+    return res.status(500).json({ message: 'Failed to submit consultation request' });
   }
 }

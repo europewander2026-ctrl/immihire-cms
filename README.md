@@ -21,7 +21,7 @@ To run this project locally or in production, the following variables must be se
 - `BLOB_READ_WRITE_TOKEN`="vercel_blob_rw_..."
 
 ## 🗄 Database Schema (PostgreSQL)
-The application relies on two primary tables in Neon DB:
+The application uses **Prisma ORM** for all database interactions, providing type-safe queries and easy migrations. The schema is defined in `prisma/schema.prisma` and managed via Neon (Serverless PostgreSQL).
 
 ### 1. Content Table (The CMS)
 ```sql
@@ -61,5 +61,5 @@ This application uses a modular `SectionRenderer` to dynamically build pages.
 
 ## 📡 API Routes
 All backend logic is handled via Vercel Serverless Functions (`/api/*`):
-*   **Public Routes:** `GET /api/page`, `GET /api/services`, `POST /api/contact`
-*   **Protected Admin Routes (Requires Bearer Token):** `POST/PUT/DELETE /api/admin/content`, `GET/PUT /api/admin/leads`, `POST /api/admin/upload`
+*   **Public Routes:** `/api/services`, `/api/seo`, `/api/contact`
+*   **Protected Admin Routes (Requires Bearer Token):** `/api/admin/content`, `/api/admin/leads`, `/api/admin/upload`, etc.
