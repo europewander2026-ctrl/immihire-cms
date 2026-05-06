@@ -1,5 +1,5 @@
 const { parse } = require('json2csv');
-const { sendMail } = require('../utils/mailer');
+const { sendMail } = require('../../utils/mailer');
 
 module.exports = function(app, prisma, requireAuth) {
   // POST: Public endpoint to save consultation and send email

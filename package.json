@@ -2,9 +2,11 @@
   "name": "immihire-cms",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "api/admin/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma generate",
+    "seed": "node seed.js"
   },
   "repository": {
     "type": "git",
@@ -13,12 +15,32 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/europewander2026-ctrl/immihire-cms/issues"
   },
   "homepage": "https://github.com/europewander2026-ctrl/immihire-cms#readme",
   "dependencies": {
-    "@vercel/blob": "^2.3.3"
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@vercel/blob": "^2.3.3",
+    "axios": "^1.15.2",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "groq-sdk": "^1.1.2",
+    "helmet": "^8.1.0",
+    "json2csv": "^6.0.0-alpha.2",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
+    "nodemailer": "^8.0.7",
+    "pg": "^8.20.0",
+    "zod": "^4.4.1"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0"
   }
 }
