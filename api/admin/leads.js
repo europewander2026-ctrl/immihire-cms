@@ -1,7 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../../utils/db');
 const jwt = require('jsonwebtoken');
-
-const prisma = new PrismaClient();
 
 const requireAuth = (req) => {
   const token = req.cookies?.jwt || req.headers.cookie?.split('jwt=')[1]?.split(';')[0];

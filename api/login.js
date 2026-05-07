@@ -1,10 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('../utils/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 const cookie = require('cookie');
-
-const prisma = new PrismaClient();
 
 const loginSchema = z.object({
   email: z.string().email(),
