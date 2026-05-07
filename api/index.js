@@ -23,12 +23,16 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cookieParser());
 
-// Global CORS OPTIONS handling
-app.options('*', (req, res) => {
-  res.status(200).end();
+// Handle CORS preflight globally without relying on path-to-regexp wildcards
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
 });
+
+app.use(cookieParser());
 
 // Auth Middleware for sub-modules
 const requireAuth = (req, res, next) => {
