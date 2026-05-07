@@ -16,7 +16,7 @@ The platform is split into two main environments:
 
 ## 🔑 Environment Variables
 To run this project locally or in production, the following variables must be set in your `.env` file and Vercel Project Settings:
-- `DATABASE_URL`="postgresql://user:password@endpoint.neon.tech/dbname?sslmode=require"
+- `DATABASE_URL`="postgresql://user:password@endpoint.neon.tech/dbname?sslmode=verify-full"
 - `ADMIN_SECRET`="your_super_secure_password"
 - `BLOB_READ_WRITE_TOKEN`="vercel_blob_rw_..."
 
