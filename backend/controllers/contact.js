@@ -1,4 +1,4 @@
-const prisma = require('../utils/db');
+const prisma = require('../../utils/db');
 
 module.exports = async function handler(req, res) {
   // Handle CORS preflight request

@@ -1,4 +1,4 @@
-const prisma = require('../utils/db');
+const prisma = require('../../utils/db');
 const jwt = require('jsonwebtoken');
 
 module.exports = async function handler(req, res) {
