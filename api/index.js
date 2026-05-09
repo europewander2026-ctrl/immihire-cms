@@ -68,7 +68,7 @@ consultationsInit(app, prisma, requireAuth);
 app.use('/api/seo', requireAuth, seoInit);
 
 // Default 404 for API
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res) => {
   res.status(404).json({ error: `API route ${req.originalUrl} not found` });
 });
 
