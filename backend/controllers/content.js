@@ -6,7 +6,13 @@ const requireAuth = (req) => {
   if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     token = req.headers.authorization.split(' ')[1];
   }
-  if (!token) throw new Error('Unauthorized');
+  
+  if (!token || token === 'null' || token === 'undefined') {
+    throw new Error('Unauthorized');
+  }
+  
+  token = token.replace(/^"|"$/g, '');
+  
   return jwt.verify(token, process.env.JWT_SECRET);
 };
 

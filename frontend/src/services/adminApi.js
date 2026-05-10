@@ -1,10 +1,13 @@
 const API_BASE = `${import.meta.env.VITE_API_URL || 'https://immihire-cms.vercel.app'}/api/admin`;
 
 const getHeaders = () => {
-  const token = localStorage.getItem('admin_token');
+  let rawToken = localStorage.getItem('admin_token') || '';
+  let cleanToken = rawToken.replace(/^"|"$/g, '');
+  cleanToken = cleanToken.replace(/^Bearer\s+/i, '');
+
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    'Authorization': `Bearer ${cleanToken}`
   };
 };
 
@@ -56,14 +59,17 @@ export const adminApi = {
   },
 
   uploadImage: async (file) => {
-    const token = localStorage.getItem('admin_token');
+    let rawToken = localStorage.getItem('admin_token') || '';
+    let cleanToken = rawToken.replace(/^"|"$/g, '');
+    cleanToken = cleanToken.replace(/^Bearer\s+/i, '');
+
     const formData = new FormData();
     formData.append('file', file);
 
     const response = await fetch(`${API_BASE}/upload?filename=${encodeURIComponent(file.name)}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${cleanToken}`
       },
       body: formData,
     });
