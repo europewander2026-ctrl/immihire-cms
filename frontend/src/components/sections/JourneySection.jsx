@@ -41,6 +41,9 @@ const JourneySection = ({
           background-color: #000814; 
           overflow: hidden;
         }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         .process-card {
           padding: 3rem;
           background: rgba(255, 255, 255, 0.05); 
@@ -79,9 +82,9 @@ const JourneySection = ({
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+          <div className="flex flex-row overflow-x-auto snap-x snap-mandatory gap-8 mb-20 pb-10 hide-scrollbar">
             {renderSteps.map((step, i) => (
-              <div key={i} className="process-card text-white group">
+              <div key={i} className="process-card text-white group min-w-[320px] md:min-w-[400px] flex-shrink-0 snap-center">
                 <span className="step-number">{step.number || `0${i+1}`}</span>
                 <div className="relative z-10">
                   <div className={`w-16 h-16 ${step.iconBg || 'bg-blue-600'} rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-glow transition-transform group-hover:scale-110`}>
