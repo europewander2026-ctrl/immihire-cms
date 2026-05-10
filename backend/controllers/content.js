@@ -34,7 +34,14 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'POST' || req.method === 'PUT') {
-      const { title, sections, seoTitle, seoDescription, seoKeywords, googleSchema, slug } = req.body;
+      const title = req.body.title;
+      const slug = req.body.slug;
+      const sections = req.body.content?.sections || req.body.sections || [];
+      const seoTitle = req.body.content?.seoTitle || req.body.seoTitle || '';
+      const seoDescription = req.body.content?.seoDescription || req.body.seoDescription || '';
+      const seoKeywords = req.body.content?.seoKeywords || req.body.seoKeywords || '';
+      const googleSchema = req.body.content?.googleSchema || req.body.googleSchema || {};
+
       const targetSlug = req.method === 'PUT' ? (req.query.slug || slug) : slug;
 
       const page = await prisma.page.upsert({
