@@ -54,7 +54,7 @@ app.all('/api/me', meController);
 app.all('/api/contact', contactController);
 app.all('/api/admin/content', contentController);
 app.all('/api/admin/leads', leadsController);
-app.post('/api/admin/upload', uploadController);
+app.all('/api/admin/upload', uploadController);
 
 // Route Mapping - Sub-modules (Legacy pattern)
 // These mount their own internal routes like app.get('/api/insights', ...)
