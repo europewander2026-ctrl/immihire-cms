@@ -224,6 +224,14 @@ const PagesManager = () => {
       newSection.heading = 'Our Core Values';
       newSection.subheading = 'The principles that drive every decision we make.';
       newSection.content = { panels: [] };
+    } else if (type === 'core-values') {
+      newSection.data = { panels: [] };
+    } else if (type === 'immihire-standard') {
+      newSection.data = { pillars: [] };
+    } else if (type === 'faq-accordion') {
+      newSection.data = { faqs: [] };
+    } else if (type === 'global-offices') {
+      newSection.data = { offices: [] };
     } else if (type === 'spotlight-cinema') {
       newSection.content = { categories: [] };
     } else if (type === 'eligibility-pulse') {
@@ -236,7 +244,7 @@ const PagesManager = () => {
       newSection.data = { title: 'Our Countries', subtitle: 'Migrate for a better future. Explore your options.', countries: [] };
     } else if (type === 'journey-section') {
       newSection.data = { tagline: 'The Journey', titleStandard: 'How We', titleHighlight: 'Make It Happen', steps: [] };
-    } else if (['about-hero', 'core-values', 'immihire-standard', 'services-hero', 'services-grid', 'boarding-pass', 'faq-accordion', 'contact-hero', 'contact-form', 'global-offices', 'blog-hero', 'global-pulse', 'latest-articles', 'newsletter-dispatch'].includes(type)) {
+    } else if (['about-hero', 'services-hero', 'services-grid', 'boarding-pass', 'contact-hero', 'contact-form', 'blog-hero', 'global-pulse', 'latest-articles', 'newsletter-dispatch'].includes(type)) {
       newSection.data = {};
     }
 
@@ -419,12 +427,137 @@ const PagesManager = () => {
                             </div>
                             <p className="text-xs text-indigo-400 mt-3">Uses default panels. Custom panels can be configured via JSON.</p>
                           </div>
+                        ) : section.type === 'core-values' ? (
+                          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-bars-staggered text-2xl text-indigo-400"></i><h4 className="font-bold text-indigo-800">Core Values Kinetic</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-indigo-700">Panels List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.panels || [];
+                                  updateSection(index, 'data', {...(section.data||{}), panels: [...list, { image: '', label: '', icon: '', title: '', description: '' }]});
+                                }} className="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Panel
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.panels || section.data.panels.length === 0) && (
+                                  <div className="text-xs text-indigo-500 italic p-3 border border-indigo-200 border-dashed rounded text-center">No panels added.</div>
+                                )}
+                                {(section.data?.panels || []).map((panel, pIdx) => (
+                                  <div key={pIdx} className="p-4 border border-indigo-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.panels];
+                                      list.splice(pIdx, 1);
+                                      updateSection(index, 'data', {...section.data, panels: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <ImageUploadField label="Image" value={panel.image || ''} onChange={(url) => {
+                                          const list = [...section.data.panels];
+                                          list[pIdx] = { ...list[pIdx], image: url };
+                                          updateSection(index, 'data', {...section.data, panels: list});
+                                      }} uploading={uploadingImage} />
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Label (e.g. 01)</label>
+                                        <input type="text" value={panel.label || ''} onChange={(e) => {
+                                          const list = [...section.data.panels];
+                                          list[pIdx] = { ...list[pIdx], label: e.target.value };
+                                          updateSection(index, 'data', {...section.data, panels: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Icon (FA class, e.g. fa-handshake)</label>
+                                        <input type="text" value={panel.icon || ''} onChange={(e) => {
+                                          const list = [...section.data.panels];
+                                          list[pIdx] = { ...list[pIdx], icon: e.target.value };
+                                          updateSection(index, 'data', {...section.data, panels: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Title</label>
+                                        <input type="text" value={panel.title || ''} onChange={(e) => {
+                                          const list = [...section.data.panels];
+                                          list[pIdx] = { ...list[pIdx], title: e.target.value };
+                                          updateSection(index, 'data', {...section.data, panels: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                                      <textarea value={panel.description || ''} onChange={(e) => {
+                                        const list = [...section.data.panels];
+                                        list[pIdx] = { ...list[pIdx], description: e.target.value };
+                                        updateSection(index, 'data', {...section.data, panels: list});
+                                      }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
                         ) : section.type === 'spotlight-cinema' ? (
-                          <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 text-center">
-                            <i className="fa-solid fa-film text-3xl text-purple-400 mb-3"></i>
-                            <h4 className="font-bold text-purple-800 mb-1">Spotlight Cinema Component</h4>
-                            <p className="text-sm text-purple-600">Full-screen interactive service category selector with cinematic background transitions.</p>
-                            <p className="text-xs text-purple-400 mt-3">Uses default categories. Custom categories can be configured via JSON.</p>
+                          <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-film text-2xl text-purple-400"></i><h4 className="font-bold text-purple-800">Spotlight Cinema Component</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-purple-700">Categories List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.content?.categories || [];
+                                  updateSection(index, 'content', {...(section.content||{}), categories: [...list, { id: '', title: '', backgroundImage: '', description: '' }]});
+                                }} className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Category
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.content?.categories || section.content.categories.length === 0) && (
+                                  <div className="text-xs text-purple-500 italic p-3 border border-purple-200 border-dashed rounded text-center">No categories added.</div>
+                                )}
+                                {(section.content?.categories || []).map((cat, cIdx) => (
+                                  <div key={cIdx} className="p-4 border border-purple-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.content.categories];
+                                      list.splice(cIdx, 1);
+                                      updateSection(index, 'content', {...section.content, categories: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">ID (unique, e.g. express)</label>
+                                        <input type="text" value={cat.id || ''} onChange={(e) => {
+                                          const list = [...section.content.categories];
+                                          list[cIdx] = { ...list[cIdx], id: e.target.value };
+                                          updateSection(index, 'content', {...section.content, categories: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Title</label>
+                                        <input type="text" value={cat.title || ''} onChange={(e) => {
+                                          const list = [...section.content.categories];
+                                          list[cIdx] = { ...list[cIdx], title: e.target.value };
+                                          updateSection(index, 'content', {...section.content, categories: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                    </div>
+                                    <ImageUploadField label="Background Image" value={cat.backgroundImage || ''} onChange={(url) => {
+                                        const list = [...section.content.categories];
+                                        list[cIdx] = { ...list[cIdx], backgroundImage: url };
+                                        updateSection(index, 'content', {...section.content, categories: list});
+                                    }} uploading={uploadingImage} />
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                                      <textarea value={cat.description || ''} onChange={(e) => {
+                                        const list = [...section.content.categories];
+                                        list[cIdx] = { ...list[cIdx], description: e.target.value };
+                                        updateSection(index, 'content', {...section.content, categories: list});
+                                      }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
                           </div>
                         ) : section.type === 'eligibility-pulse' ? (
                           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
@@ -564,6 +697,172 @@ const PagesManager = () => {
                                           updateSection(index, 'data', {...section.data, steps: list});
                                         }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" placeholder="Step description..." />
                                       </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'immihire-standard' ? (
+                          <div className="bg-teal-50 border border-teal-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-award text-2xl text-teal-400"></i><h4 className="font-bold text-teal-800">ImmiHire Standard</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-teal-700">Pillars List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.pillars || [];
+                                  updateSection(index, 'data', {...(section.data||{}), pillars: [...list, { icon: '', title: '', description: '' }]});
+                                }} className="text-xs bg-teal-100 hover:bg-teal-200 text-teal-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Pillar
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.pillars || section.data.pillars.length === 0) && (
+                                  <div className="text-xs text-teal-500 italic p-3 border border-teal-200 border-dashed rounded text-center">No pillars added.</div>
+                                )}
+                                {(section.data?.pillars || []).map((pillar, pIdx) => (
+                                  <div key={pIdx} className="p-4 border border-teal-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.pillars];
+                                      list.splice(pIdx, 1);
+                                      updateSection(index, 'data', {...section.data, pillars: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Icon (e.g. 🤝)</label>
+                                        <input type="text" value={pillar.icon || ''} onChange={(e) => {
+                                          const list = [...section.data.pillars];
+                                          list[pIdx] = { ...list[pIdx], icon: e.target.value };
+                                          updateSection(index, 'data', {...section.data, pillars: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Title</label>
+                                        <input type="text" value={pillar.title || ''} onChange={(e) => {
+                                          const list = [...section.data.pillars];
+                                          list[pIdx] = { ...list[pIdx], title: e.target.value };
+                                          updateSection(index, 'data', {...section.data, pillars: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                                      <textarea value={pillar.description || ''} onChange={(e) => {
+                                        const list = [...section.data.pillars];
+                                        list[pIdx] = { ...list[pIdx], description: e.target.value };
+                                        updateSection(index, 'data', {...section.data, pillars: list});
+                                      }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'faq-accordion' ? (
+                          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-question-circle text-2xl text-indigo-400"></i><h4 className="font-bold text-indigo-800">FAQ Accordion</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-indigo-700">FAQs List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.faqs || [];
+                                  updateSection(index, 'data', {...(section.data||{}), faqs: [...list, { question: '', answer: '' }]});
+                                }} className="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add FAQ
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.faqs || section.data.faqs.length === 0) && (
+                                  <div className="text-xs text-indigo-500 italic p-3 border border-indigo-200 border-dashed rounded text-center">No FAQs added.</div>
+                                )}
+                                {(section.data?.faqs || []).map((faq, fIdx) => (
+                                  <div key={fIdx} className="p-4 border border-indigo-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.faqs];
+                                      list.splice(fIdx, 1);
+                                      updateSection(index, 'data', {...section.data, faqs: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-500 mb-1">Question</label>
+                                      <input type="text" value={faq.question || ''} onChange={(e) => {
+                                        const list = [...section.data.faqs];
+                                        list[fIdx] = { ...list[fIdx], question: e.target.value };
+                                        updateSection(index, 'data', {...section.data, faqs: list});
+                                      }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                    </div>
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-500 mb-1">Answer</label>
+                                      <textarea value={faq.answer || ''} onChange={(e) => {
+                                        const list = [...section.data.faqs];
+                                        list[fIdx] = { ...list[fIdx], answer: e.target.value };
+                                        updateSection(index, 'data', {...section.data, faqs: list});
+                                      }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'global-offices' ? (
+                          <div className="bg-fuchsia-50 border border-fuchsia-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-building text-2xl text-fuchsia-400"></i><h4 className="font-bold text-fuchsia-800">Global Offices</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-fuchsia-700">Offices List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.offices || [];
+                                  updateSection(index, 'data', {...(section.data||{}), offices: [...list, { city: '', flag: '', address: '', timezone: '' }]});
+                                }} className="text-xs bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Office
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.offices || section.data.offices.length === 0) && (
+                                  <div className="text-xs text-fuchsia-500 italic p-3 border border-fuchsia-200 border-dashed rounded text-center">No offices added.</div>
+                                )}
+                                {(section.data?.offices || []).map((office, oIdx) => (
+                                  <div key={oIdx} className="p-4 border border-fuchsia-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.offices];
+                                      list.splice(oIdx, 1);
+                                      updateSection(index, 'data', {...section.data, offices: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">City</label>
+                                        <input type="text" value={office.city || ''} onChange={(e) => {
+                                          const list = [...section.data.offices];
+                                          list[oIdx] = { ...list[oIdx], city: e.target.value };
+                                          updateSection(index, 'data', {...section.data, offices: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Flag (e.g. 🇦🇪)</label>
+                                        <input type="text" value={office.flag || ''} onChange={(e) => {
+                                          const list = [...section.data.offices];
+                                          list[oIdx] = { ...list[oIdx], flag: e.target.value };
+                                          updateSection(index, 'data', {...section.data, offices: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-500 mb-1">Address</label>
+                                      <textarea value={office.address || ''} onChange={(e) => {
+                                        const list = [...section.data.offices];
+                                        list[oIdx] = { ...list[oIdx], address: e.target.value };
+                                        updateSection(index, 'data', {...section.data, offices: list});
+                                      }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                    </div>
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-500 mb-1">Timezone (e.g. Asia/Dubai)</label>
+                                      <input type="text" value={office.timezone || ''} onChange={(e) => {
+                                        const list = [...section.data.offices];
+                                        list[oIdx] = { ...list[oIdx], timezone: e.target.value };
+                                        updateSection(index, 'data', {...section.data, offices: list});
+                                      }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
                                     </div>
                                   </div>
                                 ))}
