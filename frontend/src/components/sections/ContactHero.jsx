@@ -4,6 +4,7 @@ import ThreeGlobe from '../ThreeGlobe';
 const ContactHero = ({
   tagline = "● Live Global Network",
   heading = "Connect Across Borders.",
+  titleHighlight = "",
   description = "Visualize your journey. Our team is ready to guide you from any point on the map to your dream destination.",
   image = null,
   badgeSubtitle = "Certified",
@@ -62,7 +63,12 @@ const ContactHero = ({
           </div>
 
           <h1 className="font-heading font-bold text-5xl md:text-8xl mb-8 leading-tight reveal active delay-100 drop-shadow-[0_0_15px_rgba(13,95,183,0.5)]">
-            {heading}
+            {heading} <br />
+            {titleHighlight && (
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">
+                {titleHighlight}
+              </span>
+            )}
           </h1>
 
           <p className="text-blue-100/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto reveal active delay-200 leading-relaxed font-light">

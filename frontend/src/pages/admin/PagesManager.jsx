@@ -426,12 +426,13 @@ const PagesManager = () => {
                     <button type="button" onClick={() => addSection('boarding-pass')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Boarding Pass</button>
                     <button type="button" onClick={() => addSection('eligibility-pulse')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Pulse</button>
                     <button type="button" onClick={() => addSection('faq-accordion')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">FAQ</button>
+                    <button type="button" onClick={() => addSection('comparison-matrix')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Matrix</button>
                   </div>
 
                   <div className="flex flex-wrap gap-2 items-center">
                     <span className="text-xs font-bold text-gray-400 w-20 uppercase">Contact:</span>
                     <button type="button" onClick={() => addSection('contact-hero')} className="text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 font-medium px-2 py-1 rounded transition-colors">Contact Hero</button>
-                    <button type="button" onClick={() => addSection('contact-form')} className="text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 font-medium px-2 py-1 rounded transition-colors">Contact Form</button>
+                    <button type="button" onClick={() => addSection('contact-info')} className="text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 font-medium px-2 py-1 rounded transition-colors">Contact Info</button>
                     <button type="button" onClick={() => addSection('global-offices')} className="text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 font-medium px-2 py-1 rounded transition-colors">Global Offices</button>
                   </div>
 
@@ -931,13 +932,23 @@ const PagesManager = () => {
                                         updateSection(index, 'data', {...section.data, offices: list});
                                       }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
                                     </div>
-                                    <div>
-                                      <label className="block text-xs font-medium text-gray-500 mb-1">Timezone (e.g. Asia/Dubai)</label>
-                                      <input type="text" value={office.timezone || ''} onChange={(e) => {
-                                        const list = [...section.data.offices];
-                                        list[oIdx] = { ...list[oIdx], timezone: e.target.value };
-                                        updateSection(index, 'data', {...section.data, offices: list});
-                                      }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Timezone (e.g. Asia/Dubai)</label>
+                                        <input type="text" value={office.timezone || ''} onChange={(e) => {
+                                          const list = [...section.data.offices];
+                                          list[oIdx] = { ...list[oIdx], timezone: e.target.value };
+                                          updateSection(index, 'data', {...section.data, offices: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Map Link (URL)</label>
+                                        <input type="text" value={office.mapLink || ''} onChange={(e) => {
+                                          const list = [...section.data.offices];
+                                          list[oIdx] = { ...list[oIdx], mapLink: e.target.value };
+                                          updateSection(index, 'data', {...section.data, offices: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" placeholder="https://maps.google.com/..." />
+                                      </div>
                                     </div>
                                   </div>
                                 ))}
@@ -1020,17 +1031,43 @@ const PagesManager = () => {
                               </div>
                             </div>
                           </div>
+                        ) : section.type === 'services-hero' ? (
+                          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-plane-up text-2xl text-indigo-400"></i><h4 className="font-bold text-indigo-800">Services Hero</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-medium text-indigo-600 mb-1">Heading</label>
+                                <input type="text" value={section.data?.heading || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), heading: e.target.value})} className="w-full px-3 py-2 border border-indigo-200 rounded-md text-sm" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-indigo-600 mb-1">Highlighted Text</label>
+                                <input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-indigo-200 rounded-md text-sm" />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-indigo-600 mb-1">Tagline</label>
+                              <input type="text" value={section.data?.tagline || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), tagline: e.target.value})} className="w-full px-3 py-2 border border-indigo-200 rounded-md text-sm" />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-indigo-600 mb-1">Description</label>
+                              <textarea value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} rows="3" className="w-full px-3 py-2 border border-indigo-200 rounded-md text-sm" />
+                            </div>
+                          </div>
                         ) : section.type === 'contact-hero' ? (
                           <div className="bg-fuchsia-50 border border-fuchsia-200 rounded-xl p-6 space-y-4">
                             <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-headset text-2xl text-fuchsia-400"></i><h4 className="font-bold text-fuchsia-800">Contact Hero Section</h4></div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <div>
                                 <label className="block text-xs font-medium text-fuchsia-600 mb-1">Tagline</label>
                                 <input type="text" value={section.data?.tagline || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), tagline: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Get in Touch" />
                               </div>
                               <div>
-                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Heading</label>
-                                <input type="text" value={section.data?.heading || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), heading: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Let's start your journey" />
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Title</label>
+                                <input type="text" value={section.data?.title || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), title: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Let's start your" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Title Highlight</label>
+                                <input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Journey" />
                               </div>
                             </div>
                             <div>
@@ -1038,14 +1075,245 @@ const PagesManager = () => {
                               <textarea value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} rows="3" className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" />
                             </div>
                             <ImageUploadField label="Contact Hero Image" value={section.data?.image || ''} onChange={(url) => updateSection(index, 'data', {...(section.data||{}), image: url})} uploading={uploadingImage} />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                               <div>
-                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Badge Subtitle</label>
-                                <input type="text" value={section.data?.badgeSubtitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeSubtitle: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. 24/7 Support" />
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Button 1 Text</label>
+                                <input type="text" value={section.data?.btn1Text || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), btn1Text: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Call Us" />
                               </div>
                               <div>
-                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Badge Title</label>
-                                <input type="text" value={section.data?.badgeTitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeTitle: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Always here for you" />
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Button 1 Link</label>
+                                <input type="text" value={section.data?.btn1Link || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), btn1Link: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. tel:+123456789" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Button 2 Text</label>
+                                <input type="text" value={section.data?.btn2Text || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), btn2Text: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Email Us" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Button 2 Link</label>
+                                <input type="text" value={section.data?.btn2Link || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), btn2Link: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. mailto:hello@..." />
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'contact-info' ? (
+                          <div className="bg-fuchsia-50 border border-fuchsia-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-address-book text-2xl text-fuchsia-400"></i><h4 className="font-bold text-fuchsia-800">Contact Info</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">Title</label><input type="text" value={section.data?.title || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), title: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">Description</label><input type="text" value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">Phone</label><input type="text" value={section.data?.phone || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), phone: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">Email</label><input type="text" value={section.data?.email || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), email: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">Location</label><input type="text" value={section.data?.location || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), location: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-fuchsia-200 pt-4 mt-4">
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">Facebook Link</label><input type="text" value={section.data?.facebook || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), facebook: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">Instagram Link</label><input type="text" value={section.data?.instagram || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), instagram: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-fuchsia-600 mb-1">LinkedIn Link</label><input type="text" value={section.data?.linkedin || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), linkedin: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" /></div>
+                            </div>
+                          </div>
+                        ) : section.type === 'services-grid' ? (
+                          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-list-check text-2xl text-indigo-400"></i><h4 className="font-bold text-indigo-800">Services Grid</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-indigo-700">Services List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.services || [];
+                                  updateSection(index, 'data', {...(section.data||{}), services: [...list, { title: '', description: '', icon: '', link: '', theme: 'blue' }]});
+                                }} className="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Service
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.services || section.data.services.length === 0) && (
+                                  <div className="text-xs text-indigo-500 italic p-3 border border-indigo-200 border-dashed rounded text-center">No services added.</div>
+                                )}
+                                {(section.data?.services || []).map((service, sIdx) => (
+                                  <div key={sIdx} className="p-4 border border-indigo-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.services];
+                                      list.splice(sIdx, 1);
+                                      updateSection(index, 'data', {...section.data, services: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Title</label><input type="text" value={service.title || ''} onChange={(e) => { const list = [...section.data.services]; list[sIdx].title = e.target.value; updateSection(index, 'data', {...section.data, services: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Icon (e.g. fa-solid fa-flag)</label><input type="text" value={service.icon || ''} onChange={(e) => { const list = [...section.data.services]; list[sIdx].icon = e.target.value; updateSection(index, 'data', {...section.data, services: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Link</label>
+                                        <select 
+                                          value={service.link || ''} 
+                                          onChange={(e) => { 
+                                            const list = [...section.data.services]; 
+                                            list[sIdx] = { ...list[sIdx], link: e.target.value };
+                                            updateSection(index, 'data', {...section.data, services: list}); 
+                                          }} 
+                                          className="w-full px-3 py-2 border border-gray-200 rounded text-sm bg-white"
+                                        >
+                                          <option value="">-- Select a Page/Service --</option>
+                                          {pages.map(page => (
+                                            <option key={page.id} value={`/${page.slug}`}>
+                                              {page.title}
+                                            </option>
+                                          ))}
+                                          <option value="/contact">Contact Page</option>
+                                          <option value="/insights">Insights Page</option>
+                                        </select>
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Theme</label>
+                                        <select value={service.theme || 'blue'} onChange={(e) => { const list = [...section.data.services]; list[sIdx].theme = e.target.value; updateSection(index, 'data', {...section.data, services: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm bg-white">
+                                          <option value="blue">Blue</option><option value="red">Red</option><option value="yellow">Yellow</option><option value="green">Green</option><option value="gray">Gray</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div><label className="block text-xs font-medium text-gray-500 mb-1">Description</label><textarea value={service.description || ''} onChange={(e) => { const list = [...section.data.services]; list[sIdx].description = e.target.value; updateSection(index, 'data', {...section.data, services: list}); }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'boarding-pass' ? (
+                          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-ticket text-2xl text-indigo-400"></i><h4 className="font-bold text-indigo-800">Boarding Pass Stack</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-indigo-700">Passes List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.passes || [];
+                                  updateSection(index, 'data', {...(section.data||{}), passes: [...list, { country: '', icon: '', title: '', subtitle: '', description: '', stat1Label: '', stat1Value: '', stat2Label: '', stat2Value: '', theme: 'blue' }]});
+                                }} className="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Pass
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.passes || section.data.passes.length === 0) && (
+                                  <div className="text-xs text-indigo-500 italic p-3 border border-indigo-200 border-dashed rounded text-center">No passes added.</div>
+                                )}
+                                {(section.data?.passes || []).map((pass, pIdx) => (
+                                  <div key={pIdx} className="p-4 border border-indigo-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.passes];
+                                      list.splice(pIdx, 1);
+                                      updateSection(index, 'data', {...section.data, passes: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Country</label><input type="text" value={pass.country || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].country = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Title</label><input type="text" value={pass.title || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].title = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Subtitle</label><input type="text" value={pass.subtitle || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].subtitle = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Icon (e.g. 🇨🇦)</label><input type="text" value={pass.icon || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].icon = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Theme</label>
+                                        <select value={pass.theme || 'blue'} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].theme = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm bg-white">
+                                          <option value="blue">Blue</option><option value="red">Red</option><option value="green">Green</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div><label className="block text-xs font-medium text-gray-500 mb-1">Description</label><textarea value={pass.description || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].description = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-3 rounded border border-gray-100">
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Stat 1 Label</label><input type="text" value={pass.stat1Label || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].stat1Label = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Stat 1 Value</label><input type="text" value={pass.stat1Value || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].stat1Value = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Stat 2 Label</label><input type="text" value={pass.stat2Label || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].stat2Label = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Stat 2 Value</label><input type="text" value={pass.stat2Value || ''} onChange={(e) => { const list = [...section.data.passes]; list[pIdx].stat2Value = e.target.value; updateSection(index, 'data', {...section.data, passes: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'comparison-matrix' ? (
+                          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-table-list text-2xl text-indigo-400"></i><h4 className="font-bold text-indigo-800">Comparison Matrix</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-indigo-700">Matrix Rows</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.matrixRows || [];
+                                  updateSection(index, 'data', {...(section.data||{}), matrixRows: [...list, { feature: '', canadaValue: '', ausValue: '', ukValue: '' }]});
+                                }} className="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Row
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.matrixRows || section.data.matrixRows.length === 0) && (
+                                  <div className="text-xs text-indigo-500 italic p-3 border border-indigo-200 border-dashed rounded text-center">No rows added.</div>
+                                )}
+                                {(section.data?.matrixRows || []).map((row, rIdx) => (
+                                  <div key={rIdx} className="p-4 border border-indigo-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.matrixRows];
+                                      list.splice(rIdx, 1);
+                                      updateSection(index, 'data', {...section.data, matrixRows: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Feature</label><input type="text" value={row.feature || ''} onChange={(e) => { const list = [...section.data.matrixRows]; list[rIdx].feature = e.target.value; updateSection(index, 'data', {...section.data, matrixRows: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Canada Value</label><input type="text" value={row.canadaValue || ''} onChange={(e) => { const list = [...section.data.matrixRows]; list[rIdx].canadaValue = e.target.value; updateSection(index, 'data', {...section.data, matrixRows: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Australia Value</label><input type="text" value={row.ausValue || ''} onChange={(e) => { const list = [...section.data.matrixRows]; list[rIdx].ausValue = e.target.value; updateSection(index, 'data', {...section.data, matrixRows: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">UK Value</label><input type="text" value={row.ukValue || ''} onChange={(e) => { const list = [...section.data.matrixRows]; list[rIdx].ukValue = e.target.value; updateSection(index, 'data', {...section.data, matrixRows: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'blog-hero' ? (
+                          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 space-y-6">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-newspaper text-2xl text-amber-400"></i><h4 className="font-bold text-amber-800">Blog Hero</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div><label className="block text-xs font-medium text-amber-600 mb-1">Title</label><input type="text" value={section.data?.title || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), title: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                              <div><label className="block text-xs font-medium text-amber-600 mb-1">Description</label><input type="text" value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                            </div>
+                            <div className="pt-4 border-t border-amber-200">
+                              <h5 className="text-sm font-bold text-amber-800 mb-3">Featured Article</h5>
+                              <ImageUploadField label="Featured Image" value={section.data?.featuredImage || ''} onChange={(url) => updateSection(index, 'data', {...(section.data||{}), featuredImage: url})} uploading={uploadingImage} />
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div><label className="block text-xs font-medium text-amber-600 mb-1">Category</label><input type="text" value={section.data?.featuredCategory || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), featuredCategory: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                                <div><label className="block text-xs font-medium text-amber-600 mb-1">Link URL</label><input type="text" value={section.data?.featuredLink || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), featuredLink: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                              </div>
+                              <div className="mt-4"><label className="block text-xs font-medium text-amber-600 mb-1">Article Title</label><input type="text" value={section.data?.featuredTitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), featuredTitle: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                              <div className="mt-4"><label className="block text-xs font-medium text-amber-600 mb-1">Article Description</label><textarea value={section.data?.featuredDesc || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), featuredDesc: e.target.value})} rows="2" className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
+                            </div>
+                          </div>
+                        ) : section.type === 'global-pulse' ? (
+                          <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-earth-americas text-2xl text-amber-400"></i><h4 className="font-bold text-amber-800">Global Pulse Map</h4></div>
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-amber-700">Beacons List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.beacons || [];
+                                  updateSection(index, 'data', {...(section.data||{}), beacons: [...list, { country: '', topPos: 50, leftPos: 50, badgeText: '', title: '', description: '', link: '' }]});
+                                }} className="text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Beacon
+                                </button>
+                              </div>
+                              <div className="space-y-4">
+                                {(!section.data?.beacons || section.data.beacons.length === 0) && (
+                                  <div className="text-xs text-amber-500 italic p-3 border border-amber-200 border-dashed rounded text-center">No beacons added.</div>
+                                )}
+                                {(section.data?.beacons || []).map((beacon, bIdx) => (
+                                  <div key={bIdx} className="p-4 border border-amber-200 bg-white rounded-lg relative group space-y-3">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.beacons];
+                                      list.splice(bIdx, 1);
+                                      updateSection(index, 'data', {...section.data, beacons: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                      <div className="md:col-span-2"><label className="block text-xs font-medium text-gray-500 mb-1">Country</label><input type="text" value={beacon.country || ''} onChange={(e) => { const list = [...section.data.beacons]; list[bIdx].country = e.target.value; updateSection(index, 'data', {...section.data, beacons: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Top Position (%)</label><input type="number" value={beacon.topPos || 0} onChange={(e) => { const list = [...section.data.beacons]; list[bIdx].topPos = e.target.value; updateSection(index, 'data', {...section.data, beacons: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Left Position (%)</label><input type="number" value={beacon.leftPos || 0} onChange={(e) => { const list = [...section.data.beacons]; list[bIdx].leftPos = e.target.value; updateSection(index, 'data', {...section.data, beacons: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Badge Text</label><input type="text" value={beacon.badgeText || ''} onChange={(e) => { const list = [...section.data.beacons]; list[bIdx].badgeText = e.target.value; updateSection(index, 'data', {...section.data, beacons: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                      <div><label className="block text-xs font-medium text-gray-500 mb-1">Title</label><input type="text" value={beacon.title || ''} onChange={(e) => { const list = [...section.data.beacons]; list[bIdx].title = e.target.value; updateSection(index, 'data', {...section.data, beacons: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    </div>
+                                    <div><label className="block text-xs font-medium text-gray-500 mb-1">Description</label><textarea value={beacon.description || ''} onChange={(e) => { const list = [...section.data.beacons]; list[bIdx].description = e.target.value; updateSection(index, 'data', {...section.data, beacons: list}); }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                    <div><label className="block text-xs font-medium text-gray-500 mb-1">Link</label><input type="text" value={beacon.link || ''} onChange={(e) => { const list = [...section.data.beacons]; list[bIdx].link = e.target.value; updateSection(index, 'data', {...section.data, beacons: list}); }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" /></div>
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           </div>

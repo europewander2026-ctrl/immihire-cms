@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 const ServicesHero = ({
   tagline = "Our Expertise",
-  headingPart1 = "Pathways to",
-  headingPart2 = "The World",
+  heading = "Pathways to",
+  titleHighlight = "The World",
   description = "Comprehensive immigration solutions tailored to your unique profile. Explore our specialized services designed to make your global dreams a reality."
 }) => {
 
@@ -43,8 +43,12 @@ const ServicesHero = ({
         <div className="container mx-auto px-6 reveal active">
           <span className="text-primary font-bold tracking-widest text-sm uppercase mb-4 block">{tagline}</span>
           <h1 className="font-heading font-bold text-5xl md:text-7xl text-darkBlue mb-6">
-            {headingPart1} <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">{headingPart2}</span>
+            {heading} <br />
+            {titleHighlight && (
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">
+                {titleHighlight}
+              </span>
+            )}
           </h1>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
             {description}
