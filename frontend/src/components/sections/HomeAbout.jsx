@@ -15,7 +15,10 @@ const HomeAbout = ({
     'End-to-End Resettlement Support'
   ],
   ctaText = 'Read Our Story',
-  ctaLink = '/about'
+  ctaLink = '/about',
+  imagePosition = 'right',
+  showImage = true,
+  showStats = true
 }) => {
   useEffect(() => {
     const reveal = () => {
@@ -37,34 +40,38 @@ const HomeAbout = ({
   return (
     <section id="about" className="py-20 bg-white">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col lg:flex-row items-center gap-16">
+        <div className={`flex flex-col items-center gap-16 ${imagePosition === 'left' ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
           {/* Image Side */}
-          <div className="lg:w-1/2 reveal">
-            <div className="relative">
-              <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-60"></div>
-              <img
-                src={image}
-                className="rounded-3xl shadow-lg relative z-10 w-full transform hover:scale-[1.02] transition-transform duration-500"
-                alt="About ImmiHire"
-              />
-              <div className="absolute -bottom-8 -right-8 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white z-20 flex items-center gap-4 animate-float">
-                <div className="text-4xl font-bold text-primary">{badgeNumber}</div>
-                <div className="text-xs font-bold text-darkBlue uppercase leading-tight whitespace-pre-line">
-                  {badgeText}
-                </div>
+          {showImage !== false && (
+            <div className="lg:w-1/2 reveal">
+              <div className="relative">
+                <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-60"></div>
+                <img
+                  src={image}
+                  className="rounded-3xl shadow-lg relative z-10 w-full transform hover:scale-[1.02] transition-transform duration-500"
+                  alt="About ImmiHire"
+                />
+                {showStats !== false && (
+                  <div className="absolute -bottom-8 -right-8 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white z-20 flex items-center gap-4 animate-float">
+                    <div className="text-4xl font-bold text-primary">{badgeNumber}</div>
+                    <div className="text-xs font-bold text-darkBlue uppercase leading-tight whitespace-pre-line">
+                      {badgeText}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          )}
 
           {/* Text Side */}
-          <div className="lg:w-1/2 reveal">
+          <div className={`${showImage ? 'lg:w-1/2' : 'lg:w-full'} reveal ${!showImage ? 'text-center max-w-4xl mx-auto' : ''}`}>
             <h4 className="text-primary font-bold uppercase tracking-widest mb-3 text-sm">{tagline}</h4>
             <h2 className="font-heading font-bold text-4xl text-darkBlue mb-6 leading-tight">
               {titleStandard} <span className="text-primary">{titleHighlight}</span>
             </h2>
             <p className="text-gray-500 text-lg mb-6 leading-relaxed">{description}</p>
 
-            <div className="grid grid-cols-1 gap-4 mb-8">
+            <div className={`grid grid-cols-1 gap-4 mb-8 ${!showImage ? 'place-items-center' : ''}`}>
               {(features || []).map((feature, i) => (
                 <div key={i} className="text-primary font-bold text-sm uppercase tracking-wider">
                   {feature}

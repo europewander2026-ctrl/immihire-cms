@@ -589,6 +589,29 @@ const PagesManager = () => {
                               <div><label className="block text-xs font-medium text-teal-600 mb-1">Title Standard</label><input type="text" value={section.data?.titleStandard || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleStandard: e.target.value})} className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
                               <div><label className="block text-xs font-medium text-teal-600 mb-1">Title Highlight</label><input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
                             </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/50 p-3 rounded-lg border border-teal-100">
+                              <div>
+                                <label className="block text-xs font-medium text-teal-600 mb-1">Image Position</label>
+                                <select 
+                                  value={section.data?.imagePosition || 'right'} 
+                                  onChange={(e) => updateSection(index, 'data', {...(section.data||{}), imagePosition: e.target.value})}
+                                  className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm bg-white"
+                                >
+                                  <option value="right">Right</option>
+                                  <option value="left">Left</option>
+                                </select>
+                              </div>
+                              <div className="flex flex-col justify-center gap-2">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={section.data?.showImage !== false} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), showImage: e.target.checked})} className="w-4 h-4 text-teal-600" />
+                                  <span className="text-xs font-medium text-teal-800">Show Image Column</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" checked={section.data?.showStats !== false} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), showStats: e.target.checked})} className="w-4 h-4 text-teal-600" />
+                                  <span className="text-xs font-medium text-teal-800">Show Statistics/Badge</span>
+                                </label>
+                              </div>
+                            </div>
                             <div><label className="block text-xs font-medium text-teal-600 mb-1">Description</label><textarea value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} rows="3" className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" /></div>
                             <ImageUploadField label="About Image" value={section.data?.image || ''} onChange={(url) => updateSection(index, 'data', {...(section.data||{}), image: url})} uploading={uploadingImage} />
                             <div><label className="block text-xs font-medium text-teal-600 mb-1">Features (one per line)</label><textarea value={(section.data?.features || []).join('\n')} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), features: e.target.value.split('\n').filter(Boolean)})} rows="3" className="w-full px-3 py-2 border border-teal-200 rounded-md text-sm" placeholder="Licensed & Certified\nTransparent Pricing" /></div>
@@ -866,6 +889,82 @@ const PagesManager = () => {
                                     </div>
                                   </div>
                                 ))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : section.type === 'about-hero' ? (
+                          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 space-y-6">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-address-card text-2xl text-blue-400"></i><h4 className="font-bold text-blue-800">About Hero Section</h4></div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-medium text-blue-600 mb-1">Tagline</label>
+                                <input type="text" value={section.data?.tagline || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), tagline: e.target.value})} className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" placeholder="e.g. Our Story" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-blue-600 mb-1">Image Position</label>
+                                <select 
+                                  value={section.data?.imagePosition || 'right'} 
+                                  onChange={(e) => updateSection(index, 'data', {...(section.data||{}), imagePosition: e.target.value})}
+                                  className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm bg-white"
+                                >
+                                  <option value="right">Right</option>
+                                  <option value="left">Left</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-medium text-blue-600 mb-1">Heading Part 1</label>
+                                <input type="text" value={section.data?.headingPart1 || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), headingPart1: e.target.value})} className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" placeholder="e.g. Architects of" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-blue-600 mb-1">Heading Part 2 (Gradient)</label>
+                                <input type="text" value={section.data?.headingPart2 || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), headingPart2: e.target.value})} className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" placeholder="e.g. New Beginnings" />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block text-xs font-medium text-blue-600 mb-1">Description</label>
+                              <textarea value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} rows="3" className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" />
+                            </div>
+
+                            <div className="flex flex-wrap gap-6 p-4 bg-white/50 rounded-lg border border-blue-100">
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked={section.data?.showImage !== false} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), showImage: e.target.checked})} className="w-4 h-4 text-blue-600" />
+                                <span className="text-sm font-medium text-blue-800">Show Image Column</span>
+                              </label>
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked={section.data?.showStats !== false} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), showStats: e.target.checked})} className="w-4 h-4 text-blue-600" />
+                                <span className="text-sm font-medium text-blue-800">Show Statistics Block</span>
+                              </label>
+                            </div>
+
+                            <ImageUploadField label="Hero Image" value={section.data?.imageUrl || ''} onChange={(url) => updateSection(index, 'data', {...(section.data||{}), imageUrl: url})} uploading={uploadingImage} />
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-medium text-blue-600 mb-1">Badge Subtitle</label>
+                                <input type="text" value={section.data?.badgeSubtitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeSubtitle: e.target.value})} className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-blue-600 mb-1">Badge Title</label>
+                                <input type="text" value={section.data?.badgeTitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeTitle: e.target.value})} className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" />
+                              </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-blue-100">
+                              <h5 className="text-sm font-bold text-blue-800 mb-3">Mission Section</h5>
+                              <div className="space-y-3">
+                                <div>
+                                  <label className="block text-xs font-medium text-blue-600 mb-1">Mission Title</label>
+                                  <input type="text" value={section.data?.missionTitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), missionTitle: e.target.value})} className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" />
+                                </div>
+                                <div>
+                                  <label className="block text-xs font-medium text-blue-600 mb-1">Mission Text</label>
+                                  <textarea value={section.data?.missionText || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), missionText: e.target.value})} rows="3" className="w-full px-3 py-2 border border-blue-200 rounded-md text-sm" />
+                                </div>
                               </div>
                             </div>
                           </div>

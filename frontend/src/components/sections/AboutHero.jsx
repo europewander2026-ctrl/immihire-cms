@@ -14,7 +14,10 @@ const AboutHero = ({
   badgeSubtitle = "Certified",
   badgeTitle = "CICC & MARA",
   missionTitle = "Our Mission",
-  missionText = "\"To demystify the immigration process. We strive to provide honest, accurate, and strategic counsel that eliminates uncertainty. Whether you are a skilled professional or a business investor, our goal is to provide a clear roadmap from your initial assessment to your final landing.\""
+  missionText = "\"To demystify the immigration process. We strive to provide honest, accurate, and strategic counsel that eliminates uncertainty. Whether you are a skilled professional or a business investor, our goal is to provide a clear roadmap from your initial assessment to your final landing.\"",
+  imagePosition = 'right',
+  showImage = true,
+  showStats = true
 }) => {
 
   useEffect(() => {
@@ -93,8 +96,8 @@ const AboutHero = ({
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2 reveal active">
+          <div className={`flex flex-col items-center gap-16 ${imagePosition === 'left' ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
+            <div className={`${showImage ? 'lg:w-1/2' : 'lg:w-full'} reveal active text-center lg:text-left`}>
               <span className="text-primary font-bold tracking-widest text-sm uppercase mb-4 block">{tagline}</span>
               <h1 className="font-heading font-bold text-5xl lg:text-7xl text-darkBlue mb-6 leading-tight">
                 {headingPart1} <br />
@@ -106,38 +109,42 @@ const AboutHero = ({
                 {description}
               </p>
 
-              <div className="flex gap-12 border-t border-gray-100 pt-8">
-                {metrics.map((metric, index) => (
-                  <div key={index}>
-                    <h3 className="text-4xl font-bold text-darkBlue">{metric.value}</h3>
-                    <p className="text-sm text-gray-400 font-medium">{metric.label}</p>
-                  </div>
-                ))}
-              </div>
+              {showStats !== false && (
+                <div className={`flex gap-12 border-t border-gray-100 pt-8 ${!showImage ? 'justify-center lg:justify-start' : ''}`}>
+                  {metrics.map((metric, index) => (
+                    <div key={index}>
+                      <h3 className="text-4xl font-bold text-darkBlue">{metric.value}</h3>
+                      <p className="text-sm text-gray-400 font-medium">{metric.label}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="lg:w-1/2 reveal relative">
-              {/* Abstract Image Composition */}
-              <div className="relative w-full aspect-[4/5]">
-                <div className="absolute inset-0 bg-blue-100 rounded-tr-[100px] rounded-bl-[100px] transform rotate-3 scale-95">
-                </div>
-                <img src={imageUrl}
-                  className="absolute inset-0 w-full h-full object-cover rounded-tr-[100px] rounded-bl-[100px] shadow-2xl transform -rotate-2 hover:rotate-0 transition-all duration-700" alt="About Hero" />
+            {showImage !== false && (
+              <div className="lg:w-1/2 reveal relative">
+                {/* Abstract Image Composition */}
+                <div className="relative w-full aspect-[4/5]">
+                  <div className="absolute inset-0 bg-blue-100 rounded-tr-[100px] rounded-bl-[100px] transform rotate-3 scale-95">
+                  </div>
+                  <img src={imageUrl}
+                    className="absolute inset-0 w-full h-full object-cover rounded-tr-[100px] rounded-bl-[100px] shadow-2xl transform -rotate-2 hover:rotate-0 transition-all duration-700" alt="About Hero" />
 
-                {/* Floating Badge */}
-                <div className="absolute bottom-10 -left-6 bg-white p-6 rounded-2xl shadow-xl animate-float">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                      <i className="fa-solid fa-award text-xl"></i>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400 font-bold uppercase">{badgeSubtitle}</p>
-                      <p className="font-bold text-darkBlue">{badgeTitle}</p>
+                  {/* Floating Badge */}
+                  <div className="absolute bottom-10 -left-6 bg-white p-6 rounded-2xl shadow-xl animate-float">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                        <i className="fa-solid fa-award text-xl"></i>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-400 font-bold uppercase">{badgeSubtitle}</p>
+                        <p className="font-bold text-darkBlue">{badgeTitle}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
