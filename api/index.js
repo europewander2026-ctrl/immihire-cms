@@ -67,6 +67,26 @@ consultationsInit(app, prisma, requireAuth);
 // SEO is a router
 app.use('/api/seo', requireAuth, seoInit);
 
+// Public Page Routes
+app.get('/api/pages', async (req, res) => {
+  try {
+    const pages = await prisma.page.findMany({ orderBy: { updatedAt: 'desc' } });
+    res.json(pages);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch pages' });
+  }
+});
+
+app.get('/api/pages/:slug', async (req, res) => {
+  try {
+    const page = await prisma.page.findUnique({ where: { slug: req.params.slug } });
+    if (!page) return res.status(404).json({ error: 'Page not found' });
+    res.json(page);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch page details' });
+  }
+});
+
 // Default 404 for API
 app.use('/api', (req, res) => {
   res.status(404).json({ error: `API route ${req.originalUrl} not found` });

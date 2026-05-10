@@ -103,16 +103,25 @@ const PagesManager = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newSlug, setNewSlug] = useState('');
+
   const handleCreateNew = () => {
-    const slug = prompt("Enter new page slug (e.g., 'about', 'services'):");
-    if (slug) {
-      const newPage = { slug, title: 'New Page', isNew: true };
+    setNewSlug('');
+    setIsModalOpen(true);
+  };
+
+  const handleModalSubmit = (e) => {
+    e.preventDefault();
+    if (newSlug) {
+      const newPage = { slug: newSlug, title: 'New Page', isNew: true };
       setPages(prev => [newPage, ...prev]);
       setSelectedPage(newPage);
       setFormData({
         title: '', sections: [], seoTitle: '', seoDescription: '', seoKeywords: '', googleSchema: '{}'
       });
       setMessage('');
+      setIsModalOpen(false);
     }
   };
 
@@ -501,6 +510,45 @@ const PagesManager = () => {
           </div>
         )}
       </div>
+
+      {/* Create New Page Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Create New Page</h3>
+            <form onSubmit={handleModalSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Page Slug</label>
+                <input
+                  type="text"
+                  value={newSlug}
+                  onChange={(e) => setNewSlug(e.target.value)}
+                  placeholder="e.g., about, services"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  autoFocus
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">This will be the URL path (e.g., /about).</p>
+              </div>
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                >
+                  Create
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );
