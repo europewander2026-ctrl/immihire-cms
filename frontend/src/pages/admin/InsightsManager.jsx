@@ -23,7 +23,8 @@ const InsightsManager = () => {
     isPublished: false,
     seoTitle: '',
     seoDescription: '',
-    seoKeywords: ''
+    seoKeywords: '',
+    status: 'PUBLISHED'
   };
   
   const [formData, setFormData] = useState(defaultForm);
@@ -147,14 +148,18 @@ const InsightsManager = () => {
         return;
       }
 
-      const res = await api.post('/api/seo/generate', { content: rawText });
+      const res = await api.post('/api/seo/generate', { 
+        title: formData.title, 
+        sections: formData.sections 
+      });
       
       if (res.data) {
         setFormData(prev => ({
           ...prev,
           seoTitle: res.data.seoTitle || prev.seoTitle,
           seoDescription: res.data.seoDescription || prev.seoDescription,
-          seoKeywords: res.data.seoKeywords || prev.seoKeywords
+          seoKeywords: res.data.seoKeywords || prev.seoKeywords,
+          googleSchema: typeof res.data.googleSchema === 'object' ? JSON.stringify(res.data.googleSchema, null, 2) : (res.data.googleSchema || prev.googleSchema)
         }));
         alert('SEO generated successfully!');
       }
@@ -192,7 +197,8 @@ const InsightsManager = () => {
       sections: parsedSections,
       seoTitle: insight.seoTitle || '',
       seoDescription: insight.seoDescription || '',
-      seoKeywords: insight.seoKeywords || ''
+      seoKeywords: insight.seoKeywords || '',
+      status: insight.status || 'PUBLISHED'
     });
     setIsEditing(true);
     setCurrentView('form');
@@ -320,9 +326,19 @@ const InsightsManager = () => {
                 required
                 value={formData.slug}
                 onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                disabled={isEditing}
-                className="block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border disabled:opacity-50" 
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border font-mono" 
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData({...formData, status: e.target.value})}
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 border font-medium"
+              >
+                <option value="PUBLISHED">Published</option>
+                <option value="DRAFT">Draft</option>
+              </select>
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Excerpt (Summary)</label>
@@ -521,6 +537,15 @@ const InsightsManager = () => {
             >
               <i className="fa-solid fa-floppy-disk"></i> Save Insight
             </button>
+            {isEditing && (
+              <button 
+                type="button" 
+                onClick={() => handleDelete(formData.slug)}
+                className="px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none flex items-center gap-2"
+              >
+                <i className="fa-solid fa-trash-can"></i> Delete
+              </button>
+            )}
           </div>
         </form>
       )}

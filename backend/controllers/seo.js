@@ -5,10 +5,28 @@ const router = express.Router();
 
 router.post('/generate', async (req, res) => {
   try {
-    const { content } = req.body;
+    const { content, title, sections } = req.body;
     
-    if (!content) {
-      return res.status(400).json({ error: 'Content is required for SEO generation.' });
+    let aggregatedContent = content || "";
+    
+    // If sections are provided, aggregate all text content
+    if (sections && Array.isArray(sections)) {
+      const sectionTexts = sections.map(section => {
+        const parts = [];
+        if (section.heading) parts.push(section.heading);
+        if (section.subheading) parts.push(section.subheading);
+        if (section.data?.description) parts.push(section.data.description);
+        if (section.data?.text) parts.push(section.data.text);
+        if (section.data?.tagline) parts.push(section.data.tagline);
+        if (section.content && typeof section.content === 'string') parts.push(section.content);
+        return parts.join(" ");
+      }).filter(Boolean);
+      
+      aggregatedContent = `Page Title: ${title || 'Untitled'}\n\nContent:\n${sectionTexts.join("\n\n")}`;
+    }
+
+    if (!aggregatedContent) {
+      return res.status(400).json({ error: 'Content or sections are required for SEO generation.' });
     }
 
     if (!process.env.GROQ_API_KEY) {
@@ -17,19 +35,19 @@ router.post('/generate', async (req, res) => {
 
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-    const systemPrompt = `You are an expert SEO specialist. Analyze the provided text and generate highly optimized, click-driven SEO metadata. 
-You MUST output ONLY raw, valid JSON. No markdown formatting, no conversational text, no HTML tags.
-The JSON must strictly follow this schema:
-{
-  "seoTitle": "string (less than 60 characters)",
-  "seoDescription": "string (less than 160 characters)",
-  "seoKeywords": "string (comma separated)"
-}`;
+    const systemPrompt = `You are an expert SEO specialist. Analyze the provided content and generate highly optimized SEO metadata and JSON-LD schema. 
+Return ONLY a JSON object with four keys: 
+1. "seoTitle": (max 60 chars)
+2. "seoDescription": (max 160 chars)
+3. "seoKeywords": (comma separated)
+4. "googleSchema": (a valid JSON-LD string representing the page or article schema)
+
+Return ONLY the raw JSON. No markdown formatting.`;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content }
+        { role: 'user', content: aggregatedContent }
       ],
       model: 'llama-3.1-8b-instant',
       temperature: 0.3,
@@ -37,8 +55,6 @@ The JSON must strictly follow this schema:
     });
 
     let rawResponse = chatCompletion.choices[0]?.message?.content || '{}';
-    
-    // Strip markdown code blocks if the LLM included them
     const jsonString = rawResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
     
     const seoData = JSON.parse(jsonString);

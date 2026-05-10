@@ -27,9 +27,9 @@ module.exports = function(app, prisma, requireAuth) {
   // POST create insight
   app.post('/api/insights', requireAuth, async (req, res) => {
     try {
-      const { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, seoTitle, seoDescription, seoKeywords } = req.body;
+      const { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, status, seoTitle, seoDescription, seoKeywords } = req.body;
       const insight = await prisma.insight.create({
-        data: { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, seoTitle, seoDescription, seoKeywords }
+        data: { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, status, seoTitle, seoDescription, seoKeywords }
       });
       res.status(201).json(insight);
     } catch (error) {
@@ -44,10 +44,10 @@ module.exports = function(app, prisma, requireAuth) {
   // PUT update insight
   app.put('/api/insights/:slug', requireAuth, async (req, res) => {
     try {
-      const { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, seoTitle, seoDescription, seoKeywords } = req.body;
+      const { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, status, seoTitle, seoDescription, seoKeywords } = req.body;
       const insight = await prisma.insight.update({
         where: { slug: req.params.slug },
-        data: { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, seoTitle, seoDescription, seoKeywords }
+        data: { title, slug, excerpt, sections, author, featuredImage, category, featured, isPublished, status, seoTitle, seoDescription, seoKeywords }
       });
       res.json(insight);
     } catch (error) {

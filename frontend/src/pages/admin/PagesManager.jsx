@@ -44,7 +44,8 @@ const PagesManager = () => {
     seoTitle: '',
     seoDescription: '',
     seoKeywords: '',
-    googleSchema: '{}'
+    googleSchema: '{}',
+    status: 'PUBLISHED'
   });
 
   useEffect(() => {
@@ -92,7 +93,8 @@ const PagesManager = () => {
         seoTitle: res.data.seoTitle || '',
         seoDescription: res.data.seoDescription || '',
         seoKeywords: res.data.seoKeywords || res.data.focusKeywords || '',
-        googleSchema: typeof res.data.googleSchema === 'string' ? res.data.googleSchema : JSON.stringify(res.data.googleSchema || {}, null, 2)
+        googleSchema: typeof res.data.googleSchema === 'string' ? res.data.googleSchema : JSON.stringify(res.data.googleSchema || {}, null, 2),
+        status: res.data.status || 'PUBLISHED'
       });
       setMessage('');
     } catch (err) {
@@ -120,7 +122,7 @@ const PagesManager = () => {
       setPages(prev => [newPage, ...prev]);
       setSelectedPage(newPage);
       setFormData({
-        title: '', slug: newSlug, sections: [], seoTitle: '', seoDescription: '', seoKeywords: '', googleSchema: '{}'
+        title: '', slug: newSlug, sections: [], seoTitle: '', seoDescription: '', seoKeywords: '', googleSchema: '{}', status: 'PUBLISHED'
       });
       setMessage('');
       setIsModalOpen(false);
@@ -148,11 +150,17 @@ const PagesManager = () => {
         hero_image_url: formData.sections.find(s => s.type === 'hero')?.image || '',
         content: {
           sections: formData.sections,
+          status: formData.status,
           seoTitle: formData.seoTitle,
           seoDescription: formData.seoDescription,
           seoKeywords: formData.seoKeywords,
           googleSchema: parsedSchema
-        }
+        },
+        status: formData.status,
+        seoTitle: formData.seoTitle,
+        seoDescription: formData.seoDescription,
+        seoKeywords: formData.seoKeywords,
+        googleSchema: parsedSchema
       };
 
       await adminApi.saveContent(payload, !selectedPage.isNew);
@@ -168,6 +176,21 @@ const PagesManager = () => {
       setMessage(err.message || 'Failed to save page.');
     } finally {
       setSaving(false);
+    }
+  };
+  const handleDelete = async () => {
+    if (!selectedPage || !selectedPage.id) return;
+    if (window.confirm('Are you sure you want to delete this page? This action cannot be undone.')) {
+      try {
+        await api.delete(`/api/pages?id=${selectedPage.id}`);
+        setMessage('Page deleted successfully');
+        fetchPages();
+        setSelectedPage(null);
+        setFormData({ title: '', slug: '', sections: [], seoTitle: '', seoDescription: '', seoKeywords: '', googleSchema: '{}', status: 'PUBLISHED' });
+      } catch (err) {
+        console.error('Failed to delete page:', err);
+        setMessage('Failed to delete page.');
+      }
     }
   };
 
@@ -189,14 +212,18 @@ const PagesManager = () => {
         return;
       }
 
-      const res = await api.post('/api/seo/generate', { content: rawText });
+      const res = await api.post('/api/seo/generate', { 
+        title: formData.title, 
+        sections: formData.sections 
+      });
       
       if (res.data) {
         setFormData(prev => ({
           ...prev,
           seoTitle: res.data.seoTitle || prev.seoTitle,
           seoDescription: res.data.seoDescription || prev.seoDescription,
-          seoKeywords: res.data.seoKeywords || prev.seoKeywords
+          seoKeywords: res.data.seoKeywords || prev.seoKeywords,
+          googleSchema: typeof res.data.googleSchema === 'object' ? JSON.stringify(res.data.googleSchema, null, 2) : (res.data.googleSchema || prev.googleSchema)
         }));
         setMessage('SEO generated successfully!');
         setTimeout(() => setMessage(''), 3000);
@@ -329,13 +356,38 @@ const PagesManager = () => {
               
               {/* Page Title & Slug */}
               <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
-                  <input type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                <div className="flex items-center gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Status</label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({...formData, status: e.target.value})}
+                      className="bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 font-semibold"
+                    >
+                      <option value="PUBLISHED">Published</option>
+                      <option value="DRAFT">Draft</option>
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Page Title</label>
+                    <input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-lg" placeholder="Enter page title..." />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Page Slug (URL)</label>
-                  <input type="text" name="slug" value={formData.slug} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono" />
+
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">URL Slug</label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400 text-sm">immihire.com/</span>
+                      <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="flex-1 px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all font-mono text-sm" />
+                    </div>
+                  </div>
+                  <div className="pt-5">
+                    <button type="button" onClick={handleDelete} className="p-2.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-red-100 flex items-center gap-2 font-medium" title="Delete Page">
+                      <i className="fa-solid fa-trash-can"></i>
+                      <span className="text-sm">Delete Page</span>
+                    </button>
+                  </div>
                 </div>
               </section>
 

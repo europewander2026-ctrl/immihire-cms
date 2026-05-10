@@ -37,6 +37,7 @@ module.exports = async function handler(req, res) {
       const id = req.body.id;
       const title = req.body.title;
       const slug = req.body.slug;
+      const status = req.body.status || 'PUBLISHED';
       const sections = req.body.content?.sections || req.body.sections || [];
       const seoTitle = req.body.content?.seoTitle || req.body.seoTitle || '';
       const seoDescription = req.body.content?.seoDescription || req.body.seoDescription || '';
@@ -44,7 +45,7 @@ module.exports = async function handler(req, res) {
       const googleSchema = req.body.content?.googleSchema || req.body.googleSchema || {};
 
       const targetSlug = req.method === 'PUT' ? (req.query.slug || slug) : slug;
-      const updateData = { slug, title, sections, seoTitle, seoDescription, seoKeywords, googleSchema };
+      const updateData = { slug, title, sections, status, seoTitle, seoDescription, seoKeywords, googleSchema };
 
       let page;
       if (id) {
@@ -61,6 +62,18 @@ module.exports = async function handler(req, res) {
       }
 
       return res.status(200).json(page);
+    }
+
+    if (req.method === 'DELETE') {
+      const { id, slug } = req.query;
+      if (id) {
+        await prisma.page.delete({ where: { id } });
+      } else if (slug) {
+        await prisma.page.delete({ where: { slug } });
+      } else {
+        return res.status(400).json({ error: 'ID or Slug is required for deletion' });
+      }
+      return res.status(204).send();
     }
 
     return res.status(405).json({ error: 'Method Not Allowed' });
