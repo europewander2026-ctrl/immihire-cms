@@ -15,6 +15,21 @@ import HomeAbout from './sections/HomeAbout';
 import CountriesBentoGrid from './sections/CountriesBentoGrid';
 import JourneySection from './sections/JourneySection';
 
+// Newly added components
+import AboutHero from './sections/AboutHero';
+import CoreValuesKinetic from './sections/CoreValuesKinetic';
+import ImmiHireStandard from './sections/ImmiHireStandard';
+import ServicesHero from './sections/ServicesHero';
+import BoardingPassStack from './sections/BoardingPassStack';
+import FaqAccordion from './sections/FaqAccordion';
+import ContactHero from './sections/ContactHero';
+import ContactFormSection from './sections/ContactFormSection';
+import GlobalOffices from './sections/GlobalOffices';
+import BlogHero from './sections/BlogHero';
+import GlobalPulseMap from './sections/GlobalPulseMap';
+import ArticleGrid from './sections/ArticleGrid';
+import DiplomaticDispatch from './sections/DiplomaticDispatch';
+
 const SectionRenderer = ({ sections }) => {
   if (!sections || !Array.isArray(sections)) return null;
 
@@ -128,6 +143,34 @@ const SectionRenderer = ({ sections }) => {
 
       case 'journey-section':
         return <JourneySection key={index} {...(section.data || section.content || {})} />;
+
+      // New Components added in the latest update
+      case 'about-hero':
+        return <AboutHero key={index} {...(section.data || section.content || {})} />;
+      case 'core-values':
+        return <CoreValuesKinetic key={index} {...(section.data || section.content || {})} />;
+      case 'immihire-standard':
+        return <ImmiHireStandard key={index} {...(section.data || section.content || {})} />;
+      case 'services-hero':
+        return <ServicesHero key={index} {...(section.data || section.content || {})} />;
+      case 'boarding-pass':
+        return <BoardingPassStack key={index} {...(section.data || section.content || {})} />;
+      case 'faq-accordion':
+        return <FaqAccordion key={index} {...(section.data || section.content || {})} />;
+      case 'contact-hero':
+        return <ContactHero key={index} {...(section.data || section.content || {})} />;
+      case 'contact-form':
+        return <ContactFormSection key={index} {...(section.data || section.content || {})} />;
+      case 'global-offices':
+        return <GlobalOffices key={index} {...(section.data || section.content || {})} />;
+      case 'blog-hero':
+        return <BlogHero key={index} {...(section.data || section.content || {})} />;
+      case 'global-pulse':
+        return <GlobalPulseMap key={index} {...(section.data || section.content || {})} />;
+      case 'latest-articles':
+        return <ArticleGrid key={index} {...(section.data || section.content || {})} />;
+      case 'newsletter-dispatch':
+        return <DiplomaticDispatch key={index} {...(section.data || section.content || {})} />;
         
       default:
         console.warn(`Unknown section type: ${section.type}`);

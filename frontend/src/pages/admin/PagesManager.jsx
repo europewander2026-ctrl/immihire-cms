@@ -39,6 +39,7 @@ const PagesManager = () => {
   // Form state
   const [formData, setFormData] = useState({
     title: '',
+    slug: '',
     sections: [],
     seoTitle: '',
     seoDescription: '',
@@ -86,6 +87,7 @@ const PagesManager = () => {
 
       setFormData({
         title: res.data.title || '',
+        slug: res.data.slug || '',
         sections: parsedSections,
         seoTitle: res.data.seoTitle || '',
         seoDescription: res.data.seoDescription || '',
@@ -118,7 +120,7 @@ const PagesManager = () => {
       setPages(prev => [newPage, ...prev]);
       setSelectedPage(newPage);
       setFormData({
-        title: '', sections: [], seoTitle: '', seoDescription: '', seoKeywords: '', googleSchema: '{}'
+        title: '', slug: newSlug, sections: [], seoTitle: '', seoDescription: '', seoKeywords: '', googleSchema: '{}'
       });
       setMessage('');
       setIsModalOpen(false);
@@ -138,33 +140,14 @@ const PagesManager = () => {
         throw new Error('Invalid JSON in Google Schema field.');
       }
 
-      // Safely parse JSON for specific sections
-      const processedSections = formData.sections.map(sec => {
-        if (sec.type === 'countries-bento' && sec.data?.countriesJson) {
-          try {
-            sec.data.countries = JSON.parse(sec.data.countriesJson);
-          } catch (err) {
-            throw new Error('Invalid JSON format in Countries section');
-          }
-        }
-        if (sec.type === 'journey-section' && sec.data?.stepsJson) {
-          try {
-            sec.data.steps = JSON.parse(sec.data.stepsJson);
-          } catch (err) {
-            throw new Error('Invalid JSON format in Journey section');
-          }
-        }
-        return sec;
-      });
-
       const payload = {
         id: selectedPage.id,
         type: 'page',
-        slug: selectedPage.slug,
+        slug: formData.slug || selectedPage.slug,
         title: formData.title,
         hero_image_url: formData.sections.find(s => s.type === 'hero')?.image || '',
         content: {
-          sections: processedSections,
+          sections: formData.sections,
           seoTitle: formData.seoTitle,
           seoDescription: formData.seoDescription,
           seoKeywords: formData.seoKeywords,
@@ -250,9 +233,11 @@ const PagesManager = () => {
     } else if (type === 'home-about') {
       newSection.data = { badgeNumber: '10+', badgeText: 'Years of\nExcellence', tagline: 'Who We Are', titleStandard: 'Bridging Talent to', titleHighlight: 'Global Opportunity', description: '', image: '', features: ['Licensed & Certified Consultants', 'Transparent, Flat-Fee Pricing', 'End-to-End Resettlement Support'], ctaText: 'Read Our Story', ctaLink: '/about' };
     } else if (type === 'countries-bento') {
-      newSection.data = { title: 'Our Countries', subtitle: 'Migrate for a better future. Explore your options.', countries: [], countriesJson: '[\n  {\n    "name": "Canada",\n    "image": "/path.jpg"\n  }\n]' };
+      newSection.data = { title: 'Our Countries', subtitle: 'Migrate for a better future. Explore your options.', countries: [] };
     } else if (type === 'journey-section') {
-      newSection.data = { tagline: 'The Journey', titleStandard: 'How We', titleHighlight: 'Make It Happen', steps: [], stepsJson: '[\n  {\n    "step": "01",\n    "title": "Assessment",\n    "description": "..."\n  }\n]' };
+      newSection.data = { tagline: 'The Journey', titleStandard: 'How We', titleHighlight: 'Make It Happen', steps: [] };
+    } else if (['about-hero', 'core-values', 'immihire-standard', 'services-hero', 'services-grid', 'boarding-pass', 'faq-accordion', 'contact-hero', 'contact-form', 'global-offices', 'blog-hero', 'global-pulse', 'latest-articles', 'newsletter-dispatch'].includes(type)) {
+      newSection.data = {};
     }
 
     setFormData(prev => ({
@@ -334,27 +319,68 @@ const PagesManager = () => {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
               
-              {/* Page Title */}
-              <section>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
-                <input type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {/* Page Title & Slug */}
+              <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
+                  <input type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Page Slug (URL)</label>
+                  <input type="text" name="slug" value={formData.slug} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm font-mono" />
+                </div>
               </section>
 
               {/* Section Builder */}
               <section className="space-y-4">
-                <div className="flex items-center justify-between border-b pb-2">
+                <div className="flex flex-col gap-3 border-b pb-4">
                   <h3 className="text-lg font-semibold text-gray-800">Section Builder</h3>
-                  <div className="flex gap-2">
-                    <button type="button" onClick={() => addSection('hero')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-image mr-1"></i> Hero</button>
-                    <button type="button" onClick={() => addSection('featureList')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-list mr-1"></i> Features</button>
-                    <button type="button" onClick={() => addSection('standard')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-align-left mr-1"></i> Content</button>
-                    <button type="button" onClick={() => addSection('kinetic-accordion')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-bars-staggered mr-1"></i> Accordion</button>
-                    <button type="button" onClick={() => addSection('spotlight-cinema')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-film mr-1"></i> Cinema</button>
-                    <button type="button" onClick={() => addSection('eligibility-pulse')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-gauge-high mr-1"></i> Pulse</button>
-                    <button type="button" onClick={() => addSection('home-hero')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-plane mr-1"></i> HomeHero</button>
-                    <button type="button" onClick={() => addSection('home-about')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-users mr-1"></i> About</button>
-                    <button type="button" onClick={() => addSection('countries-bento')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-globe mr-1"></i> Countries</button>
-                    <button type="button" onClick={() => addSection('journey-section')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-3 py-1.5 rounded-md transition-colors"><i className="fa-solid fa-route mr-1"></i> Journey</button>
+                  
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-bold text-gray-400 w-20 uppercase">Core:</span>
+                    <button type="button" onClick={() => addSection('hero')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-2 py-1 rounded transition-colors"><i className="fa-solid fa-image mr-1"></i> Hero</button>
+                    <button type="button" onClick={() => addSection('featureList')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-2 py-1 rounded transition-colors"><i className="fa-solid fa-list mr-1"></i> Features</button>
+                    <button type="button" onClick={() => addSection('standard')} className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-2 py-1 rounded transition-colors"><i className="fa-solid fa-align-left mr-1"></i> Content</button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-bold text-gray-400 w-20 uppercase">Home:</span>
+                    <button type="button" onClick={() => addSection('home-hero')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-2 py-1 rounded transition-colors"><i className="fa-solid fa-plane mr-1"></i> Home Hero</button>
+                    <button type="button" onClick={() => addSection('home-about')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-2 py-1 rounded transition-colors"><i className="fa-solid fa-users mr-1"></i> Home About</button>
+                    <button type="button" onClick={() => addSection('countries-bento')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-2 py-1 rounded transition-colors"><i className="fa-solid fa-globe mr-1"></i> Countries Bento</button>
+                    <button type="button" onClick={() => addSection('journey-section')} className="text-xs bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium px-2 py-1 rounded transition-colors"><i className="fa-solid fa-route mr-1"></i> Journey</button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-bold text-gray-400 w-20 uppercase">About:</span>
+                    <button type="button" onClick={() => addSection('about-hero')} className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 font-medium px-2 py-1 rounded transition-colors">About Hero</button>
+                    <button type="button" onClick={() => addSection('core-values')} className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 font-medium px-2 py-1 rounded transition-colors">Core Values</button>
+                    <button type="button" onClick={() => addSection('immihire-standard')} className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-700 font-medium px-2 py-1 rounded transition-colors">ImmiHire Standard</button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-bold text-gray-400 w-20 uppercase">Services:</span>
+                    <button type="button" onClick={() => addSection('services-hero')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Services Hero</button>
+                    <button type="button" onClick={() => addSection('services-grid')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Services Grid</button>
+                    <button type="button" onClick={() => addSection('spotlight-cinema')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Cinema</button>
+                    <button type="button" onClick={() => addSection('boarding-pass')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Boarding Pass</button>
+                    <button type="button" onClick={() => addSection('eligibility-pulse')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">Pulse</button>
+                    <button type="button" onClick={() => addSection('faq-accordion')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium px-2 py-1 rounded transition-colors">FAQ</button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-bold text-gray-400 w-20 uppercase">Contact:</span>
+                    <button type="button" onClick={() => addSection('contact-hero')} className="text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 font-medium px-2 py-1 rounded transition-colors">Contact Hero</button>
+                    <button type="button" onClick={() => addSection('contact-form')} className="text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 font-medium px-2 py-1 rounded transition-colors">Contact Form</button>
+                    <button type="button" onClick={() => addSection('global-offices')} className="text-xs bg-fuchsia-50 hover:bg-fuchsia-100 text-fuchsia-700 font-medium px-2 py-1 rounded transition-colors">Global Offices</button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-bold text-gray-400 w-20 uppercase">Insights:</span>
+                    <button type="button" onClick={() => addSection('blog-hero')} className="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium px-2 py-1 rounded transition-colors">Blog Hero</button>
+                    <button type="button" onClick={() => addSection('global-pulse')} className="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium px-2 py-1 rounded transition-colors">Pulse Map</button>
+                    <button type="button" onClick={() => addSection('latest-articles')} className="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium px-2 py-1 rounded transition-colors">Articles</button>
+                    <button type="button" onClick={() => addSection('newsletter-dispatch')} className="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium px-2 py-1 rounded transition-colors">Newsletter</button>
                   </div>
                 </div>
 
@@ -441,11 +467,47 @@ const PagesManager = () => {
                               <div><label className="block text-xs font-medium text-amber-600 mb-1">Section Title</label><input type="text" value={section.data?.title || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), title: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
                               <div><label className="block text-xs font-medium text-amber-600 mb-1">Subtitle</label><input type="text" value={section.data?.subtitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), subtitle: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
                             </div>
-                            <div className="mt-4">
-                              <label className="block text-xs font-medium text-amber-600 mb-1">Countries Data (JSON format)</label>
-                              <textarea value={section.data?.countriesJson || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), countriesJson: e.target.value})} rows="4" className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-mono" placeholder='[{"name": "Canada", "image": "/path.jpg"}]' />
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-amber-700">Countries List</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.countries || [];
+                                  updateSection(index, 'data', {...(section.data||{}), countries: [...list, { name: 'New Country', image: '' }]});
+                                }} className="text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Country
+                                </button>
+                              </div>
+                              <div className="space-y-3">
+                                {(!section.data?.countries || section.data.countries.length === 0) && (
+                                  <div className="text-xs text-amber-500 italic p-3 border border-amber-200 border-dashed rounded text-center">No countries added. Will use default placeholders.</div>
+                                )}
+                                {(section.data?.countries || []).map((country, cIdx) => (
+                                  <div key={cIdx} className="p-3 border border-amber-200 bg-white rounded-lg relative group">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.countries];
+                                      list.splice(cIdx, 1);
+                                      updateSection(index, 'data', {...section.data, countries: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Country Name</label>
+                                        <input type="text" value={country.name || ''} onChange={(e) => {
+                                          const list = [...section.data.countries];
+                                          list[cIdx] = { ...list[cIdx], name: e.target.value };
+                                          updateSection(index, 'data', {...section.data, countries: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                                      </div>
+                                      <ImageUploadField label="Flag/Background Image" value={country.image || ''} onChange={(url) => {
+                                          const list = [...section.data.countries];
+                                          list[cIdx] = { ...list[cIdx], image: url };
+                                          updateSection(index, 'data', {...section.data, countries: list});
+                                      }} uploading={uploadingImage} />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <p className="text-xs text-amber-500">Countries use default data. Override via JSON in the countries array prop.</p>
                           </div>
                         ) : section.type === 'journey-section' ? (
                           <div className="bg-violet-50 border border-violet-200 rounded-xl p-6 space-y-4">
@@ -455,11 +517,58 @@ const PagesManager = () => {
                               <div><label className="block text-xs font-medium text-violet-600 mb-1">Title Standard</label><input type="text" value={section.data?.titleStandard || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleStandard: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
                               <div><label className="block text-xs font-medium text-violet-600 mb-1">Title Highlight</label><input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
                             </div>
-                            <div className="mt-4">
-                              <label className="block text-xs font-medium text-violet-600 mb-1">Journey Steps Data (JSON format)</label>
-                              <textarea value={section.data?.stepsJson || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), stepsJson: e.target.value})} rows="4" className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm font-mono" placeholder='[{"step": "01", "title": "Assessment", "description": "..."}]' />
+                            <div className="mt-6">
+                              <div className="flex justify-between items-center mb-2">
+                                <label className="block text-sm font-bold text-violet-700">Journey Steps</label>
+                                <button type="button" onClick={() => {
+                                  const list = section.data?.steps || [];
+                                  updateSection(index, 'data', {...(section.data||{}), steps: [...list, { step: '01', title: 'New Step', description: '' }]});
+                                }} className="text-xs bg-violet-100 hover:bg-violet-200 text-violet-800 font-medium px-2 py-1 rounded">
+                                  <i className="fa-solid fa-plus mr-1"></i> Add Step
+                                </button>
+                              </div>
+                              <div className="space-y-3">
+                                {(!section.data?.steps || section.data.steps.length === 0) && (
+                                  <div className="text-xs text-violet-500 italic p-3 border border-violet-200 border-dashed rounded text-center">No steps added. Will use default placeholders.</div>
+                                )}
+                                {(section.data?.steps || []).map((stepObj, sIdx) => (
+                                  <div key={sIdx} className="p-3 border border-violet-200 bg-white rounded-lg relative group">
+                                    <button type="button" onClick={() => {
+                                      const list = [...section.data.steps];
+                                      list.splice(sIdx, 1);
+                                      updateSection(index, 'data', {...section.data, steps: list});
+                                    }} className="absolute top-2 right-2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fa-solid fa-times"></i></button>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                      <div className="md:col-span-1">
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Step Number</label>
+                                        <input type="text" value={stepObj.step || ''} onChange={(e) => {
+                                          const list = [...section.data.steps];
+                                          list[sIdx] = { ...list[sIdx], step: e.target.value };
+                                          updateSection(index, 'data', {...section.data, steps: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" placeholder="e.g. 01" />
+                                      </div>
+                                      <div className="md:col-span-3">
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Title</label>
+                                        <input type="text" value={stepObj.title || ''} onChange={(e) => {
+                                          const list = [...section.data.steps];
+                                          list[sIdx] = { ...list[sIdx], title: e.target.value };
+                                          updateSection(index, 'data', {...section.data, steps: list});
+                                        }} className="w-full px-3 py-2 border border-gray-200 rounded text-sm" placeholder="e.g. Initial Assessment" />
+                                      </div>
+                                      <div className="md:col-span-4">
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                                        <textarea value={stepObj.description || ''} onChange={(e) => {
+                                          const list = [...section.data.steps];
+                                          list[sIdx] = { ...list[sIdx], description: e.target.value };
+                                          updateSection(index, 'data', {...section.data, steps: list});
+                                        }} rows="2" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" placeholder="Step description..." />
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <p className="text-xs text-violet-500">Steps use default data. Override via JSON in the steps array prop.</p>
                           </div>
                         ) : (
                           /* Default editor for standard section types */

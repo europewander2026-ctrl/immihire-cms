@@ -34,6 +34,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'POST' || req.method === 'PUT') {
+      const id = req.body.id;
       const title = req.body.title;
       const slug = req.body.slug;
       const sections = req.body.content?.sections || req.body.sections || [];
@@ -43,12 +44,21 @@ module.exports = async function handler(req, res) {
       const googleSchema = req.body.content?.googleSchema || req.body.googleSchema || {};
 
       const targetSlug = req.method === 'PUT' ? (req.query.slug || slug) : slug;
+      const updateData = { slug, title, sections, seoTitle, seoDescription, seoKeywords, googleSchema };
 
-      const page = await prisma.page.upsert({
-        where: { slug: targetSlug },
-        update: { title, sections, seoTitle, seoDescription, seoKeywords, googleSchema },
-        create: { slug: targetSlug, title, sections, seoTitle, seoDescription, seoKeywords, googleSchema }
-      });
+      let page;
+      if (id) {
+        page = await prisma.page.update({
+          where: { id },
+          data: updateData
+        });
+      } else {
+        page = await prisma.page.upsert({
+          where: { slug: targetSlug },
+          update: updateData,
+          create: { ...updateData, slug: targetSlug }
+        });
+      }
 
       return res.status(200).json(page);
     }
