@@ -124,7 +124,7 @@ const JourneySection = ({
           display: flex; align-items: center; background-color: #000814;
         }
         .horizontal-track {
-          display: flex; gap: 10vw; padding-left: 10vw; padding-right: 50vw;
+          display: flex; gap: 10vw; padding-left: 10vw; padding-right: 10vw;
           width: max-content; will-change: transform;
         }
         .process-card {

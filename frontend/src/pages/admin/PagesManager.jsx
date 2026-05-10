@@ -138,6 +138,25 @@ const PagesManager = () => {
         throw new Error('Invalid JSON in Google Schema field.');
       }
 
+      // Safely parse JSON for specific sections
+      const processedSections = formData.sections.map(sec => {
+        if (sec.type === 'countries-bento' && sec.data?.countriesJson) {
+          try {
+            sec.data.countries = JSON.parse(sec.data.countriesJson);
+          } catch (err) {
+            throw new Error('Invalid JSON format in Countries section');
+          }
+        }
+        if (sec.type === 'journey-section' && sec.data?.stepsJson) {
+          try {
+            sec.data.steps = JSON.parse(sec.data.stepsJson);
+          } catch (err) {
+            throw new Error('Invalid JSON format in Journey section');
+          }
+        }
+        return sec;
+      });
+
       const payload = {
         id: selectedPage.id,
         type: 'page',
@@ -145,7 +164,7 @@ const PagesManager = () => {
         title: formData.title,
         hero_image_url: formData.sections.find(s => s.type === 'hero')?.image || '',
         content: {
-          sections: formData.sections,
+          sections: processedSections,
           seoTitle: formData.seoTitle,
           seoDescription: formData.seoDescription,
           seoKeywords: formData.seoKeywords,
@@ -231,9 +250,9 @@ const PagesManager = () => {
     } else if (type === 'home-about') {
       newSection.data = { badgeNumber: '10+', badgeText: 'Years of\nExcellence', tagline: 'Who We Are', titleStandard: 'Bridging Talent to', titleHighlight: 'Global Opportunity', description: '', image: '', features: ['Licensed & Certified Consultants', 'Transparent, Flat-Fee Pricing', 'End-to-End Resettlement Support'], ctaText: 'Read Our Story', ctaLink: '/about' };
     } else if (type === 'countries-bento') {
-      newSection.data = { title: 'Our Countries', subtitle: 'Migrate for a better future. Explore your options.', countries: [] };
+      newSection.data = { title: 'Our Countries', subtitle: 'Migrate for a better future. Explore your options.', countries: [], countriesJson: '[\n  {\n    "name": "Canada",\n    "image": "/path.jpg"\n  }\n]' };
     } else if (type === 'journey-section') {
-      newSection.data = { tagline: 'The Journey', titleStandard: 'How We', titleHighlight: 'Make It Happen', steps: [] };
+      newSection.data = { tagline: 'The Journey', titleStandard: 'How We', titleHighlight: 'Make It Happen', steps: [], stepsJson: '[\n  {\n    "step": "01",\n    "title": "Assessment",\n    "description": "..."\n  }\n]' };
     }
 
     setFormData(prev => ({
@@ -422,6 +441,10 @@ const PagesManager = () => {
                               <div><label className="block text-xs font-medium text-amber-600 mb-1">Section Title</label><input type="text" value={section.data?.title || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), title: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
                               <div><label className="block text-xs font-medium text-amber-600 mb-1">Subtitle</label><input type="text" value={section.data?.subtitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), subtitle: e.target.value})} className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm" /></div>
                             </div>
+                            <div className="mt-4">
+                              <label className="block text-xs font-medium text-amber-600 mb-1">Countries Data (JSON format)</label>
+                              <textarea value={section.data?.countriesJson || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), countriesJson: e.target.value})} rows="4" className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-mono" placeholder='[{"name": "Canada", "image": "/path.jpg"}]' />
+                            </div>
                             <p className="text-xs text-amber-500">Countries use default data. Override via JSON in the countries array prop.</p>
                           </div>
                         ) : section.type === 'journey-section' ? (
@@ -431,6 +454,10 @@ const PagesManager = () => {
                               <div><label className="block text-xs font-medium text-violet-600 mb-1">Tagline</label><input type="text" value={section.data?.tagline || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), tagline: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
                               <div><label className="block text-xs font-medium text-violet-600 mb-1">Title Standard</label><input type="text" value={section.data?.titleStandard || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleStandard: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
                               <div><label className="block text-xs font-medium text-violet-600 mb-1">Title Highlight</label><input type="text" value={section.data?.titleHighlight || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), titleHighlight: e.target.value})} className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm" /></div>
+                            </div>
+                            <div className="mt-4">
+                              <label className="block text-xs font-medium text-violet-600 mb-1">Journey Steps Data (JSON format)</label>
+                              <textarea value={section.data?.stepsJson || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), stepsJson: e.target.value})} rows="4" className="w-full px-3 py-2 border border-violet-200 rounded-md text-sm font-mono" placeholder='[{"step": "01", "title": "Assessment", "description": "..."}]' />
                             </div>
                             <p className="text-xs text-violet-500">Steps use default data. Override via JSON in the steps array prop.</p>
                           </div>

@@ -80,7 +80,7 @@ const HomeHeroWidget = ({
         .reveal.active { opacity: 1; transform: translateY(0); filter: blur(0); }
       `}</style>
 
-      <section className="relative min-h-[120vh] flex flex-col items-center pt-48 pb-20 bg-[#000814] text-white overflow-hidden">
+      <section className="relative min-h-[100vh] flex flex-col items-center pt-32 pb-16 bg-[#000814] text-white overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
@@ -96,18 +96,18 @@ const HomeHeroWidget = ({
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob" style={{ animationDelay: '2s' }}></div>
 
         {/* Hero Text */}
-        <div className="container mx-auto px-6 relative z-10 text-center mb-16">
+        <div className="container mx-auto px-6 relative z-10 text-center mb-8">
           <div className="reveal active">
-            <h1 className="font-heading font-bold text-4xl md:text-6xl lg:text-7xl mb-6 leading-tight drop-shadow-lg">
+            <h1 className="font-heading font-bold text-4xl md:text-6xl lg:text-7xl mb-4 leading-tight drop-shadow-lg">
               {titlePart1} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-white">
                 {titleHighlight}
               </span>
             </h1>
-            <h2 className="font-medium text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto drop-shadow-md">
+            <h2 className="font-medium text-xl md:text-2xl text-blue-100 mb-6 max-w-3xl mx-auto drop-shadow-md">
               {subtitle}
             </h2>
-            <p className="text-gray-200 text-lg max-w-2xl mx-auto mb-12 leading-relaxed drop-shadow">
+            <p className="text-gray-200 text-lg max-w-2xl mx-auto mb-8 leading-relaxed drop-shadow">
               {description}
             </p>
           </div>
@@ -117,7 +117,7 @@ const HomeHeroWidget = ({
         <div className="container mx-auto px-4 relative z-20 w-full max-w-6xl mt-auto">
           <div className="cloud-form rounded-[3rem] p-10 md:p-14 text-gray-800 animate-float">
             {/* Form Header */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-200/50 pb-6">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-200/50 pb-4">
               <div>
                 <h3 className="font-heading font-bold text-2xl md:text-3xl text-darkBlue mb-2">{formTitle}</h3>
                 <p className="text-gray-500 text-sm">{formSubtitle}</p>
@@ -144,7 +144,7 @@ const HomeHeroWidget = ({
             )}
 
             {/* Form Grid */}
-            <form className="grid grid-cols-1 md:grid-cols-3 gap-6" onSubmit={handleSubmit}>
+            <form className="grid grid-cols-1 md:grid-cols-3 gap-4" onSubmit={handleSubmit}>
               <div className="group">
                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1 ml-2">Name</label>
                 <input
@@ -273,7 +273,7 @@ const HomeHeroWidget = ({
       </section>
 
       {/* Spacer */}
-      <div className="h-32 bg-[#f8f9fa]"></div>
+      <div className="h-16 bg-[#f8f9fa]"></div>
     </>
   );
 };

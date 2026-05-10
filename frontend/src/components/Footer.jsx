@@ -4,7 +4,7 @@ import MagneticButton from './MagneticButton';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#000814] text-white pt-24 pb-12 rounded-t-[3rem] mt-[-3rem] relative z-20 overflow-hidden">
+    <footer className="bg-[#000814] text-white pt-12 pb-12 rounded-t-[3rem] mt-[-3rem] relative z-20 overflow-hidden">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary rounded-full mix-blend-overlay filter blur-[100px] opacity-20 animate-pulse"></div>
       
       <div className="container mx-auto px-6 relative z-10">
