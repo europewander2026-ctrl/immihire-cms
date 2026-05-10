@@ -53,6 +53,8 @@ const CountriesBentoGrid = ({
   // Determine if a card is "large" (spans 2 cols or 2 rows) for text sizing
   const isLarge = (span) => span && (span.includes('col-span-2') || span.includes('row-span-2'));
 
+  const renderCountries = countries && countries.length > 0 ? countries : defaultCountries;
+
   return (
     <>
       <style>{`
@@ -77,7 +79,7 @@ const CountriesBentoGrid = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-rows-2 gap-6 h-auto lg:h-[800px]">
-            {(countries || defaultCountries).map((country, i) => (
+            {renderCountries.map((country, i) => (
               <div
                 key={i}
                 className={`bento-card ${country.spanClasses || 'col-span-1 row-span-1'} group cursor-pointer reveal`}

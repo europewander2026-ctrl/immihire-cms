@@ -113,6 +113,8 @@ const JourneySection = ({
     };
   }, []);
 
+  const renderSteps = steps && steps.length > 0 ? steps : defaultSteps;
+
   return (
     <>
       <style>{`
@@ -199,7 +201,7 @@ const JourneySection = ({
             ref={trackRef}
             className="horizontal-track transform translate-x-[20vw] md:translate-x-[40vw]"
           >
-            {(steps || defaultSteps).map((step, i) => (
+            {renderSteps.map((step, i) => (
               <div key={i} className="process-card text-white group">
                 <span className="step-number">{step.number}</span>
                 <div className="relative z-10">
