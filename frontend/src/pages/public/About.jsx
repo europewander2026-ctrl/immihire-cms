@@ -1,52 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
-import api from '../../utils/api';
-import SectionRenderer from '../../components/SectionRenderer';
-import MissionVision from '../../components/sections/MissionVision';
+import React, { useEffect } from 'react';
+import AboutHero from '../../components/sections/AboutHero';
+import CoreValuesKinetic from '../../components/sections/CoreValuesKinetic';
+import ImmiHireStandard from '../../components/sections/ImmiHireStandard';
 
 const About = () => {
-  const [pageData, setPageData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const fetchAboutData = async () => {
-      try {
-        setLoading(true);
-        const res = await api.get('/api/pages/about').catch(async () => {
-          return await api.get('/api/page?slug=about');
-        });
-        setPageData(res.data);
-      } catch (err) {
-        console.error('Failed to fetch about page data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAboutData();
+    // Scroll to top on mount
+    window.scrollTo(0, 0);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa]">
-        <div className="text-xl text-primary flex items-center gap-2 font-bold">
-          <i className="fa-solid fa-spinner fa-spin"></i> Loading...
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="text-gray-800 bg-[#f8f9fa] min-h-screen overflow-x-hidden">
-      <Helmet>
-        <title>About Us | ImmiHire</title>
-        <meta name="description" content="Learn about ImmiHire, the trusted immigration experts in Dubai. With 10+ years of experience and a 98% success rate, we bridge talent to global opportunities." />
-      </Helmet>
-
-      {pageData && pageData.sections ? (
-        <SectionRenderer sections={pageData.sections} />
-      ) : (
-        <MissionVision />
-      )}
+    <div className="text-gray-800">
+      <AboutHero />
+      <CoreValuesKinetic />
+      <ImmiHireStandard />
+      
+      {/* WhatsApp Button */}
+      <a href="https://wa.me/971585281090" target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center group">
+        <i className="fa-brands fa-whatsapp text-3xl"></i>
+        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap ml-0 group-hover:ml-3 font-bold">Chat with us</span>
+      </a>
     </div>
   );
 };

@@ -1,86 +1,87 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const ServicesGrid = ({ title, subtitle, limit }) => {
-  const defaultServices = [
-    {
-      id: 1,
-      title: "Canada",
-      subtitle: "The #1 destination for skilled workers. Express Entry, PNP & Study Visas.",
-      image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=2565&auto=format&fit=crop",
-      link: "/services/canada-express-entry",
-      colSpan: "md:col-span-2",
-      rowSpan: "row-span-2",
-      badge: "Most Popular",
-      delay: "0ms"
-    },
-    {
-      id: 2,
-      title: "Germany",
-      subtitle: "Opportunity Card",
-      image: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=2670&auto=format&fit=crop",
-      link: "/services/germany-opportunity-card",
-      colSpan: "col-span-1",
-      rowSpan: "row-span-1",
-      delay: "100ms"
-    },
-    {
-      id: 3,
-      title: "Australia",
-      subtitle: "SkillSelect & Subclass 189/190. High quality of life.",
-      image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=2730&auto=format&fit=crop",
-      link: "/services/australia-skillselect",
-      colSpan: "col-span-1",
-      rowSpan: "row-span-2",
-      delay: "200ms"
-    },
-    {
-      id: 4,
-      title: "United Kingdom",
-      subtitle: "Global Talent Visa",
-      image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2670&auto=format&fit=crop",
-      link: "/services/uk-global-talent",
-      colSpan: "col-span-1",
-      rowSpan: "row-span-1",
-      delay: "300ms"
-    }
-  ];
+const defaultServices = [
+  {
+    title: "Canada Express Entry",
+    description: "The fastest pathway to Canadian Permanent Residence. Comprehensive CRS score analysis and profile optimization.",
+    link: "/services/canada",
+    iconClass: "fa-brands fa-canadian-maple-leaf",
+    colorTheme: "red"
+  },
+  {
+    title: "USA Visit Visas",
+    description: "Expert guidance for B1/B2 tourist and business visas. Interview preparation and documentation support.",
+    link: "/services/usa",
+    iconClass: "fa-solid fa-flag-usa",
+    colorTheme: "blue"
+  },
+  {
+    title: "Schengen Work Permits",
+    description: "Secure your right to work across 27 European countries. Poland, Lithuania, and Czech Republic pathways.",
+    link: "/services/schengen",
+    iconClass: "fa-solid fa-earth-europe",
+    colorTheme: "yellow"
+  },
+  {
+    title: "Germany Opportunity Card",
+    description: "The new 'Chancenkarte' points-based system. Enter Germany to look for work without a prior job offer.",
+    link: "/services/germany",
+    iconClass: "fa-solid fa-passport",
+    colorTheme: "gray"
+  },
+  {
+    title: "Australia SkillSelect",
+    description: "Subclass 189 & 190 Visa assistance. Points calculation and Expression of Interest (EOI) filing.",
+    link: "/services/australia",
+    iconClass: "fa-solid fa-koala",
+    colorTheme: "green"
+  }
+];
 
-  const servicesToRender = limit ? defaultServices.slice(0, limit) : defaultServices;
+const ServicesGrid = ({ services = defaultServices }) => {
+  const renderServices = services && services.length > 0 ? services : defaultServices;
+
+  const colorStyles = {
+    red: { bg: "bg-red-50", text: "text-red-600", light: "bg-red-100", hoverBg: "group-hover:bg-red-600" },
+    blue: { bg: "bg-blue-50", text: "text-blue-600", light: "bg-blue-100", hoverBg: "group-hover:bg-blue-600" },
+    yellow: { bg: "bg-yellow-50", text: "text-yellow-600", light: "bg-yellow-100", hoverBg: "group-hover:bg-yellow-600" },
+    gray: { bg: "bg-gray-100", text: "text-gray-700", light: "bg-gray-200", hoverBg: "group-hover:bg-gray-800" },
+    green: { bg: "bg-green-50", text: "text-green-600", light: "bg-green-100", hoverBg: "group-hover:bg-green-600" }
+  };
 
   return (
-    <section id="countries" className="py-24 bg-gray-50">
+    <section className="py-20 bg-gray-50 relative z-20">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16 reveal active">
-          <h2 className="font-heading font-bold text-4xl text-darkBlue mb-4">{title || "Our Countries"}</h2>
-          <p className="text-gray-500 text-lg">{subtitle || "Migrate for a better future. Explore your options."}</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-rows-2 gap-6 h-auto lg:h-[800px]">
-          {servicesToRender.map((service) => (
-            <Link 
-              key={service.id} 
-              to={service.link} 
-              className={`bento-card ${service.colSpan} ${service.rowSpan} group cursor-pointer reveal active`} 
-              style={{ transitionDelay: service.delay }}
-            >
-              <img src={service.image} className="absolute inset-0 w-full h-full object-cover" alt={service.title} />
-              <div className={`absolute inset-0 bg-gradient-to-t ${service.rowSpan === 'row-span-2' ? 'from-black/80 via-black/20' : 'from-black/80'} to-transparent flex flex-col justify-end ${service.rowSpan === 'row-span-2' ? 'p-10' : 'p-8'}`}>
-                <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                  <h3 className={`text-white font-heading font-bold ${service.rowSpan === 'row-span-2' ? 'text-3xl md:text-4xl' : 'text-2xl'} mb-2`}>
-                    {service.title}
-                  </h3>
-                  <p className={`text-gray-200 ${service.rowSpan === 'row-span-2' ? 'text-lg' : 'text-sm'} opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100`}>
-                    {service.subtitle}
-                  </p>
-                  {service.badge && (
-                    <span className="inline-block mt-4 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-white text-sm font-bold border border-white/30">
-                      {service.badge}
-                    </span>
-                  )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {renderServices.map((service, index) => {
+            const theme = colorStyles[service.colorTheme] || colorStyles.blue;
+            return (
+              <Link key={index} to={service.link} className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 relative overflow-hidden">
+                <div className={`absolute top-0 right-0 ${theme.light} w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform`}></div>
+                <div className={`w-14 h-14 ${theme.bg} ${theme.text} rounded-2xl flex items-center justify-center text-2xl mb-6 ${theme.hoverBg} group-hover:text-white transition-colors`}>
+                  <i className={service.iconClass}></i>
                 </div>
-              </div>
-            </Link>
-          ))}
+                <h3 className="font-heading font-bold text-2xl text-darkBlue mb-3">{service.title}</h3>
+                <p className="text-gray-500 mb-6 text-sm leading-relaxed">{service.description}</p>
+                <span className="text-primary font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                  Explore Program <i className="fa-solid fa-arrow-right"></i>
+                </span>
+              </Link>
+            );
+          })}
+          
+          <Link to="/contact" className="group bg-primary rounded-3xl p-8 shadow-lg hover:shadow-primary/50 hover:-translate-y-2 transition-all duration-300 border border-primary relative overflow-hidden flex flex-col justify-center items-center text-center">
+            <div className="absolute top-0 right-0 bg-white/10 w-40 h-40 rounded-full -mr-10 -mt-10 animate-pulse"></div>
+            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mb-6 text-white">
+              <i className="fa-solid fa-headset"></i>
+            </div>
+            <h3 className="font-heading font-bold text-2xl text-white mb-3">Not Sure?</h3>
+            <p className="text-blue-100 mb-6 text-sm leading-relaxed">Book a general consultation with our experts to find the right pathway for you.</p>
+            <span className="bg-white text-primary px-6 py-2 rounded-full font-bold text-sm uppercase tracking-wider">
+              Contact Us
+            </span>
+          </Link>
         </div>
       </div>
     </section>

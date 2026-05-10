@@ -37,10 +37,60 @@ const SpotlightCinema = ({ categories = defaultCategories }) => {
   const activeCategory = categories.find(c => c.id === activeBg);
 
   return (
-    <section className="cinema-container" id="cinema-section">
-      {/* Default Background */}
-      <div
-        className={`cinema-bg ${activeBg === 'bg-default' ? 'active' : ''}`}
+    <>
+      <style>{`
+        /* Spotlight Cinema Styles */
+        .cinema-container {
+            position: relative;
+            height: 100vh;
+            background-color: #000814;
+            color: white;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .cinema-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            filter: brightness(0.4);
+            z-index: 0;
+        }
+
+        .cinema-bg.active {
+            opacity: 1;
+        }
+
+        /* The List */
+        .service-list-item {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            line-height: 1.1;
+        }
+
+        @media (hover: hover) {
+          .service-list-item:hover {
+              color: white;
+              -webkit-text-stroke: 0px;
+              padding-left: 20px;
+          }
+        }
+      `}</style>
+      <section className="cinema-container" id="cinema-section">
+        {/* Default Background */}
+        <div
+          className={`cinema-bg ${activeBg === 'bg-default' ? 'active' : ''}`}
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')" }}
       ></div>
 
@@ -89,6 +139,7 @@ const SpotlightCinema = ({ categories = defaultCategories }) => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 

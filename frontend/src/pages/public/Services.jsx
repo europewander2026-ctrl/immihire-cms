@@ -1,52 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
-import api from '../../utils/api';
-import SectionRenderer from '../../components/SectionRenderer';
-import ServiceCatalog from '../../components/sections/ServiceCatalog';
+import React, { useEffect } from 'react';
+import ServicesHero from '../../components/sections/ServicesHero';
+import ServicesGrid from '../../components/sections/ServicesGrid';
+import SpotlightCinema from '../../components/sections/SpotlightCinema';
+import BoardingPassStack from '../../components/sections/BoardingPassStack';
+import EligibilityPulse from '../../components/sections/EligibilityPulse';
+import FaqAccordion from '../../components/sections/FaqAccordion';
 
 const Services = () => {
-  const [pageData, setPageData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const fetchServicesData = async () => {
-      try {
-        setLoading(true);
-        const res = await api.get('/api/pages/services').catch(async () => {
-          return await api.get('/api/page?slug=services');
-        });
-        setPageData(res.data);
-      } catch (err) {
-        console.error('Failed to fetch services page data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchServicesData();
+    // Scroll to top on mount
+    window.scrollTo(0, 0);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa]">
-        <div className="text-xl text-primary flex items-center gap-2 font-bold">
-          <i className="fa-solid fa-spinner fa-spin"></i> Loading...
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-[#f8f9fa] text-gray-800 overflow-x-hidden min-h-screen">
-      <Helmet>
-        <title>Our Services | ImmiHire</title>
-        <meta name="description" content="Explore our immigration services: Canada PR, Australia Skilled Migration, USA Visit Visas, Germany Opportunity Card, and Schengen Work Permits." />
-      </Helmet>
+    <div className="text-gray-800">
+      <ServicesHero />
+      <ServicesGrid />
+      <SpotlightCinema />
+      <BoardingPassStack />
+      <EligibilityPulse />
+      <FaqAccordion />
 
-      {pageData && pageData.sections ? (
-        <SectionRenderer sections={pageData.sections} />
-      ) : (
-        <ServiceCatalog />
-      )}
+      {/* WhatsApp Button */}
+      <a href="https://wa.me/971585281090" target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center group">
+        <i className="fa-brands fa-whatsapp text-3xl"></i>
+        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap ml-0 group-hover:ml-3 font-bold">Chat with us</span>
+      </a>
     </div>
   );
 };
