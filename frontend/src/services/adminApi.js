@@ -1,7 +1,11 @@
 const API_BASE = `${import.meta.env.VITE_API_URL || 'https://immihire-cms.vercel.app'}/api/admin`;
 
 const getHeaders = () => {
-  let rawToken = localStorage.getItem('admin_token') || '';
+  let rawToken = localStorage.getItem('admin_token');
+  if (!rawToken || rawToken === 'null' || rawToken === 'undefined') {
+    return { 'Content-Type': 'application/json' };
+  }
+  
   let cleanToken = rawToken.replace(/^"|"$/g, '');
   cleanToken = cleanToken.replace(/^Bearer\s+/i, '');
 
@@ -59,7 +63,13 @@ export const adminApi = {
   },
 
   uploadImage: async (file) => {
-    let rawToken = localStorage.getItem('admin_token') || '';
+    let rawToken = localStorage.getItem('admin_token');
+    if (!rawToken || rawToken === 'null' || rawToken === 'undefined') {
+        console.error("Upload Aborted: No valid token found in storage!");
+        alert("Authentication error: Please log in again.");
+        return; 
+    }
+    
     let cleanToken = rawToken.replace(/^"|"$/g, '');
     cleanToken = cleanToken.replace(/^Bearer\s+/i, '');
 

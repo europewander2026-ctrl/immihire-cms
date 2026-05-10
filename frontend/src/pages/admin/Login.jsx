@@ -26,6 +26,7 @@ const Login = () => {
       const response = await api.post('/api/login', { email, password });
       
       if (response.status === 200) {
+        localStorage.setItem('admin_token', response.data.token);
         const origin = location.state?.from?.pathname || '/immi-admin';
         navigate(origin, { replace: true });
       }

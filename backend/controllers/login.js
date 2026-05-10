@@ -47,7 +47,7 @@ module.exports = async function handler(req, res) {
       path: '/'
     }));
 
-    return res.status(200).json({ message: 'Logged in successfully' });
+    return res.status(200).json({ message: 'Logged in successfully', token });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: error.errors });

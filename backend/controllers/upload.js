@@ -11,11 +11,16 @@ export const config = {
 
 const requireAuth = (req) => {
   let token = req.cookies?.jwt || (req.headers.cookie && req.headers.cookie.split('jwt=')[1]?.split(';')[0]);
-  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-    token = req.headers.authorization.split(' ')[1];
+  
+  const authHeader = req.headers.authorization;
+  if (authHeader) console.log("INCOMING AUTH HEADER:", authHeader); // For Vercel Logs
+  
+  if (!token && authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
   }
   
-  if (!token || token === 'null' || token === 'undefined') {
+  if (!token || token === 'null' || token === 'undefined' || token.split('.').length !== 3) {
+    console.error("MALFORMED TOKEN REJECTED:", token);
     throw new Error('Unauthorized');
   }
   
