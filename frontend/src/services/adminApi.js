@@ -57,12 +57,15 @@ export const adminApi = {
 
   uploadImage: async (file) => {
     const token = localStorage.getItem('admin_token');
+    const formData = new FormData();
+    formData.append('file', file);
+
     const response = await fetch(`${API_BASE}/upload?filename=${encodeURIComponent(file.name)}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: file,
+      body: formData,
     });
     const contentType = response.headers.get("content-type");
     if (!response.ok) {

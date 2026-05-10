@@ -2,7 +2,10 @@ const prisma = require('../../utils/db');
 const jwt = require('jsonwebtoken');
 
 const requireAuth = (req) => {
-  const token = req.cookies?.jwt || req.headers.cookie?.split('jwt=')[1]?.split(';')[0];
+  let token = req.cookies?.jwt || (req.headers.cookie && req.headers.cookie.split('jwt=')[1]?.split(';')[0]);
+  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
   if (!token) throw new Error('Unauthorized');
   return jwt.verify(token, process.env.JWT_SECRET);
 };

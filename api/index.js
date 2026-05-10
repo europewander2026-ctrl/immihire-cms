@@ -36,7 +36,10 @@ app.use(cookieParser());
 
 // Auth Middleware for sub-modules
 const requireAuth = (req, res, next) => {
-  const token = req.cookies?.jwt || req.headers.cookie?.split('jwt=')[1]?.split(';')[0];
+  let token = req.cookies?.jwt || (req.headers.cookie && req.headers.cookie.split('jwt=')[1]?.split(';')[0]);
+  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
