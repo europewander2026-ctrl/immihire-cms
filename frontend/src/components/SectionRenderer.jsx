@@ -159,7 +159,7 @@ const SectionRenderer = ({ sections }) => {
         return <FaqAccordion key={index} {...(section.data || section.content || {})} />;
       case 'contact-hero':
         return <ContactHero key={index} {...(section.data || section.content || {})} />;
-      case 'contact-form':
+      case 'contact-info':
         return <ContactFormSection key={index} {...(section.data || section.content || {})} />;
       case 'global-offices':
         return <GlobalOffices key={index} {...(section.data || section.content || {})} />;

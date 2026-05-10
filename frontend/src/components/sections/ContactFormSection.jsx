@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ContactFormSection = () => {
+const ContactFormSection = ({ title, description, phone, email, location, facebook, instagram, linkedin }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -105,8 +105,8 @@ const ContactFormSection = () => {
             <div className="lg:w-1/3 bg-darkBlue p-12 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px]"></div>
               <div className="relative z-10">
-                <h3 className="font-heading font-bold text-2xl mb-6">Contact Information</h3>
-                <p className="text-blue-200 mb-12 text-sm leading-relaxed">Fill up the form and our Team will get back to you within 24 hours.</p>
+                <h3 className="font-heading font-bold text-2xl mb-6">{title || 'Contact Information'}</h3>
+                <p className="text-blue-200 mb-12 text-sm leading-relaxed">{description || 'Fill up the form and our Team will get back to you within 24 hours.'}</p>
 
                 <div className="space-y-8">
                   <div className="flex items-start gap-4">
@@ -115,7 +115,7 @@ const ContactFormSection = () => {
                     </div>
                     <div>
                       <p className="text-xs text-blue-300 uppercase tracking-widest mb-1">Call Us</p>
-                      <p className="font-bold text-lg">+971 50 752 6626</p>
+                      <p className="font-bold text-lg">{phone || '+971 50 752 6626'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -124,7 +124,7 @@ const ContactFormSection = () => {
                     </div>
                     <div>
                       <p className="text-xs text-blue-300 uppercase tracking-widest mb-1">Email</p>
-                      <p className="font-bold text-lg">info@immihire.com</p>
+                      <p className="font-bold text-lg">{email || 'info@immihire.com'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -133,15 +133,15 @@ const ContactFormSection = () => {
                     </div>
                     <div>
                       <p className="text-xs text-blue-300 uppercase tracking-widest mb-1">Location</p>
-                      <p className="font-bold text-lg">Dubai, UAE</p>
+                      <p className="font-bold text-lg">{location || 'Dubai, UAE'}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-16 flex gap-4">
-                  <a href="#" className="w-8 h-8 rounded bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><i className="fa-brands fa-facebook-f"></i></a>
-                  <a href="#" className="w-8 h-8 rounded bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><i className="fa-brands fa-instagram"></i></a>
-                  <a href="#" className="w-8 h-8 rounded bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><i className="fa-brands fa-linkedin-in"></i></a>
+                  <a href={facebook || '#'} target="_blank" rel="noreferrer" className="w-8 h-8 rounded bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><i className="fa-brands fa-facebook-f"></i></a>
+                  <a href={instagram || '#'} target="_blank" rel="noreferrer" className="w-8 h-8 rounded bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><i className="fa-brands fa-instagram"></i></a>
+                  <a href={linkedin || '#'} target="_blank" rel="noreferrer" className="w-8 h-8 rounded bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><i className="fa-brands fa-linkedin-in"></i></a>
                 </div>
               </div>
             </div>
