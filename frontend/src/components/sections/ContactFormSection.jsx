@@ -133,7 +133,7 @@ const ContactFormSection = ({ title, description, phone, email, location, facebo
                     </div>
                     <div>
                       <p className="text-xs text-blue-300 uppercase tracking-widest mb-1">Location</p>
-                      <p className="font-bold text-lg">{location || 'Dubai, UAE'}</p>
+                      <p className="font-bold text-lg" dangerouslySetInnerHTML={{ __html: location || 'Dubai, UAE' }}></p>
                     </div>
                   </div>
                 </div>

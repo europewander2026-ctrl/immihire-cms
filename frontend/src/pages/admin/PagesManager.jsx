@@ -1152,8 +1152,8 @@ const PagesManager = () => {
                                           }} 
                                           className="w-full px-3 py-2 border border-gray-200 rounded text-sm bg-white"
                                         >
-                                          <option value="">-- Select a Page/Service --</option>
-                                          {pages.map(page => (
+                                          <option value="">-- Select a Service --</option>
+                                          {pages.filter(p => p.slug.includes('service') || p.title.toLowerCase().includes('service')).map(page => (
                                             <option key={page.id} value={`/${page.slug}`}>
                                               {page.title}
                                             </option>
