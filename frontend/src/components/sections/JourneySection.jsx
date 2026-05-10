@@ -118,7 +118,7 @@ const JourneySection = ({
   return (
     <>
       <style>{`
-        .horizontal-section { position: relative; height: 400vh; }
+        .horizontal-section { position: relative; height: 300vh; }
         .sticky-wrapper {
           position: sticky; top: 0; height: 100vh; overflow: hidden;
           display: flex; align-items: center; background-color: #000814;
@@ -145,7 +145,7 @@ const JourneySection = ({
         }
       `}</style>
 
-      <section ref={sectionRef} id="process-journey" className="horizontal-section">
+      <section ref={sectionRef} id="process-journey" className="horizontal-section pt-16 pb-0">
         <div className="sticky-wrapper">
           {/* Background Glows */}
           <div className="absolute inset-0 z-0">

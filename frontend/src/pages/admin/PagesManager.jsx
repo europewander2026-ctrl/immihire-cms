@@ -968,6 +968,35 @@ const PagesManager = () => {
                               </div>
                             </div>
                           </div>
+                        ) : section.type === 'contact-hero' ? (
+                          <div className="bg-fuchsia-50 border border-fuchsia-200 rounded-xl p-6 space-y-4">
+                            <div className="flex items-center gap-2 mb-2"><i className="fa-solid fa-headset text-2xl text-fuchsia-400"></i><h4 className="font-bold text-fuchsia-800">Contact Hero Section</h4></div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Tagline</label>
+                                <input type="text" value={section.data?.tagline || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), tagline: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Get in Touch" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Heading</label>
+                                <input type="text" value={section.data?.heading || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), heading: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Let's start your journey" />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-fuchsia-600 mb-1">Description</label>
+                              <textarea value={section.data?.description || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), description: e.target.value})} rows="3" className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" />
+                            </div>
+                            <ImageUploadField label="Contact Hero Image" value={section.data?.image || ''} onChange={(url) => updateSection(index, 'data', {...(section.data||{}), image: url})} uploading={uploadingImage} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Badge Subtitle</label>
+                                <input type="text" value={section.data?.badgeSubtitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeSubtitle: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. 24/7 Support" />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-medium text-fuchsia-600 mb-1">Badge Title</label>
+                                <input type="text" value={section.data?.badgeTitle || ''} onChange={(e) => updateSection(index, 'data', {...(section.data||{}), badgeTitle: e.target.value})} className="w-full px-3 py-2 border border-fuchsia-200 rounded-md text-sm" placeholder="e.g. Always here for you" />
+                              </div>
+                            </div>
+                          </div>
                         ) : (
                           /* Default editor for standard section types */
                           <>

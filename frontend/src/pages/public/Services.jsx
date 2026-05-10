@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../../utils/api';
+import SectionRenderer from '../../components/SectionRenderer';
+
 import ServicesHero from '../../components/sections/ServicesHero';
 import ServicesGrid from '../../components/sections/ServicesGrid';
 import SpotlightCinema from '../../components/sections/SpotlightCinema';
@@ -7,19 +10,46 @@ import EligibilityPulse from '../../components/sections/EligibilityPulse';
 import FaqAccordion from '../../components/sections/FaqAccordion';
 
 const Services = () => {
+  const [pageData, setPageData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     // Scroll to top on mount
     window.scrollTo(0, 0);
+
+    const fetchPage = async () => {
+      try {
+        const res = await api.get('/api/pages/services');
+        setPageData(res.data);
+      } catch (err) {
+        console.error('Failed to fetch services page:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPage();
   }, []);
 
+  const sections = pageData?.sections || [];
+
   return (
-    <div className="text-gray-800">
-      <ServicesHero />
-      <ServicesGrid />
-      <SpotlightCinema />
-      <BoardingPassStack />
-      <EligibilityPulse />
-      <FaqAccordion />
+    <div className="text-gray-800 min-h-screen">
+      {loading ? (
+        <div className="pt-40 pb-20 text-center">
+          <i className="fa-solid fa-spinner fa-spin text-primary text-2xl"></i>
+        </div>
+      ) : sections.length > 0 ? (
+        <SectionRenderer sections={sections} />
+      ) : (
+        <>
+          <ServicesHero />
+          <ServicesGrid />
+          <SpotlightCinema />
+          <BoardingPassStack />
+          <EligibilityPulse />
+          <FaqAccordion />
+        </>
+      )}
 
       {/* WhatsApp Button */}
       <a href="https://wa.me/971585281090" target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 flex items-center justify-center group">

@@ -2,10 +2,12 @@ import React, { useEffect } from 'react';
 import ThreeGlobe from '../ThreeGlobe';
 
 const ContactHero = ({
-  badgeText = "● Live Global Network",
-  headingPart1 = "Connect Across",
-  headingPart2 = "Borders.",
-  description = "Visualize your journey. Our team is ready to guide you from any point on the map to your dream destination."
+  tagline = "● Live Global Network",
+  heading = "Connect Across Borders.",
+  description = "Visualize your journey. Our team is ready to guide you from any point on the map to your dream destination.",
+  image = null,
+  badgeSubtitle = "Certified",
+  badgeTitle = "CICC & MARA"
 }) => {
 
   useEffect(() => {
@@ -42,21 +44,25 @@ const ContactHero = ({
         }
       `}</style>
 
-      {/* 3D Background Canvas */}
-      <ThreeGlobe />
+      {/* 3D Background Canvas or Custom Image */}
+      {image ? (
+        <div className="absolute inset-0 z-0">
+          <img src={image} className="w-full h-full object-cover" alt="Hero Background" />
+          <div className="absolute inset-0 bg-darkBlue/60 backdrop-blur-[2px]"></div>
+        </div>
+      ) : (
+        <ThreeGlobe />
+      )}
 
       {/* Hero Overlay */}
       <section className="relative min-h-screen flex items-center justify-center text-white pointer-events-none">
         <div className="container mx-auto px-6 relative z-10 text-center pointer-events-auto">
           <div className="inline-block px-4 py-1 rounded-full border border-blue-500/50 bg-blue-900/30 text-blue-400 font-mono text-xs uppercase tracking-[0.2em] mb-6 reveal active backdrop-blur-sm">
-            {badgeText}
+            {tagline}
           </div>
 
           <h1 className="font-heading font-bold text-5xl md:text-8xl mb-8 leading-tight reveal active delay-100 drop-shadow-[0_0_15px_rgba(13,95,183,0.5)]">
-            {headingPart1} <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-blue-400">
-              {headingPart2}
-            </span>
+            {heading}
           </h1>
 
           <p className="text-blue-100/80 text-lg md:text-xl mb-12 max-w-2xl mx-auto reveal active delay-200 leading-relaxed font-light">
@@ -68,9 +74,12 @@ const ContactHero = ({
               Start a Conversation
             </a>
 
-            <a href="#offices" className="px-10 py-5 bg-transparent border border-white/20 text-white font-bold rounded-full hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm">
-              Locate Offices
-            </a>
+            <div className="hidden sm:flex items-center gap-4 text-left border-l border-white/20 pl-6 ml-6">
+              <div>
+                <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest">{badgeSubtitle}</p>
+                <p className="text-sm font-bold">{badgeTitle}</p>
+              </div>
+            </div>
           </div>
         </div>
 
